@@ -1,5 +1,4 @@
-﻿
-public enum FeatureType
+﻿public enum FeatureType
 {
     HighContrastColors = 1,
     BrightColors = 2,
