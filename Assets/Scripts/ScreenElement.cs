@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -9,23 +8,28 @@ public class ScreenElement : MonoBehaviour
 
     [SerializeField]
     private Button deleteButton;
+    
+    private ScreenDataSo screenData;
 
-    // private void Start()
-    // {
-    //     deleteButton.onClick.AddListener(Delete);
-    // }
+    private void Start()
+    {
+        deleteButton.onClick.AddListener(Delete);
+    }
 
     public void Setup(ScreenDataSo file)
     {
-        image.texture = file.myTexture;
+        image.texture = file.texture;
+        screenData = file;
     }
 
-    // private void OnDestroy()
-    // {
-    //     deleteButton.onClick.RemoveListener(Delete);
-    // }
-    //
-    // private void Delete()
-    // {
-    // }
+    private void OnDestroy()
+    {
+        deleteButton.onClick.RemoveListener(Delete);
+    }
+    
+    private void Delete()
+    {
+        screenData.Delete();
+        Destroy(gameObject);
+    }
 }

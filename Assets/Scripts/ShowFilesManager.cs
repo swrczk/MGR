@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class DisplayFilesManager : MonoBehaviour
+public class ShowFilesManager : MonoBehaviour
 {
     [SerializeField]
     private ScreenElement filePrefab;
@@ -25,8 +25,13 @@ public class DisplayFilesManager : MonoBehaviour
         ScreenDataSo[] screenDataArray = Resources.LoadAll<ScreenDataSo>("");
         foreach (ScreenDataSo file in screenDataArray)
         {
-            var fileObject = Instantiate(filePrefab, content);
-            fileObject.Setup(file);
+            DisplayFile(file);
         }
+    }
+
+    public void DisplayFile(ScreenDataSo screenDataSo)
+    {
+        var fileObject = Instantiate(filePrefab, content);
+        fileObject.Setup(screenDataSo);
     }
 }

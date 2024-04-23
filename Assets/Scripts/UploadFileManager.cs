@@ -3,17 +3,18 @@ using System.Collections;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.UI;
 
-public class FileManager : MonoBehaviour
+public class UploadFileManager : MonoBehaviour
 {
-    public RawImage rawImage;
-
+    private ShowFilesManager _showFilesManager;
     private string _finalPath;
-
-
     private readonly string _filteredFileType = NativeFilePicker.ConvertExtensionToFileType("jpg, png");
+    private const string saveFilesPath = "Assets/Resources/Screens";
 
+    private void Start()
+    {
+        _showFilesManager = FindObjectOfType<ShowFilesManager>();
+    }
 
     public void OpenFileBrowser()
     {
@@ -47,7 +48,6 @@ public class FileManager : MonoBehaviour
         else
         {
             Texture myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            rawImage.texture = myTexture;
             SaveToSO(myTexture);
         }
     }
@@ -55,19 +55,21 @@ public class FileManager : MonoBehaviour
     private void SaveToSO(Texture texture)
     {
         long time = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
-        
-        string texturePath = $"Assets/Screens/texture-{time}.asset";
-        AssetDatabase.CreateAsset(texture, texturePath);
-        
-        ScreenDataSo screenDataSo = ScriptableObject.CreateInstance<ScreenDataSo>();
-        screenDataSo.finalPath = _finalPath;
-        screenDataSo.myTexture = texture;
 
-        string soPath = $"Assets/Screens/filename-{time}.asset";
+        string texturePath = $"{saveFilesPath}/texture-{time}.asset";
+        string soPath = $"{saveFilesPath}/filename-{time}.asset";
+        AssetDatabase.CreateAsset(texture, texturePath);
+
+        ScreenDataSo screenDataSo = ScriptableObject.CreateInstance<ScreenDataSo>();
+        screenDataSo.texture = texture;
+        screenDataSo.texturePath = texturePath;
+        screenDataSo.thisObjectPath = soPath;
+
         AssetDatabase.CreateAsset(screenDataSo, soPath);
-        
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         EditorUtility.FocusProjectWindow();
+        
+        _showFilesManager.DisplayFile(screenDataSo);
     }
 }
