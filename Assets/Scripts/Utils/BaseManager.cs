@@ -4,7 +4,7 @@ namespace Utils
 {
     public abstract class BaseManager : MonoBehaviour, IManager
     {
-        public void Initialize()
+        public virtual void Initialize()
         {
         }
     }

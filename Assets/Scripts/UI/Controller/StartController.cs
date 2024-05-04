@@ -1,5 +1,7 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System.Linq;
+using Cysharp.Threading.Tasks;
 using UI.Common;
+using UnityEditor.Timeline;
 
 public class StartController : BaseController<StartView, StartContext>
 {
@@ -19,13 +21,16 @@ public class StartController : BaseController<StartView, StartContext>
         var savedFile = await Context.UploadFileManager.SaveFile();
         if (savedFile.Item1)
         {
-            Context.ShowFilesManager.DisplayFile(savedFile.Item2,View.FilePrefab, View.ParentTransform);
+            var so = Context.ResultsManager.CreateScreenDto(savedFile.Item2);
+            View.DisplayFile(so);
         }
-    }
+    } 
+
 
     public override void Setup()
     {
         base.Setup();
-        Context.ShowFilesManager.DisplayFiles(View.FilePrefab, View.ParentTransform);
+        var screenDataArray = Context.ResultsManager.ScreensDictionary.Values.ToArray();
+        View.DisplayFiles(screenDataArray);
     }
 }
