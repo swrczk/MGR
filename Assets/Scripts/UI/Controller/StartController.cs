@@ -1,4 +1,5 @@
-﻿using UI.Common;
+﻿using Cysharp.Threading.Tasks;
+using UI.Common;
 
 public class StartController : BaseController<StartView, StartContext>
 {
@@ -10,10 +11,15 @@ public class StartController : BaseController<StartView, StartContext>
 
     private void SaveFile()
     {
-        var isSaved = Context.UploadFileManager.SaveFile();
-        if (isSaved)
+        SaveFileAsync().Forget();
+    }
+
+    private async UniTaskVoid SaveFileAsync()
+    {
+        var savedFile = await Context.UploadFileManager.SaveFile();
+        if (savedFile.Item1)
         {
-            Context.ShowFilesManager.DisplayFiles(View.FilePrefab, View.ParentTransform);
+            Context.ShowFilesManager.DisplayFile(savedFile.Item2,View.FilePrefab, View.ParentTransform);
         }
     }
 

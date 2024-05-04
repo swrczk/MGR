@@ -1,5 +1,6 @@
 using System.Collections;
 using Analysis;
+using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -11,13 +12,14 @@ public class UploadFileManager : BaseManager
     private readonly string _filteredFileType = NativeFilePicker.ConvertExtensionToFileType("jpg, png");
 
 
-    public bool SaveFile()
+    public async UniTask<(bool, ScreenDataSo)> SaveFile()
     {
+        (bool, ScreenDataSo ) savedFile = (false, null);
         if (NativeFilePicker.IsFilePickerBusy())
-            return false;
+            return savedFile;
 
-        var savedFile = false;
-        NativeFilePicker.Permission permission = NativeFilePicker.PickFile((path) =>
+        bool isLoaded = false;
+        NativeFilePicker.Permission permission = NativeFilePicker.PickFile(async (path) =>
         {
             if (path == null)
             {
@@ -27,35 +29,33 @@ public class UploadFileManager : BaseManager
             {
                 Debug.Log("Picked file: " + path);
                 _finalPath = path;
-                StartCoroutine(LoadImage());
-                savedFile = true;
+                savedFile.Item2 = await LoadImage();
+                savedFile.Item1 = true;
             }
+            isLoaded = true;
         }, new string[] { _filteredFileType });
 
+        UniTask.WaitUntil(() => isLoaded);
         Debug.Log("Permission result: " + permission);
         return savedFile;
     }
 
-    private IEnumerator LoadImage()
+    private async UniTask<ScreenDataSo> LoadImage()
     {
         var www = UnityWebRequestTexture.GetTexture(_finalPath);
-        yield return www.SendWebRequest();
-
+        await www.SendWebRequest();
+        ScreenDataSo screenDataSo = null;
         if (www.result != UnityWebRequest.Result.Success)
         {
             Debug.Log(www.error);
         }
         else
         {
-            Texture myTexture = ((DownloadHandlerTexture)www.downloadHandler).texture;
-            SaveToSO(myTexture);
+            Texture texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+            screenDataSo = ScreenDataSo.CreateScreenDataSo((Texture2D)texture);
             EditorUtility.FocusProjectWindow();
         }
-    }
 
-    private void SaveToSO(Texture texture)
-    {
-        var screenDataSo = ScreenDataSo.CreateScreenDataSo((Texture2D)texture);
-        // _showFilesManager.DisplayFile(screenDataSo);
+        return screenDataSo;
     }
 }
