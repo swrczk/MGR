@@ -806,7 +806,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0784661fa05643b8a91c198b649d9fd2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  screenForAnalysisData: {fileID: 11400000, guid: 90ba19e8811263d4491b48e4d4d36c39, type: 2}
+  screenForAnalysisData: {fileID: 11400000, guid: 224ed335ac83fe34ba97be861c25deda, type: 2}
   originalImage: {fileID: 1545842607}
   processedImage: {fileID: 396743696}
 --- !u!1660057539 &9223372036854775807
