@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 5930155842548075262}
   - component: {fileID: 519436919870484606}
   - component: {fileID: 3854743607500365415}
+  - component: {fileID: 539499294370238203}
   m_Layer: 0
   m_Name: ImageProcessingManager
   m_TagString: Untagged
@@ -47,6 +48,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   colorDetectorProcessor: {fileID: 3854743607500365415}
   clusterCount: 5
+  textDetectorProcessor: {fileID: 539499294370238203}
 --- !u!114 &3854743607500365415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -57,5 +59,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c929a0b5d35b7e44699e4fd2212e89ab, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &539499294370238203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3031518545787281069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fff04dce95ed4332810bf6c94d59cb9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

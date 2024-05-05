@@ -8,7 +8,8 @@ namespace Analysis
     public enum ImageProcessingType
     {
         ColorSegmentation,
-        Contours
+        ColorContours,
+        TextContours
     }
     
     [CreateAssetMenu(fileName = "SFA", menuName = "ScreenForAnalysisSO")]
