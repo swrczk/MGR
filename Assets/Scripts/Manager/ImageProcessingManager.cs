@@ -38,8 +38,8 @@ namespace Manager
         
         public void AnaliseText()
         {
-            // var textContours = textDetectorProcessor.Process(_screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorContours]);
-            var textContours = textDetectorProcessor.Process(_screenForAnalysisData.texture);
+            var textContours = textDetectorProcessor.Process(_screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation]);
+            // var textContours = textDetectorProcessor.Process(_screenForAnalysisData.texture);
             _screenForAnalysisData.SaveProcessedImage(textContours, ImageProcessingType.TextContours);
         }
 

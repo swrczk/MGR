@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Analysis
 {
@@ -62,7 +64,8 @@ namespace Analysis
 
         public string SaveAsPNG(Texture2D texture2D, string suffix)
         {
-            var path = $"{saveFilesPath}/SavedAsPng/{fileName}_{suffix}.png";
+            long time = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
+            var path = $"{saveFilesPath}/SavedAsPng/{fileName}_{suffix}_{time}.png";
             byte[] pngBytes = texture2D.EncodeToPNG();
             File.WriteAllBytes(path, pngBytes);
             _filePaths.Add(path);

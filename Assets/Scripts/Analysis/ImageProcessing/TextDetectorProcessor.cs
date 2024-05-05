@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
 using OpenCvSharp;
+using OpenCvSharp.Demo;
 using UnityEngine;
 using Rect = OpenCvSharp.Rect;
 
@@ -9,20 +11,58 @@ namespace Analysis
 {
     public class TextDetectorProcessor : MonoBehaviour
     {
+         
+        
+        [SerializeField]
+        private TextAsset model;
         public Texture2D Process(Texture2D texture)
         {
-            Mat originalMat = TextureToMat(texture);
-            var textRegions = ExtractTextRegions(originalMat);
-            Mat colorMat = new Mat();
-            Cv2.CvtColor(originalMat, colorMat, ColorConversionCodes.BGR2RGB); // Przekształcenie na kolorowy obraz RGB
+            AlphabetOCR alphabet = new AlphabetOCR(model.bytes);
+            Mat image =  TextureToMat(texture);
+            IList<AlphabetOCR.RecognizedLetter> letters = alphabet.ProcessImage(image);
 
-            foreach (var rect in textRegions)
+            foreach (var letter in letters)
             {
-                Cv2.Rectangle(colorMat, rect, new Scalar(0, 0, 255), 2); // Rysowanie czerwonego prostokąta
+                RotatedRect rotatedRect = ConvertPointsToRotatedRect(letter.Rect);
+                // Pobieranie punktów jako Point2f[]
+                Point2f[] boxPoints = Cv2.BoxPoints(rotatedRect);
+
+                // Konwersja Point2f[] na Point[]
+                Point[] vertices = Array.ConvertAll(boxPoints, p => new Point((int)Math.Round(p.X), (int)Math.Round(p.Y)));
+                Point[] intVertices = vertices.Select(p => new Point((int)p.X, (int)p.Y)).ToArray();
+                Cv2.Polylines(image, new Point[][] { intVertices }, isClosed: true, color: Scalar.DeepPink, thickness: 2);
+
+                // Dodawanie tekstu
+                string text = letter.Data;
+                Debug.Log("Letter: " + text);
             }
 
-            return MatToTexture(colorMat);
+            // Konwersja obrazu z powrotem na Texture2D
+            Texture2D outputTexture =  MatToTexture(image);
+            return outputTexture;
         }
+        public RotatedRect ConvertPointsToRotatedRect(Point[] points)
+        {
+            using (var mat = new Mat(points.Length, 1, MatType.CV_32SC2, points))
+            {
+                return Cv2.MinAreaRect(mat);
+            }
+        }
+        
+        // public Texture2D Process2(Texture2D texture)
+        // {
+        //     Mat originalMat = TextureToMat(texture);
+        //     var textRegions = ExtractTextRegions(originalMat);
+        //     Mat colorMat = new Mat();
+        //     Cv2.CvtColor(originalMat, colorMat, ColorConversionCodes.BGR2RGB); // Przekształcenie na kolorowy obraz RGB
+        //
+        //     foreach (var rect in textRegions)
+        //     {
+        //         Cv2.Rectangle(colorMat, rect, new Scalar(0, 0, 255), 2); // Rysowanie czerwonego prostokąta
+        //     }
+        //
+        //     return MatToTexture(colorMat);
+        // }
 
         private Mat TextureToMat(Texture2D texture)
         {
@@ -31,6 +71,22 @@ namespace Analysis
             return mat;
         }
 
+        // public string GetText(Bitmap imgsource)
+        // {
+        //     var ocrtext = string.Empty;
+        //     using (var engine = new TesseractEngine(@"./tessdata", "eng", EngineMode.Default))
+        //     {
+        //         using (var img = PixConverter.ToPix(imgsource))
+        //         {
+        //             using (var page = engine.Process(img))
+        //             {
+        //                 ocrtext = page.GetText();
+        //             }
+        //         }
+        //     }
+        //
+        //     return ocrtext;
+        // }
         private Texture2D MatToTexture(Mat mat)
         {
             // Sprawdzenie i przekonwertowanie mat do formatu CV_8UC4, jeśli to konieczne
