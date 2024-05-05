@@ -1,41 +1,13 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using Analysis;
 using OpenCvSharp;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Analysis
 {
     public class ColorDetectorProcessor : MonoBehaviour
     {
-        public ScreenSo screenData;
-        public RawImage displayImage;
-        public RawImage originalImage;
-        public int clusterCount = 5;
-
-        private void Start()
-        {
-            ApplyTexture(screenData.texture, originalImage);
-
-            var dominantColors = DetectDominantColors(screenData.texture, clusterCount);
-            var segmentation = SegmentImageUsingKMeans(screenData.texture, dominantColors.Count);
-            var drawContour = DrawContour(segmentation);
-
-            screenData.SaveColorSegmentation(segmentation);
-            screenData.SaveDominantColors(dominantColors);
-
-            ApplyTexture(drawContour, displayImage);
-        }
-
-
-        private void ApplyTexture(Texture2D texture, RawImage rawImage)
-        {
-            rawImage.texture = texture;
-        }
-
-
-        private Texture2D SegmentImageUsingKMeans(Texture2D inputTexture, int k)
+        public Texture2D SegmentImageUsingKMeans(Texture2D inputTexture, int k)
         {
             Mat img = OpenCvSharp.Unity.TextureToMat(inputTexture);
             Mat imgReshaped = img.Reshape(1, img.Rows * img.Cols);
@@ -74,7 +46,7 @@ namespace Analysis
         }
 
 
-        private Texture2D DrawContour(Texture2D inputTexture)
+        public Texture2D DrawContours(Texture2D inputTexture)
         {
             // Convert Texture2D to Mat
             Mat image = OpenCvSharp.Unity.TextureToMat(inputTexture);
@@ -105,7 +77,7 @@ namespace Analysis
             return MatToTexture(filledContours);
         }
 
-        private List<Color> DetectDominantColors(Texture2D inputTexture, int clusterCount)
+        public List<Color> DetectDominantColors(Texture2D inputTexture, int clusterCount)
         {
             // Konwertuj Texture2D na OpenCvSharp Mat
             Mat img = OpenCvSharp.Unity.TextureToMat(inputTexture);

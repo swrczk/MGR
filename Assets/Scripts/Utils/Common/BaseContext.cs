@@ -1,8 +1,7 @@
 ﻿using UI.Common;
 using UnityEngine;
-using Utils;
 
-namespace UI
+namespace Utils.Common
 {
     public abstract class BaseContext : MonoBehaviour, IContext
     {
