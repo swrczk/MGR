@@ -7,8 +7,10 @@ namespace UI
 {
     public class ImageProcessingView : BaseMainView
     {
+        public ScreenForAnalysisSo ScreenForAnalysisData => screenForAnalysisData;
+
         [SerializeField]
-        private ScreenSo screenData;
+        private ScreenForAnalysisSo screenForAnalysisData;
 
         [SerializeField]
         private RawImage originalImage;
@@ -16,10 +18,15 @@ namespace UI
         [SerializeField]
         private RawImage processedImage;
 
-        public override void Setup()
+
+        public void Start()
         {
-            base.Setup();
-            originalImage.texture = screenData.texture;
+            originalImage.texture = screenForAnalysisData.texture;
+        }
+
+        public void ShowProcessedImage(Texture2D preview)
+        {
+            processedImage.texture = preview;
         }
     }
 }

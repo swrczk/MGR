@@ -13,22 +13,20 @@ namespace Manager
         [SerializeField]
         private int clusterCount = 5;
 
-        private ScreenSo _screenData;
-        public void SetupInput(ScreenSo screenData)
+        private ScreenForAnalysisSo _screenForAnalysisData;
+        public void SetupInput(ScreenForAnalysisSo screenForAnalysisData)
         {
-            _screenData = screenData;
-            // _screenData.SaveColorSegmentation(segmentation);
-            // _screenData.SaveDominantColors(dominantColors);
+            _screenForAnalysisData = screenForAnalysisData;
         }
         
         public List<Color> GetDominantColors()
         {
-            return colorDetectorProcessor.DetectDominantColors(_screenData.texture, clusterCount);
+            return colorDetectorProcessor.DetectDominantColors(_screenForAnalysisData.texture, clusterCount);
         }
         
         public Texture2D GetSegmentedTexture(int dominantColorsCount)
         {
-            return colorDetectorProcessor.SegmentImageUsingKMeans(_screenData.texture, dominantColorsCount);
+            return colorDetectorProcessor.SegmentImageUsingKMeans(_screenForAnalysisData.texture, dominantColorsCount);
         }
         
         public Texture2D DrawContours(Texture2D texture)

@@ -11,7 +11,7 @@ namespace Manager
     public class ResultsManager : BaseManager
     {
         private const string SaveFilesPath = "Assets/Resources/Screens";
-        public Dictionary<string, ScreenSo> ScreensDictionary { get; } = new Dictionary<string, ScreenSo>();
+        public Dictionary<string, ScreenForAnalysisSo> ScreensDictionary { get; } = new Dictionary<string, ScreenForAnalysisSo>();
 
         public override void Initialize()
         {
@@ -20,24 +20,24 @@ namespace Manager
         }
 
 
-        public ScreenSo CreateScreenDto(Texture2D texture)
+        public ScreenForAnalysisSo CreateScreenDto(Texture2D texture)
         {
             long time = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
-            ScreenSo screenSo = ScriptableObject.CreateInstance<ScreenSo>();
-            screenSo.saveFilesPath = SaveFilesPath;
-            screenSo.fileName = $"{time}";
-            screenSo.SaveTexture(texture);
-            screenSo.SaveAsAsset(screenSo, "DTO");
-            ScreensDictionary.Add(screenSo.name, screenSo);
+            ScreenForAnalysisSo screenForAnalysisSo = ScriptableObject.CreateInstance<ScreenForAnalysisSo>();
+            screenForAnalysisSo.saveFilesPath = SaveFilesPath;
+            screenForAnalysisSo.fileName = $"{time}";
+            screenForAnalysisSo.SaveMainTexture(texture);
+            screenForAnalysisSo.SaveAsAsset(screenForAnalysisSo, "DTO");
+            ScreensDictionary.Add(screenForAnalysisSo.name, screenForAnalysisSo);
             //
             // AssetDatabase.CreateAsset(screenSo, screenSo.saveFilesPath);
             RefreshAssets();
-            return screenSo;
+            return screenForAnalysisSo;
         }
 
         public void DeleteScreenDto(string key)
         {
-            if (ScreensDictionary.TryGetValue(key, out ScreenSo screenDto))
+            if (ScreensDictionary.TryGetValue(key, out ScreenForAnalysisSo screenDto))
             {
                 screenDto.Delete();
                 ScreensDictionary.Remove(key);
@@ -46,7 +46,7 @@ namespace Manager
 
         private void LoadFiles()
         {
-            var screenDataArray = Resources.LoadAll<ScreenSo>("");
+            var screenDataArray = Resources.LoadAll<ScreenForAnalysisSo>("");
             foreach (var dataSo in screenDataArray)
             {
                 ScreensDictionary.Add(dataSo.name, dataSo);

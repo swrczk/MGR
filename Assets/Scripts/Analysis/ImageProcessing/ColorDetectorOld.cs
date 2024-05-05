@@ -3,13 +3,15 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using OpenCvSharp;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 namespace Analysis
 {
     public class ColorDetectorOld : MonoBehaviour
     {
-        public ScreenSo screenData;
+        [FormerlySerializedAs("screenData")]
+        public ScreenForAnalysisSo screenForAnalysisData;
         public RawImage displayImage;
         public RawImage originalImage;
         public int clusterCount = 5;
@@ -20,11 +22,11 @@ namespace Analysis
         /// </summary>
         private void Start()
         {
-            ApplyTexture(screenData.texture, originalImage);
-            var dominantColors = DetectDominantColors(screenData.texture, clusterCount);
-            var segmentation = SplitByColors(screenData.texture, dominantColors);
-            screenData.SaveDominantColors(dominantColors);
-            screenData.SaveColorSegmentation(segmentation);
+            ApplyTexture(screenForAnalysisData.texture, originalImage);
+            var dominantColors = DetectDominantColors(screenForAnalysisData.texture, clusterCount);
+            var segmentation = SplitByColors(screenForAnalysisData.texture, dominantColors);
+            screenForAnalysisData.SaveDominantColors(dominantColors);
+            // screenForAnalysisData.SaveColorSegmentation(segmentation);
             ApplyTexture(segmentation, displayImage);
         }
 

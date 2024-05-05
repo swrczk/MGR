@@ -1,4 +1,4 @@
-﻿namespace Analysis
+﻿namespace UI
 {
     public enum FeatureType
     {

@@ -32,23 +32,23 @@ namespace UI
             uploadButton.onClick.RemoveListener(OnUploadButtonClick);
         }
 
-        public void DisplayFiles(ScreenSo[] screenDataArray)
+        public void DisplayFiles(ScreenForAnalysisSo[] screenDataArray)
         {
             foreach (Transform child in parentTransform)
             {
                 Destroy(child.gameObject);
             }
 
-            foreach (ScreenSo file in screenDataArray)
+            foreach (ScreenForAnalysisSo file in screenDataArray)
             {
                 DisplayFile(file);
             }
         }
 
-        public void DisplayFile(ScreenSo screenSo)
+        public void DisplayFile(ScreenForAnalysisSo screenForAnalysisSo)
         {
             var fileObject = Instantiate(filePrefab, parentTransform);
-            fileObject.Setup(screenSo);
+            fileObject.Setup(screenForAnalysisSo);
             fileObject.OnDelete += (key, element) => RemoveElementClicked?.Invoke(key, element);
         }
 

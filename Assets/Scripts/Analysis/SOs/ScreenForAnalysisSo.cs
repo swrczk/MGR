@@ -5,14 +5,20 @@ using UnityEngine;
 
 namespace Analysis
 {
-    [CreateAssetMenu(fileName = "Screen", menuName = "ScreenSO")]
-    public class ScreenSo : ScriptableObject
+    public enum ImageProcessingType
+    {
+        ColorSegmentation,
+        Contours
+    }
+    
+    [CreateAssetMenu(fileName = "SFA", menuName = "ScreenForAnalysisSO")]
+    public class ScreenForAnalysisSo : ScriptableObject
     {
         public string fileName;
         public string saveFilesPath;
         public Texture2D texture;
         public List<Color> dominantColors;
-        public Texture2D colorSegmentation;
+        public Dictionary<ImageProcessingType, Texture2D> ProcessedImages = new();
 
         private List<string> _filePaths = new List<string>();
 
@@ -31,15 +37,14 @@ namespace Analysis
             dominantColors = colors;
         }
 
-        public void SaveColorSegmentation(Texture2D texture2D)
+        public Texture2D SaveProcessedImage(Texture2D texture2D, ImageProcessingType type)
         {
-            colorSegmentation = texture2D;
-            var path = saveFilesPath.Split(".asset")[0];
-            SaveAsAsset(texture2D, "colorSegmentation");
-            SaveTextureAsPNG(texture2D, path + "_colorSegmentation.png");
-            RefreshAssets();
+            var path = SaveAsAsset(texture2D, type.ToString());
+            texture2D.name = path.Split("/")[^1].Split(".asset")[0];
+            SaveAsPNG(texture2D, type.ToString());
+            ProcessedImages[type] = texture2D;
+            return texture2D;
         }
-
         public string SaveAsAsset(Object element, string suffix)
         {
             var path = $"{saveFilesPath}/{fileName}_{suffix}.asset";
@@ -54,13 +59,17 @@ namespace Analysis
             AssetDatabase.Refresh();
         }
 
-        private void SaveTextureAsPNG(Texture2D texture2D, string filePath)
+        public string SaveAsPNG(Texture2D texture2D, string suffix)
         {
+            var path = $"{saveFilesPath}/SavedAsPng/{fileName}_{suffix}.png";
             byte[] pngBytes = texture2D.EncodeToPNG();
-            File.WriteAllBytes(filePath, pngBytes);
+            File.WriteAllBytes(path, pngBytes);
+            _filePaths.Add(path);
+            return path;
         }
 
-        public void SaveTexture(Texture2D texture2D)
+
+        public void SaveMainTexture(Texture2D texture2D)
         {
             var path = SaveAsAsset(texture2D, "texture");
             texture2D.name = path.Split("/")[^1].Split(".asset")[0];

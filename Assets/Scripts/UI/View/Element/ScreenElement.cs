@@ -15,17 +15,17 @@ namespace UI
         [SerializeField]
         private Button deleteButton;
 
-        private ScreenSo _screenData;
+        private ScreenForAnalysisSo _screenForAnalysisData;
 
         private void Start()
         {
             deleteButton.onClick.AddListener(Delete);
         }
 
-        public void Setup(ScreenSo file)
+        public void Setup(ScreenForAnalysisSo file)
         {
             image.texture = file.texture;
-            _screenData = file;
+            _screenForAnalysisData = file;
         }
 
         private void OnDestroy()
@@ -35,7 +35,7 @@ namespace UI
 
         private void Delete()
         {
-            OnDelete?.Invoke(_screenData.name, this);
+            OnDelete?.Invoke(_screenForAnalysisData.name, this);
         }
     }
 }
