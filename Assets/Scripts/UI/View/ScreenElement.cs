@@ -1,39 +1,41 @@
 using System;
 using Analysis;
-using Analysis.DTO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class ScreenElement : MonoBehaviour
+namespace UI
 {
-    public event Action<string, ScreenElement> OnDelete;
-
-    [SerializeField]
-    private RawImage image;
-
-    [SerializeField]
-    private Button deleteButton;
-
-    private ScreenSo _screenData;
-
-    private void Start()
+    public class ScreenElement : MonoBehaviour
     {
-        deleteButton.onClick.AddListener(Delete);
-    }
+        public event Action<string, ScreenElement> OnDelete;
 
-    public void Setup(ScreenSo file)
-    {
-        image.texture = file.texture;
-        _screenData = file;
-    }
+        [SerializeField]
+        private RawImage image;
 
-    private void OnDestroy()
-    {
-        deleteButton.onClick.RemoveListener(Delete);
-    }
+        [SerializeField]
+        private Button deleteButton;
 
-    private void Delete()
-    {
-        OnDelete?.Invoke(_screenData.name, this);
+        private ScreenSo _screenData;
+
+        private void Start()
+        {
+            deleteButton.onClick.AddListener(Delete);
+        }
+
+        public void Setup(ScreenSo file)
+        {
+            image.texture = file.texture;
+            _screenData = file;
+        }
+
+        private void OnDestroy()
+        {
+            deleteButton.onClick.RemoveListener(Delete);
+        }
+
+        private void Delete()
+        {
+            OnDelete?.Invoke(_screenData.name, this);
+        }
     }
 }

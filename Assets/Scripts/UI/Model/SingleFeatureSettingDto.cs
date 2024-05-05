@@ -1,7 +1,8 @@
 ﻿using System;
+using Analysis;
 using UnityEngine;
 
-namespace Analysis.DTO
+namespace UI
 {
     [Serializable]
     public class SingleFeatureSettingDto
@@ -11,7 +12,7 @@ namespace Analysis.DTO
 
         [SerializeField]
         private AnalysisSettingsParameter settings;
-        
+
         public FeatureType FeatureType => featureType;
         public AnalysisSettingsParameter Settings => settings;
     }

@@ -3,7 +3,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 
-namespace Analysis.DTO
+namespace Analysis
 {
     [CreateAssetMenu(fileName = "Screen", menuName = "ScreenSO")]
     public class ScreenSo : ScriptableObject

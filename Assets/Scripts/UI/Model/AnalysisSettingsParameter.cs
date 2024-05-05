@@ -1,19 +1,20 @@
 ﻿using TMPro;
 using UnityEngine;
-using UnityEngine.Serialization;
 
-public class AnalysisSettingsParameter : MonoBehaviour
+namespace UI
 {
-    [FormerlySerializedAs("isEnabledCheckBox")]
-    [SerializeField]
-    private CheckboxElement isEnabledCheckboxElement;
-
-    [SerializeField]
-    private TMP_InputField weightInputField;
-
-    public void Setup(AnalysisParameter arg)
+    public class AnalysisSettingsParameter : MonoBehaviour
     {
-        isEnabledCheckboxElement.Setup(arg.isEnabled);
-        weightInputField.text = arg.weight.ToString();
+        [SerializeField]
+        private CheckboxElement isEnabled;
+
+        [SerializeField]
+        private TMP_InputField weightInputField;
+
+        public void Setup(AnalysisParameter arg)
+        {
+            isEnabled.Setup(arg.isEnabled);
+            weightInputField.text = arg.weight.ToString();
+        }
     }
 }

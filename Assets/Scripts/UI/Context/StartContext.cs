@@ -1,15 +1,18 @@
-﻿using UI.Common;
+﻿using Manager;
 using Utils;
 
-public class StartContext : BaseContext
+namespace UI
 {
-    public ResultsManager ResultsManager { get; private set; }
-    public UploadFileManager UploadFileManager { get; private set; }
-
-    public override void ResolveContext()
+    public class StartContext : BaseContext
     {
-        base.ResolveContext();
-        UploadFileManager = Managers.Instance.GetManager<UploadFileManager>();
-        ResultsManager = Managers.Instance.GetManager<ResultsManager>();
+        public ResultsManager ResultsManager { get; private set; }
+        public UploadFileManager UploadFileManager { get; private set; }
+
+        public override void ResolveContext()
+        {
+            base.ResolveContext();
+            UploadFileManager = Managers.Instance.GetManager<UploadFileManager>();
+            ResultsManager = Managers.Instance.GetManager<ResultsManager>();
+        }
     }
 }

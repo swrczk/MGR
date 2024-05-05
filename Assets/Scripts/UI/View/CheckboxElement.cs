@@ -1,36 +1,39 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class CheckboxElement : MonoBehaviour
+namespace UI
 {
-    [SerializeField]
-    private Image checkImage;
-
-    [SerializeField]
-    private Button button;
-
-    private bool IsEnabled { get; set; }
-
-
-    protected void Awake()
+    public class CheckboxElement : MonoBehaviour
     {
-        button.onClick.AddListener(Toggle);
-    }
+        [SerializeField]
+        private Image checkImage;
 
-    protected void OnDestroy()
-    {
-        button.onClick.RemoveListener(Toggle);
-    }
+        [SerializeField]
+        private Button button;
 
-    public void Setup(bool isEnabled)
-    {
-        IsEnabled = isEnabled;
-        checkImage.enabled = IsEnabled;
-    }
+        private bool IsEnabled { get; set; }
 
-    private void Toggle()
-    {
-        IsEnabled = !IsEnabled;
-        checkImage.enabled = IsEnabled;
+
+        protected void Awake()
+        {
+            button.onClick.AddListener(Toggle);
+        }
+
+        protected void OnDestroy()
+        {
+            button.onClick.RemoveListener(Toggle);
+        }
+
+        public void Setup(bool isEnabled)
+        {
+            IsEnabled = isEnabled;
+            checkImage.enabled = IsEnabled;
+        }
+
+        private void Toggle()
+        {
+            IsEnabled = !IsEnabled;
+            checkImage.enabled = IsEnabled;
+        }
     }
 }

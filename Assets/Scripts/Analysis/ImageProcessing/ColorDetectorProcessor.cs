@@ -1,7 +1,6 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using Analysis;
-using Analysis.DTO;
 using OpenCvSharp;
 using UnityEngine;
 using UnityEngine.UI;

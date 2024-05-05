@@ -1,60 +1,60 @@
 ﻿using System;
 using Analysis;
-using Analysis.DTO;
 using UI.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StartView : BaseMainView
+namespace UI
 {
-    public event Action UploadButtonClicked;
-    public event Action<string, ScreenElement> RemoveElementClicked;
-    public ScreenElement FilePrefab => filePrefab;
-    public Transform ParentTransform => parentTransform;
-
-    [SerializeField]
-    private ScreenElement filePrefab;
-
-    [SerializeField]
-    private Transform parentTransform;
-
-    [SerializeField]
-    private Button uploadButton;
-
-    protected override void RegisterEvents()
+    public class StartView : BaseMainView
     {
-        base.RegisterEvents();
-        uploadButton.onClick.AddListener(OnUploadButtonClick);
-    }
+        public event Action UploadButtonClicked;
+        public event Action<string, ScreenElement> RemoveElementClicked;
 
-    protected override void UnregisterEvents()
-    {
-        base.UnregisterEvents();
-        uploadButton.onClick.RemoveListener(OnUploadButtonClick);
-    }
+        [SerializeField]
+        private ScreenElement filePrefab;
 
-    public void DisplayFiles(ScreenSo[] screenDataArray)
-    {
-        foreach (Transform child in parentTransform)
+        [SerializeField]
+        private Transform parentTransform;
+
+        [SerializeField]
+        private Button uploadButton;
+
+        protected override void RegisterEvents()
         {
-            Destroy(child.gameObject);
+            base.RegisterEvents();
+            uploadButton.onClick.AddListener(OnUploadButtonClick);
         }
 
-        foreach (ScreenSo file in screenDataArray)
+        protected override void UnregisterEvents()
         {
-            DisplayFile(file);
+            base.UnregisterEvents();
+            uploadButton.onClick.RemoveListener(OnUploadButtonClick);
         }
-    }
 
-    public void DisplayFile(ScreenSo screenSo)
-    {
-        var fileObject = Instantiate(filePrefab, parentTransform);
-        fileObject.Setup(screenSo);
-        fileObject.OnDelete += (key, element) => RemoveElementClicked?.Invoke(key, element);
-    }
+        public void DisplayFiles(ScreenSo[] screenDataArray)
+        {
+            foreach (Transform child in parentTransform)
+            {
+                Destroy(child.gameObject);
+            }
 
-    private void OnUploadButtonClick()
-    {
-        UploadButtonClicked?.Invoke();
+            foreach (ScreenSo file in screenDataArray)
+            {
+                DisplayFile(file);
+            }
+        }
+
+        public void DisplayFile(ScreenSo screenSo)
+        {
+            var fileObject = Instantiate(filePrefab, parentTransform);
+            fileObject.Setup(screenSo);
+            fileObject.OnDelete += (key, element) => RemoveElementClicked?.Invoke(key, element);
+        }
+
+        private void OnUploadButtonClick()
+        {
+            UploadButtonClicked?.Invoke();
+        }
     }
 }
