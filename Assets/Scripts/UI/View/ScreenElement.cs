@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ScreenElement : MonoBehaviour
 {
-    public event Action<string> OnDelete;
+    public event Action<string, ScreenElement> OnDelete;
 
     [SerializeField]
     private RawImage image;
@@ -13,17 +13,17 @@ public class ScreenElement : MonoBehaviour
     [SerializeField]
     private Button deleteButton;
 
-    private ScreenDTO screenData;
+    private ScreenSo _screenData;
 
     private void Start()
     {
         deleteButton.onClick.AddListener(Delete);
     }
 
-    public void Setup(ScreenDTO file)
+    public void Setup(ScreenSo file)
     {
         image.texture = file.texture;
-        screenData = file;
+        _screenData = file;
     }
 
     private void OnDestroy()
@@ -33,7 +33,6 @@ public class ScreenElement : MonoBehaviour
 
     private void Delete()
     {
-        OnDelete?.Invoke(screenData.name);
-        Destroy(gameObject);
+        OnDelete?.Invoke(_screenData.name, this);
     }
 }

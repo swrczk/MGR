@@ -18,7 +18,11 @@ namespace UI.Common
         {
         }
 
-        protected virtual  void UnregisterEvents()
+        protected virtual void UnregisterEvents()
+        {
+        }
+
+        public virtual void Setup()
         {
         }
     }

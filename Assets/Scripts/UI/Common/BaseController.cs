@@ -27,6 +27,7 @@ namespace UI.Common
             Context = this.GameObject().AddComponent<TContext>();
             Context.ResolveContext();
             CreateDispatcher();
+            View.Setup();
         }
         protected virtual void CreateDispatcher(){}
     }

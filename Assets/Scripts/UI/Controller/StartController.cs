@@ -9,6 +9,7 @@ public class StartController : BaseController<StartView, StartContext>
     {
         base.CreateDispatcher();
         View.UploadButtonClicked += SaveFile;
+        View.RemoveElementClicked += RemoveElement;
     }
 
     private void SaveFile()
@@ -21,11 +22,16 @@ public class StartController : BaseController<StartView, StartContext>
         var savedFile = await Context.UploadFileManager.SaveFile();
         if (savedFile.Item1)
         {
-            var so = Context.ResultsManager.CreateScreenDto(savedFile.Item2);
+            var so = Context.ResultsManager.CreateScreenDto(savedFile.Item2); 
             View.DisplayFile(so);
         }
     } 
 
+    private void RemoveElement(string key, ScreenElement element)
+    {
+        Context.ResultsManager.DeleteScreenDto(key);
+        Destroy(element.gameObject);
+    }
 
     public override void Setup()
     {

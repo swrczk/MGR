@@ -9,7 +9,7 @@ namespace Analysis
 {
     public class ColorDetectorOld : MonoBehaviour
     {
-        public ScreenDTO screenData;
+        public ScreenSo screenData;
         public RawImage displayImage;
         public RawImage originalImage;
         public int clusterCount = 5;

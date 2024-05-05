@@ -6,7 +6,8 @@ using UnityEngine.UI;
 
 public class StartView : BaseView
 {
-    public event Action UploadButtonClicked    ;
+    public event Action UploadButtonClicked;
+    public event Action<string, ScreenElement> RemoveElementClicked;
     public ScreenElement FilePrefab => filePrefab;
     public Transform ParentTransform => parentTransform;
 
@@ -15,7 +16,7 @@ public class StartView : BaseView
 
     [SerializeField]
     private Transform parentTransform;
-    
+
     [SerializeField]
     private Button uploadButton;
 
@@ -24,29 +25,33 @@ public class StartView : BaseView
         base.RegisterEvents();
         uploadButton.onClick.AddListener(OnUploadButtonClick);
     }
-    
+
     protected override void UnregisterEvents()
     {
         base.UnregisterEvents();
         uploadButton.onClick.RemoveListener(OnUploadButtonClick);
-    } 
-    
-    public void DisplayFiles(ScreenDTO[] screenDataArray)
+    }
+
+    public void DisplayFiles(ScreenSo[] screenDataArray)
     {
         foreach (Transform child in parentTransform)
         {
             Destroy(child.gameObject);
-        } 
-        foreach (ScreenDTO file in screenDataArray)
+        }
+
+        foreach (ScreenSo file in screenDataArray)
         {
-            DisplayFile(file );
+            DisplayFile(file);
         }
     }
-    public void DisplayFile(ScreenDTO screenDto )
+
+    public void DisplayFile(ScreenSo screenSo)
     {
         var fileObject = Instantiate(filePrefab, parentTransform);
-        fileObject.Setup(screenDto);
+        fileObject.Setup(screenSo);
+        fileObject.OnDelete += (key, element) => RemoveElementClicked?.Invoke(key, element);
     }
+
     private void OnUploadButtonClick()
     {
         UploadButtonClicked?.Invoke();

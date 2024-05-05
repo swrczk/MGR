@@ -6,7 +6,7 @@ using UnityEngine;
 namespace Analysis
 {
     [CreateAssetMenu(fileName = "Screen", menuName = "ScreenSO")]
-    public class ScreenDTO : ScriptableObject
+    public class ScreenSo : ScriptableObject
     {
         public string fileName;
         public string texturePath;
@@ -15,10 +15,13 @@ namespace Analysis
         public List<Color> dominantColors;
         public Texture2D colorSegmentation;
 
+        private List<string> _filePaths = new List<string>();
         public void Delete()
         {
-            AssetDatabase.DeleteAsset(texturePath);
-            AssetDatabase.DeleteAsset(thisObjectPath);
+            foreach (var fileName in _filePaths)
+            {
+                AssetDatabase.DeleteAsset(fileName);
+            }
             RefreshAssets();
         }
 
@@ -31,14 +34,16 @@ namespace Analysis
         {
             colorSegmentation = texture2D;
             var path = texturePath.Split(".asset")[0];
-            SaveTextureAsAsset(texture2D, "colorSegmentation");
+            SaveAsAsset(texture2D, "colorSegmentation");
             SaveTextureAsPNG(texture2D, path + "_colorSegmentation.png");
             RefreshAssets();
         }
 
-        public void SaveTextureAsAsset(Texture2D texture2D, string suffix)
+        public void SaveAsAsset(Object element, string suffix)
         {
-            AssetDatabase.CreateAsset(texture2D, $"{texturePath}/{fileName}_{suffix}.asset");
+            var path = $"{texturePath}/{fileName}_{suffix}.asset";
+            AssetDatabase.CreateAsset(element, path);
+            _filePaths.Add(path);
         }
 
         private static void RefreshAssets()

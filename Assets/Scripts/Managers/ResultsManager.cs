@@ -5,11 +5,12 @@ using Analysis;
 using UnityEditor;
 using UnityEngine;
 using Utils;
+using Object = UnityEngine.Object;
 
 public class ResultsManager : BaseManager
 {
     private const string SaveFilesPath = "Assets/Resources/Screens";
-    public Dictionary<string, ScreenDTO> ScreensDictionary { get; } = new Dictionary<string, ScreenDTO>();
+    public Dictionary<string, ScreenSo> ScreensDictionary { get; } = new Dictionary<string, ScreenSo>();
 
     public override void Initialize()
     {
@@ -18,24 +19,25 @@ public class ResultsManager : BaseManager
     }
 
 
-    public ScreenDTO CreateScreenDto(Texture2D texture)
+    public ScreenSo CreateScreenDto(Texture2D texture)
     {
         long time = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
-        ScreenDTO screenDto = ScriptableObject.CreateInstance<ScreenDTO>();
-        screenDto.texture = texture;
-        screenDto.texturePath = SaveFilesPath;
-        screenDto.fileName = $"{time}";
-        screenDto.SaveTextureAsAsset(texture, "original");
-        ScreensDictionary.Add(screenDto.name, screenDto);
+        ScreenSo screenSo = ScriptableObject.CreateInstance<ScreenSo>();
+        screenSo.texture = texture;
+        screenSo.texturePath = SaveFilesPath;
+        screenSo.thisObjectPath = $"{SaveFilesPath}/{time}_DTO.asset";
+        screenSo.fileName = $"{time}";
+        screenSo.SaveAsAsset(screenSo,"DTO");
+        ScreensDictionary.Add(screenSo.name, screenSo);
 
-        AssetDatabase.CreateAsset(screenDto, SaveFilesPath + $"/{time}_DTO.asset");
+        AssetDatabase.CreateAsset(screenSo, screenSo.thisObjectPath);
         RefreshAssets();
-        return screenDto;
+        return screenSo;
     }
 
     public void DeleteScreenDto(string key)
     {
-        if (ScreensDictionary.TryGetValue(key, out ScreenDTO screenDto))
+        if (ScreensDictionary.TryGetValue(key, out ScreenSo screenDto))
         {
             screenDto.Delete();
             ScreensDictionary.Remove(key);
@@ -44,7 +46,7 @@ public class ResultsManager : BaseManager
 
     private void LoadFiles()
     {
-        var screenDataArray = Resources.LoadAll<ScreenDTO>("");
+        var screenDataArray = Resources.LoadAll<ScreenSo>("");
         foreach (var dataSo in screenDataArray)
         {
             ScreensDictionary.Add(dataSo.name, dataSo);
