@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using UI.Common;
 using UnityEditor.Timeline;
+using UnityEngine;
 
 public class StartController : BaseController<StartView, StartContext>
 {
@@ -22,7 +23,8 @@ public class StartController : BaseController<StartView, StartContext>
         var savedFile = await Context.UploadFileManager.SaveFile();
         if (savedFile.Item1)
         {
-            var so = Context.ResultsManager.CreateScreenDto(savedFile.Item2); 
+            var texture = (savedFile.Item2 as Texture2D);
+            var so = Context.ResultsManager.CreateScreenDto(texture); 
             View.DisplayFile(so);
         }
     } 

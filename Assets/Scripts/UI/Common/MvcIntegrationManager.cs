@@ -61,7 +61,7 @@ namespace UI.Common
             foreach (var view in views)
             {
                 var viewType = view.GetType();
-                if (_viewToControllerMap.TryGetValue(viewType, out Type controllerType))
+                if (view is IMainView && _viewToControllerMap.TryGetValue(viewType, out Type controllerType))
                 {
                     var controllerObject = new GameObject(controllerType.Name);
                     var controller = (BaseController)controllerObject.AddComponent(controllerType);

@@ -1,10 +1,11 @@
 ﻿using System;
 using Analysis;
+using Analysis.DTO;
 using UI.Common;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StartView : BaseView
+public class StartView : BaseMainView
 {
     public event Action UploadButtonClicked;
     public event Action<string, ScreenElement> RemoveElementClicked;

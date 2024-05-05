@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Analysis;
+using Analysis.DTO;
 using UnityEngine;
 using Utils;
 

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace Analysis
+namespace Analysis.DTO
 {
     [CreateAssetMenu(fileName = "AnalysisParameters", menuName = "AnalysisParametersSO")]
     public class AnalysisParametersSO : ScriptableObject

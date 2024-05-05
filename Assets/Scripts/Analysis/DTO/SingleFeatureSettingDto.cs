@@ -1,16 +1,18 @@
 ﻿using System;
-using Analysis;
 using UnityEngine;
 
-[Serializable]
-public class SingleFeatureSettingDto
+namespace Analysis.DTO
 {
-    [SerializeField]
-    private FeatureType featureType;
+    [Serializable]
+    public class SingleFeatureSettingDto
+    {
+        [SerializeField]
+        private FeatureType featureType;
 
-    [SerializeField]
-    private AnalysisSettingsParameter settings;
+        [SerializeField]
+        private AnalysisSettingsParameter settings;
         
-    public FeatureType FeatureType => featureType;
-    public AnalysisSettingsParameter Settings => settings;
+        public FeatureType FeatureType => featureType;
+        public AnalysisSettingsParameter Settings => settings;
+    }
 }

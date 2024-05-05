@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using Analysis;
+using Analysis.DTO;
 using UnityEditor;
 using UnityEngine;
 using Utils;
@@ -23,14 +24,13 @@ public class ResultsManager : BaseManager
     {
         long time = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
         ScreenSo screenSo = ScriptableObject.CreateInstance<ScreenSo>();
-        screenSo.texture = texture;
-        screenSo.texturePath = SaveFilesPath;
-        screenSo.thisObjectPath = $"{SaveFilesPath}/{time}_DTO.asset";
+        screenSo.saveFilesPath = SaveFilesPath;
         screenSo.fileName = $"{time}";
-        screenSo.SaveAsAsset(screenSo,"DTO");
+        screenSo.SaveTexture(texture);
+        screenSo.SaveAsAsset(screenSo, "DTO");
         ScreensDictionary.Add(screenSo.name, screenSo);
-
-        AssetDatabase.CreateAsset(screenSo, screenSo.thisObjectPath);
+        //
+        // AssetDatabase.CreateAsset(screenSo, screenSo.saveFilesPath);
         RefreshAssets();
         return screenSo;
     }

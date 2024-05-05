@@ -1,5 +1,6 @@
 using System;
 using Analysis;
+using Analysis.DTO;
 using UnityEngine;
 using UnityEngine.UI;
 

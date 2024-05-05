@@ -27,7 +27,15 @@ namespace UI.Common
         }
     }
 
+    public abstract class BaseMainView : BaseView, IMainView
+    {
+    }
+
     public interface IView
+    {
+    }
+
+    public interface IMainView
     {
     }
 }

@@ -9,9 +9,9 @@ public class UploadFileManager : BaseManager
     private string _finalPath;
 
 
-    public async UniTask<(bool, Texture2D)> SaveFile()
+    public async UniTask<(bool, Texture)> SaveFile()
     {
-        (bool, Texture2D ) savedFile = (false, null);
+        (bool, Texture ) savedFile = (false, null);
         var allowedFileTypes = new[] { "Image files", "png,jpg,jpeg" };
         string path = EditorUtility.OpenFilePanelWithFilters("Select file", "", allowedFileTypes);
 
@@ -30,7 +30,7 @@ public class UploadFileManager : BaseManager
         return savedFile;
     }
 
-    private async UniTask<Texture2D> LoadImage()
+    private async UniTask<Texture> LoadImage()
     {
         var www = UnityWebRequestTexture.GetTexture(_finalPath);
         await www.SendWebRequest();
@@ -45,6 +45,6 @@ public class UploadFileManager : BaseManager
             EditorUtility.FocusProjectWindow();
         }
 
-        return (Texture2D)texture;
+        return texture;
     }
 }
