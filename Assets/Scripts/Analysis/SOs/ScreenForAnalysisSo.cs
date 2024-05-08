@@ -48,9 +48,24 @@ namespace Analysis
             ProcessedImages[type] = texture2D;
             return texture2D;
         }
+
+        public Texture2D SaveProcessedImage(Texture2D texture2D, string folder, ImageProcessingType type)
+        {
+            var path = SaveAsAsset(texture2D,folder, type.ToString());
+            texture2D.name = path.Split("/")[^1].Split(".asset")[0];
+            SaveAsPNG(texture2D, type.ToString());
+            ProcessedImages[type] = texture2D;
+            return texture2D;
+        }
         public string SaveAsAsset(Object element, string suffix)
         {
             var path = $"{saveFilesPath}/{fileName}_{suffix}.asset";
+            AssetDatabase.CreateAsset(element, path);
+            _filePaths.Add(path);
+            return path;
+        }        public string SaveAsAsset(Object element,string folder, string suffix)
+        {
+            var path = $"{saveFilesPath}/{folder}/{fileName}_{suffix}.asset";
             AssetDatabase.CreateAsset(element, path);
             _filePaths.Add(path);
             return path;

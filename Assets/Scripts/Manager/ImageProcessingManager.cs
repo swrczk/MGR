@@ -31,16 +31,21 @@ namespace Manager
             var processedTexture = DrawContours(segmentedTexture);
 
             _screenForAnalysisData.SaveDominantColors(dominantColors);
-            _screenForAnalysisData.SaveProcessedImage(segmentedTexture, ImageProcessingType.ColorSegmentation);
-            var preview = _screenForAnalysisData.SaveProcessedImage(processedTexture, ImageProcessingType.ColorContours);
+            _screenForAnalysisData.SaveProcessedImage(segmentedTexture, "ProcessedTextures",
+                ImageProcessingType.ColorSegmentation);
+            var preview = _screenForAnalysisData.SaveProcessedImage(processedTexture, "ProcessedTextures",
+                ImageProcessingType.ColorContours);
             return preview;
         }
-        
+
         public void AnaliseText()
         {
-            var textContours = textDetectorProcessor.Process(_screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation]);
+            var textContours =
+                textDetectorProcessor.Process(
+                    _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation]);
             // var textContours = textDetectorProcessor.Process(_screenForAnalysisData.texture);
-            _screenForAnalysisData.SaveProcessedImage(textContours, ImageProcessingType.TextContours);
+            _screenForAnalysisData.SaveProcessedImage(textContours, "ProcessedTextures",
+                ImageProcessingType.TextContours);
         }
 
         private List<Color> GetDominantColors()
