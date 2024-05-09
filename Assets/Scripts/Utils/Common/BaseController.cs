@@ -1,9 +1,8 @@
 ﻿using System;
 using Unity.VisualScripting;
 using UnityEngine;
-using Utils.Common;
 
-namespace UI.Common
+namespace Utils.Common
 {
     public abstract class BaseController<TView, TContext> : BaseController
         where TView : BaseView
@@ -20,13 +19,12 @@ namespace UI.Common
         public override void AssignView(IView baseView)
         {
             View = baseView as TView;
-            Setup();
+            Context = this.GameObject().AddComponent<TContext>();
+            Context.ResolveContext();
         }
 
         public override void Setup()
         {
-            Context = this.GameObject().AddComponent<TContext>();
-            Context.ResolveContext();
             CreateDispatcher();
             View.Setup();
         }

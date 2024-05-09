@@ -1,14 +1,15 @@
 ﻿using System;
 using Analysis;
-using UI.Common;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils.Common;
 
 namespace UI
 {
     public class StartView : BaseMainView
     {
         public event Action UploadButtonClicked;
+        public event Action AnaliseButtonClicked;
         public event Action<string, ScreenElement> RemoveElementClicked;
 
         [SerializeField]
@@ -20,16 +21,21 @@ namespace UI
         [SerializeField]
         private Button uploadButton;
 
+        [SerializeField]
+        private Button analiseButton;
+
         protected override void RegisterEvents()
         {
             base.RegisterEvents();
             uploadButton.onClick.AddListener(OnUploadButtonClick);
+            analiseButton.onClick.AddListener(OnAnaliseButtonClicked);
         }
 
         protected override void UnregisterEvents()
         {
             base.UnregisterEvents();
             uploadButton.onClick.RemoveListener(OnUploadButtonClick);
+            analiseButton.onClick.RemoveListener(OnAnaliseButtonClicked);
         }
 
         public void DisplayFiles(ScreenForAnalysisSo[] screenDataArray)
@@ -55,6 +61,11 @@ namespace UI
         private void OnUploadButtonClick()
         {
             UploadButtonClicked?.Invoke();
+        }
+
+        private void OnAnaliseButtonClicked()
+        {
+            AnaliseButtonClicked?.Invoke();
         }
     }
 }

@@ -1,16 +1,17 @@
-﻿using Analysis;
-using UI.Common;
+﻿using System;
+using Analysis;
 using UnityEngine;
 using UnityEngine.UI;
+using Utils.Common;
 
 namespace UI
 {
     public class ImageProcessingView : BaseMainView
     {
-        public ScreenForAnalysisSo ScreenForAnalysisData => screenForAnalysisData;
+        public event Action BackButtonClicked;
 
         [SerializeField]
-        private ScreenForAnalysisSo screenForAnalysisData;
+        private Button backButton;
 
         [SerializeField]
         private RawImage originalImage;
@@ -19,14 +20,27 @@ namespace UI
         private RawImage processedImage;
 
 
-        public void Start()
+        public void Setup(ScreenForAnalysisSo screenForAnalysisData)
         {
             originalImage.texture = screenForAnalysisData.texture;
         }
 
+
         public void ShowProcessedImage(Texture2D preview)
         {
             processedImage.texture = preview;
+        }
+
+        protected override void RegisterEvents()
+        {
+            base.RegisterEvents();
+            backButton.onClick.AddListener(() => BackButtonClicked?.Invoke());
+        }
+
+        protected override void UnregisterEvents()
+        {
+            base.UnregisterEvents();
+            backButton.onClick.RemoveAllListeners();
         }
     }
 }

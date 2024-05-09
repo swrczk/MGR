@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using Cysharp.Threading.Tasks;
-using UI.Common;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using Utils.Common;
+
 
 namespace UI
 {
@@ -12,6 +14,19 @@ namespace UI
             base.CreateDispatcher();
             View.UploadButtonClicked += SaveFile;
             View.RemoveElementClicked += RemoveElement;
+            View.AnaliseButtonClicked += Analise;
+        }
+
+        public override void Setup()
+        {
+            base.Setup();
+            var screenDataArray = Context.ResultsManager.ScreensDictionary.Values.ToArray();
+            View.DisplayFiles(screenDataArray);
+        }
+
+        private void Analise()
+        {
+            Context.ChangeScene("Scenes/ImageProcessingScene");
         }
 
         private void SaveFile()
@@ -34,13 +49,6 @@ namespace UI
         {
             Context.ResultsManager.DeleteScreenDto(key);
             Destroy(element.gameObject);
-        }
-
-        public override void Setup()
-        {
-            base.Setup();
-            var screenDataArray = Context.ResultsManager.ScreensDictionary.Values.ToArray();
-            View.DisplayFiles(screenDataArray);
         }
     }
 }

@@ -1,14 +1,34 @@
 ﻿using Analysis;
-using UI.Common;
-using UnityEditor.Timeline;
+using Utils.Common;
 
 namespace UI
 {
     public class ImageProcessingController : BaseController<ImageProcessingView, ImageProcessingContext>
     {
-        public void Start()
+        private ScreenForAnalysisSo _screenForAnalysisData;
+
+        public override void Setup()
         {
-            Context.ImageProcessingManager.SetupInput(View.ScreenForAnalysisData);
+            base.Setup();
+            _screenForAnalysisData = Context.ResultsManager.GetFirstSelectedScreen();
+            View.Setup(_screenForAnalysisData);
+            Analise();
+        }
+
+        protected override void CreateDispatcher()
+        {
+            base.CreateDispatcher();
+            View.BackButtonClicked += Back;
+        }
+
+        private void Back()
+        {
+            Context.ChangeScene("Scenes/ConfigScene");
+        }
+
+        private void Analise()
+        {
+            Context.ImageProcessingManager.SetupInput(_screenForAnalysisData);
             var preview = Context.ImageProcessingManager.AnaliseColors();
             View.ShowProcessedImage(preview);
             Context.ImageProcessingManager.AnaliseText();

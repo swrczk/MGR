@@ -3,22 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
-using Utils;
 
-namespace UI.Common
+namespace Utils.Common
 {
     public class MvcIntegrationManager : BaseManager
     {
         private readonly Dictionary<Type, Type> _viewToControllerMap = new();
+        private BaseController _mainController;
 
-        private void Awake()
+        public override void Initialize()
         {
+            base.Initialize();
+            ClearChild();
             RegisterViewAndControllerTypes();
+            FindAndAssignControllers();
         }
 
-        private void Start()
+        public override void OnGameStarted()
         {
-            FindAndAssignControllers();
+            base.OnGameStarted();
+            _mainController.Setup();
         }
 
         public BaseController CreateAndAssignViewController(Type viewType, Transform root)
@@ -40,6 +44,14 @@ namespace UI.Common
             {
                 Debug.LogError($"No controller registered for view type {viewType.Name}");
                 return null;
+            }
+        }
+
+        private void ClearChild()
+        {
+            foreach (Transform child in transform)
+            {
+                Destroy(child.gameObject);
             }
         }
 
@@ -67,6 +79,7 @@ namespace UI.Common
                     var controller = (BaseController)controllerObject.AddComponent(controllerType);
                     controller.AssignView(view);
                     controllerObject.transform.parent = this.transform;
+                    _mainController = controller;
                 }
             }
         }

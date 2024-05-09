@@ -1,10 +1,13 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace UI
 {
     public class CheckboxElement : MonoBehaviour
     {
+        public event Action<bool> OnToggle;
+        
         [SerializeField]
         private Image checkImage;
 
@@ -34,6 +37,7 @@ namespace UI
         {
             IsEnabled = !IsEnabled;
             checkImage.enabled = IsEnabled;
+            OnToggle?.Invoke(IsEnabled);
         }
     }
 }

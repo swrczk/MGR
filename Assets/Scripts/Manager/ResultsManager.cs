@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Analysis;
 using UnityEditor;
 using UnityEngine;
@@ -11,7 +12,9 @@ namespace Manager
     public class ResultsManager : BaseManager
     {
         private const string SaveFilesPath = "Assets/Resources/Screens";
-        public Dictionary<string, ScreenForAnalysisSo> ScreensDictionary { get; } = new Dictionary<string, ScreenForAnalysisSo>();
+
+        public Dictionary<string, ScreenForAnalysisSo> ScreensDictionary { get; } =
+            new Dictionary<string, ScreenForAnalysisSo>();
 
         public override void Initialize()
         {
@@ -57,6 +60,19 @@ namespace Manager
         {
             AssetDatabase.SaveAssets();
             AssetDatabase.Refresh();
+        }
+
+        public ScreenForAnalysisSo GetFirstSelectedScreen()
+        {
+            foreach (var screen in ScreensDictionary.Values)
+            {
+                if (screen.isSelected)
+                {
+                    return screen;
+                }
+            }
+
+            return ScreensDictionary.Values.First();
         }
 
         private void SaveTextureAsPNG(Texture2D texture2D, string filePath)

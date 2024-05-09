@@ -7,5 +7,9 @@ namespace Utils
         public virtual void Initialize()
         {
         }
+
+        public virtual void OnGameStarted()
+        {
+        }
     }
 }

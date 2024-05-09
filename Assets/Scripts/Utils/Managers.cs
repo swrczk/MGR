@@ -14,10 +14,7 @@ namespace Utils
         {
             base.Awake();
             InitializeManagers();
-            foreach (var manager in _managers)
-            {
-                manager.Value.Initialize();
-            }
+            GameStarted();
         }
 
         public T GetManager<T>() where T : class, IManager
@@ -44,6 +41,19 @@ namespace Utils
                 {
                     _managers.Add(type, manager);
                 }
+            }
+            
+            foreach (var manager in _managers.Values)
+            {
+                manager.Initialize();
+            }
+        }
+
+        private void GameStarted()
+        {
+            foreach (var manager in _managers.Values)
+            {
+                manager.OnGameStarted();
             }
         }
     }

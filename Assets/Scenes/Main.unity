@@ -592,7 +592,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47559921ab961442f922dd13c59743f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  imageToRecognize: {fileID: 2800000, guid: 71d7556be96824a4eaba16f3676fba75, type: 2}
+  imageToRecognize: {fileID: 2800000, guid: 05198ec0ecb70044db2651b3f212997a, type: 2}
   displayText: {fileID: 824304681}
   outputImage: {fileID: 446900763}
 --- !u!4 &865564358

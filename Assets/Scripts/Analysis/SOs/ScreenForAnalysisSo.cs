@@ -22,6 +22,7 @@ namespace Analysis
         public Texture2D texture;
         public List<Color> dominantColors;
         public Dictionary<ImageProcessingType, Texture2D> ProcessedImages = new();
+        public bool isSelected;
 
         private List<string> _filePaths = new List<string>();
 

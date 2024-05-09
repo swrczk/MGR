@@ -1,5 +1,5 @@
-﻿using UI.Common;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Utils.Common
 {
@@ -17,6 +17,11 @@ namespace Utils.Common
         {
             var type = view.GetType();
             return MvcIntegrationManager.CreateAndAssignViewController(type, root);
+        }
+        
+        public void ChangeScene(string sceneName)
+        {
+            SceneManager.LoadScene(sceneName);
         }
     }
 
