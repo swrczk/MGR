@@ -1,13 +1,11 @@
 ﻿using System.Linq;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils.Common;
 
-
-namespace UI
+namespace UI.ConfigScene
 {
-    public class StartController : BaseController<StartView, StartContext>
+    public class ConfigController : BaseController<ConfigView, ConfigContext>
     {
         protected override void CreateDispatcher()
         {

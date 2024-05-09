@@ -4,9 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 using Utils.Common;
 
-namespace UI
+namespace UI.ConfigScene
 {
-    public class StartView : BaseMainView
+    public class ConfigView : BaseMainView
     {
         public event Action UploadButtonClicked;
         public event Action AnaliseButtonClicked;

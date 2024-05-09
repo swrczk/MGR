@@ -1,5 +1,4 @@
-﻿using Analysis;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace UI
 {

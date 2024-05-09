@@ -2,7 +2,7 @@
 using Utils;
 using Utils.Common;
 
-namespace UI
+namespace UI.ImageProcessingScene
 {
     public class ImageProcessingContext : BaseContext
     {

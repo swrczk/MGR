@@ -1,4 +1,5 @@
 ﻿using Analysis;
+using UI.ImageProcessingScene;
 using Utils.Common;
 
 namespace UI
