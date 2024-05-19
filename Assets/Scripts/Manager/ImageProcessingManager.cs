@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using Analysis;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Utils;
 
@@ -15,6 +16,9 @@ namespace Manager
 
         [SerializeField]
         private TextDetectorProcessor textDetectorProcessor;
+
+        [SerializeField]
+        private TextDetectorProcessor2 textDetectorProcessor2;
 
         private ScreenForAnalysisSo _screenForAnalysisData;
 
@@ -46,6 +50,16 @@ namespace Manager
             // var textContours = textDetectorProcessor.Process(_screenForAnalysisData.texture);
             _screenForAnalysisData.SaveProcessedImage(textContours, "ProcessedTextures",
                 ImageProcessingType.TextContours);
+            
+            
+            DetectText().Forget();
+        }
+
+        private async UniTask DetectText()
+        {
+            var textContours2 = await textDetectorProcessor2.Process(_screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation]);
+            _screenForAnalysisData.SaveProcessedImage(textContours2, "ProcessedTextures",
+                ImageProcessingType.TextContours2);
         }
 
         private List<Color> GetDominantColors()

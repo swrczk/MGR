@@ -19,6 +19,8 @@ public class TesseractWrapper
 
     private IntPtr _tessHandle;
     private Texture2D _highlightedTexture;
+    private Box[] _boxes;
+    private string[] _words;
     private string _errorMsg;
     private const float MinimumConfidence = 60;
 
@@ -171,15 +173,15 @@ public class TesseractWrapper
         int pointerSize = Marshal.SizeOf(typeof(IntPtr));
         IntPtr intPtr = TessBaseAPIGetWords(_tessHandle, IntPtr.Zero);
         Boxa boxa = Marshal.PtrToStructure<Boxa>(intPtr);
-        Box[] boxes = new Box[boxa.n];
+        _boxes = new Box[boxa.n];
 
-        for (int index = 0; index < boxes.Length; index++)
+        for (int index = 0; index < _boxes.Length; index++)
         {
             if (confidence[index] >= MinimumConfidence)
             {
                 IntPtr boxPtr = Marshal.ReadIntPtr(boxa.box, index * pointerSize);
-                boxes[index] = Marshal.PtrToStructure<Box>(boxPtr);
-                Box box = boxes[index];
+                _boxes[index] = Marshal.PtrToStructure<Box>(boxPtr);
+                Box box = _boxes[index];
                 DrawLines(_highlightedTexture,
                     new Rect(box.x, _highlightedTexture.height - box.y - box.h, box.w, box.h),
                     Color.green);
@@ -200,15 +202,15 @@ public class TesseractWrapper
         TessBaseAPIClear(_tessHandle);
         TessDeleteText(stringPtr);
         
-        string[] words = recognizedText.Split(new[] {' ', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+        _words = recognizedText.Split(new[] {' ', '\n'}, StringSplitOptions.RemoveEmptyEntries);
         StringBuilder result = new StringBuilder();
 
-        for (i = 0; i < boxes.Length; i++)
+        for (i = 0; i < _boxes.Length; i++)
         {
-            Debug.Log(words[i] + " -> " + confidence[i]);
+            Debug.Log(_words[i] + " -> " + confidence[i]);
             if (confidence[i] >= MinimumConfidence)
             {
-                result.Append(words[i]);
+                result.Append(_words[i]);
                 result.Append(" ");
             }
         }
@@ -247,6 +249,16 @@ public class TesseractWrapper
     public Texture2D GetHighlightedTexture()
     {
         return _highlightedTexture;
+    }
+    
+    public Box[] GetTextBoxes()
+    {
+        return _boxes;
+    }
+    
+    public string[] GetWords()
+    {
+        return _words;
     }
 
     public void Close()

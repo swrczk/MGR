@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Threading.Tasks;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Events;
+using UnityEngine.Networking;
 
 public class TesseractDriver
 {
     private TesseractWrapper _tesseract;
-    private static readonly List<string> fileNames = new List<string> {"tessdata.tgz"};
+    private static readonly List<string> fileNames = new List<string> { "tessdata.tgz" };
 
     public string CheckTessVersion()
     {
@@ -16,35 +16,35 @@ public class TesseractDriver
 
         try
         {
-            string version = "Tesseract version: " + _tesseract.Version();
+            var version = "Tesseract version: " + _tesseract.Version();
             Debug.Log(version);
             return version;
         }
         catch (Exception e)
         {
-            string errorMessage = e.GetType() + " - " + e.Message;
+            var errorMessage = e.GetType() + " - " + e.Message;
             Debug.LogError("Tesseract version: " + errorMessage);
             return errorMessage;
         }
     }
 
-    public void Setup(UnityAction onSetupComplete)
+    public async UniTask<bool> TryToSetup()
     {
 #if UNITY_EDITOR
-        OcrSetup(onSetupComplete);
+        return OcrSetup();
 #elif UNITY_ANDROID
-        CopyAllFilesToPersistentData(fileNames, onSetupComplete);
+        return await CopyAllFilesToPersistentData(fileNames);
 #else
-        OcrSetup(onSetupComplete);
+        return OcrSetup();
 #endif
     }
 
-    public void OcrSetup(UnityAction onSetupComplete)
+    public bool OcrSetup()
     {
         _tesseract = new TesseractWrapper();
 
 #if UNITY_EDITOR
-        string datapath = Path.Combine(Application.streamingAssetsPath, "tessdata");
+        var datapath = Path.Combine(Application.streamingAssetsPath, "tessdata");
 #elif UNITY_ANDROID
         string datapath = Application.persistentDataPath + "/tessdata/";
 #else
@@ -54,45 +54,49 @@ public class TesseractDriver
         if (_tesseract.Init("eng", datapath))
         {
             Debug.Log("Init Successful");
-            onSetupComplete?.Invoke();
+            return true;
         }
-        else
-        {
-            Debug.LogError(_tesseract.GetErrorMessage());
-        }
+
+        Debug.LogError(_tesseract.GetErrorMessage());
+        return false;
     }
 
-    private async void CopyAllFilesToPersistentData(List<string> fileNames, UnityAction onSetupComplete)
+    private async UniTask<bool> CopyAllFilesToPersistentData(List<string> fileNames)
     {
-        String fromPath = "jar:file://" + Application.dataPath + "!/assets/";
-        String toPath = Application.persistentDataPath + "/";
+        var fromPath = "jar:file://" + Application.dataPath + "!/assets/";
+        var toPath = Application.persistentDataPath + "/";
 
-        foreach (String fileName in fileNames)
+        foreach (var fileName in fileNames)
         {
             if (!File.Exists(toPath + fileName))
             {
-                Debug.Log("Copying from " + fromPath + fileName + " to " + toPath);
-                WWW www = new WWW(fromPath + fileName);
-
-                while (!www.isDone)
+                Debug.Log($"Copying from {fromPath}{fileName} to {toPath}");
+                using (var www = UnityWebRequest.Get(fromPath + fileName))
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(Time.deltaTime));
-                }
+                    // Send the request and await its completion
+                    await www.SendWebRequest();
 
-                File.WriteAllBytes(toPath + fileName, www.bytes);
-                Debug.Log("File copy done");
-                www.Dispose();
-                www = null;
+                    // Check for errors
+                    if (www.result != UnityWebRequest.Result.Success)
+                    {
+                        Debug.LogError($"Error while downloading file: {www.error}");
+                        continue; // Skip to the next file
+                    }
+
+                    // Write data to file
+                    File.WriteAllBytes(toPath + fileName, www.downloadHandler.data);
+                    Debug.Log("File copy done");
+                }
             }
             else
             {
-                Debug.Log("File exists! " + toPath + fileName);
+                Debug.Log($"File exists! {toPath}{fileName}");
             }
-
+            
             UnZipData(fileName);
         }
 
-        OcrSetup(onSetupComplete);
+        return OcrSetup();
     }
 
     public string GetErrorMessage()

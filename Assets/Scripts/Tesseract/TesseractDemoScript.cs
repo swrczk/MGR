@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using Cysharp.Threading.Tasks;
+using UnityEngine;
 using UnityEngine.UI;
 
 public class TesseractDemoScript : MonoBehaviour
@@ -17,15 +18,16 @@ public class TesseractDemoScript : MonoBehaviour
         texture.Apply();
 
         _tesseractDriver = new TesseractDriver();
-        Recoginze(texture);
+        Recoginze(texture).Forget();
     }
 
-    private void Recoginze(Texture2D outputTexture)
+    private async UniTask Recoginze(Texture2D outputTexture)
     {
         _texture = outputTexture;
         ClearTextDisplay();
         AddToTextDisplay(_tesseractDriver.CheckTessVersion());
-        _tesseractDriver.Setup(OnSetupCompleteRecognize);
+        await _tesseractDriver.TryToSetup();
+        OnSetupCompleteRecognize();
     }
 
     private void OnSetupCompleteRecognize()
