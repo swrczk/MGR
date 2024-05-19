@@ -63,6 +63,9 @@ public class TesseractWrapper
     
     [DllImport(TesseractDllName)]
     private static extern IntPtr TessBaseAPIAllWordConfidences(IntPtr handle);
+    
+    [DllImport(TesseractDllName)]
+    private static extern int TessBaseAPIGetWordFontAttributes(IntPtr api, string word, out bool isBold, out bool isItalic, out bool isUnderlined, out bool isMonospace, out bool isSerif, out bool isSmallcaps);
 
     public TesseractWrapper()
     {

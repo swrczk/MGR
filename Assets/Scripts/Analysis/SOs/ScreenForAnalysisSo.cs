@@ -12,7 +12,6 @@ namespace Analysis
         ColorSegmentation,
         ColorContours,
         TextContours,
-        TextContours2,
     }
     
     [CreateAssetMenu(fileName = "SFA", menuName = "ScreenForAnalysisSO")]

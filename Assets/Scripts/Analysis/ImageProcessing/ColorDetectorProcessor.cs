@@ -49,7 +49,7 @@ namespace Analysis
         public Texture2D DrawContours(Texture2D inputTexture)
         {
             // Convert Texture2D to Mat
-            Mat image = OpenCvSharp.Unity.TextureToMat(inputTexture);
+            Mat image = ImageProcessingUtils.TextureToMat(inputTexture);
             Mat grayImage = new Mat();
             Cv2.CvtColor(image, grayImage, ColorConversionCodes.RGB2GRAY);
 
@@ -74,13 +74,13 @@ namespace Analysis
             }
 
             // Convert back to Texture2D
-            return MatToTexture(filledContours);
+            return ImageProcessingUtils.MatToTexture(filledContours);
         }
 
         public List<Color> DetectDominantColors(Texture2D inputTexture, int clusterCount)
         {
             // Konwertuj Texture2D na OpenCvSharp Mat
-            Mat img = OpenCvSharp.Unity.TextureToMat(inputTexture);
+            Mat img = ImageProcessingUtils.TextureToMat(inputTexture);
 
             // Konwersja na przestrzeń kolorów HSV
             img.CvtColor(ColorConversionCodes.RGB2HSV);
@@ -117,30 +117,6 @@ namespace Analysis
             }
 
             return dominantColors;
-        }
-
-        private Texture2D MatToTexture(Mat mat)
-        {
-            // Create a new Texture2D with the size of the mat and appropriate format.
-            Texture2D texture = new Texture2D(mat.Width, mat.Height, TextureFormat.RGB24, false);
-
-            // OpenCV typically uses BGR format, so convert it to RGB.
-            Mat rgbMat = new Mat();
-            Cv2.CvtColor(mat, rgbMat, ColorConversionCodes.BGR2RGB);
-
-            // Unity reads textures with the bottom row first, and OpenCV is top row first,
-            // so we need to flip it vertically.
-            Mat flippedMat = new Mat();
-            Cv2.Flip(rgbMat, flippedMat, FlipMode.X);
-
-            // Convert the data to an array that can be handled by Unity Texture2D.
-            var data = new byte[flippedMat.Rows * flippedMat.Cols * flippedMat.Channels()];
-            Marshal.Copy(flippedMat.Data, data, 0, data.Length);
-
-            texture.LoadRawTextureData(data);
-            texture.Apply();
-
-            return texture;
         }
     }
 }

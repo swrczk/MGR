@@ -13,12 +13,9 @@ namespace Manager
 
         [SerializeField]
         private int clusterCount = 5;
-
+        
         [SerializeField]
-        private TextDetectorProcessor textDetectorProcessor;
-
-        [SerializeField]
-        private TextDetectorProcessor2 textDetectorProcessor2;
+        private TextDetectionProcessor textDetectionProcessor;
 
         private ScreenForAnalysisSo _screenForAnalysisData;
 
@@ -44,22 +41,16 @@ namespace Manager
 
         public void AnaliseText()
         {
-            var textContours =
-                textDetectorProcessor.Process(
-                    _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation]);
-            // var textContours = textDetectorProcessor.Process(_screenForAnalysisData.texture);
-            _screenForAnalysisData.SaveProcessedImage(textContours, "ProcessedTextures",
-                ImageProcessingType.TextContours);
-            
-            
             DetectText().Forget();
         }
 
         private async UniTask DetectText()
         {
-            var textContours2 = await textDetectorProcessor2.Process(_screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation]);
+            var texture = _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation];
+            var textContours2 = await textDetectionProcessor.Process(texture);
             _screenForAnalysisData.SaveProcessedImage(textContours2, "ProcessedTextures",
-                ImageProcessingType.TextContours2);
+                ImageProcessingType.TextContours);
+            // await textDetectionProcessor.CheckSerifs(texture) ; //not working :(
         }
 
         private List<Color> GetDominantColors()

@@ -113,6 +113,15 @@ public class TesseractDriver
     {
         return _tesseract.GetHighlightedTexture();
     }
+    public Box[] GetTextBoxes()
+    {
+        return _tesseract.GetTextBoxes();
+    }
+    
+    public string[] GetWords()
+    {
+        return _tesseract.GetWords();
+    }
 
     private void UnZipData(string fileName)
     {
