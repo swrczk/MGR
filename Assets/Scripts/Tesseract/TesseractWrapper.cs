@@ -19,8 +19,8 @@ public class TesseractWrapper
 
     private IntPtr _tessHandle;
     private Texture2D _highlightedTexture;
-    private Box[] _boxes;
-    private string[] _words;
+    private List<Box> _boxes = new List<Box>();
+    private List<string> _words = new List<string>();
     private string _errorMsg;
     private const float MinimumConfidence = 60;
 
@@ -64,9 +64,7 @@ public class TesseractWrapper
     [DllImport(TesseractDllName)]
     private static extern IntPtr TessBaseAPIAllWordConfidences(IntPtr handle);
     
-    [DllImport(TesseractDllName)]
-    private static extern int TessBaseAPIGetWordFontAttributes(IntPtr api, string word, out bool isBold, out bool isItalic, out bool isUnderlined, out bool isMonospace, out bool isSerif, out bool isSmallcaps);
-
+    
     public TesseractWrapper()
     {
         _tessHandle = IntPtr.Zero;
@@ -176,15 +174,15 @@ public class TesseractWrapper
         int pointerSize = Marshal.SizeOf(typeof(IntPtr));
         IntPtr intPtr = TessBaseAPIGetWords(_tessHandle, IntPtr.Zero);
         Boxa boxa = Marshal.PtrToStructure<Boxa>(intPtr);
-        _boxes = new Box[boxa.n];
+        var boxes = new Box[boxa.n];
 
-        for (int index = 0; index < _boxes.Length; index++)
+        for (int index = 0; index < boxes.Length; index++)
         {
             if (confidence[index] >= MinimumConfidence)
             {
                 IntPtr boxPtr = Marshal.ReadIntPtr(boxa.box, index * pointerSize);
-                _boxes[index] = Marshal.PtrToStructure<Box>(boxPtr);
-                Box box = _boxes[index];
+                boxes[index] = Marshal.PtrToStructure<Box>(boxPtr);
+                Box box = boxes[index];
                 DrawLines(_highlightedTexture,
                     new Rect(box.x, _highlightedTexture.height - box.y - box.h, box.w, box.h),
                     Color.green);
@@ -205,16 +203,18 @@ public class TesseractWrapper
         TessBaseAPIClear(_tessHandle);
         TessDeleteText(stringPtr);
         
-        _words = recognizedText.Split(new[] {' ', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+        var words = recognizedText.Split(new[] {' ', '\n'}, StringSplitOptions.RemoveEmptyEntries);
         StringBuilder result = new StringBuilder();
 
-        for (i = 0; i < _boxes.Length; i++)
+        for (i = 0; i < boxes.Length; i++)
         {
-            Debug.Log(_words[i] + " -> " + confidence[i]);
+            Debug.Log(words[i] + " -> " + confidence[i]);
             if (confidence[i] >= MinimumConfidence)
             {
-                result.Append(_words[i]);
+                result.Append(words[i]);
                 result.Append(" ");
+                _words.Add(words[i]);
+                _boxes.Add(boxes[i]);
             }
         }
 
@@ -254,12 +254,12 @@ public class TesseractWrapper
         return _highlightedTexture;
     }
     
-    public Box[] GetTextBoxes()
+    public List<Box> GetTextBoxes()
     {
         return _boxes;
     }
     
-    public string[] GetWords()
+    public List<string> GetWords()
     {
         return _words;
     }

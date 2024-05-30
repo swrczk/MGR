@@ -1,4 +1,6 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using System;
+using System.Collections.Generic;
+using Cysharp.Threading.Tasks;
 using OpenCvSharp;
 using UnityEngine;
 
@@ -31,7 +33,11 @@ namespace Analysis
             await _tesseractDriver.TryToSetup();
             var recognizedText = _tesseractDriver.Recognize(grayToTexture);
             Debug.LogError(recognizedText);
-            return _tesseractDriver.GetHighlightedTexture();
+            var highlightedTexture = _tesseractDriver.GetHighlightedTexture();
+            var detectedWords = _tesseractDriver.GetWords();
+            var detectedBoxes = _tesseractDriver.GetTextBoxes();
+            var newStruct = OcrWordsToTextStructureAdapter.ConvertToTextBlock( detectedBoxes, detectedWords); 
+            return highlightedTexture;
         }
     }
 }

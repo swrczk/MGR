@@ -113,12 +113,12 @@ public class TesseractDriver
     {
         return _tesseract.GetHighlightedTexture();
     }
-    public Box[] GetTextBoxes()
+    public List<Box> GetTextBoxes()
     {
         return _tesseract.GetTextBoxes();
     }
     
-    public string[] GetWords()
+    public List<string> GetWords()
     {
         return _tesseract.GetWords();
     }
