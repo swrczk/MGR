@@ -24,7 +24,7 @@ namespace Analysis
                     Mat block = new Mat(image, blockRect);
 
                     Vec3d averageColor = GetAverageColor(block);
-                    Debug.Log($"Average color of block ({i}, {j}): {averageColor}");
+                    Debug.Log($"[TextureContrastProcessor] Average color of block ({i}, {j}): {averageColor}");
                 }
             }
         }
@@ -53,7 +53,7 @@ namespace Analysis
 
                     if (contrastX > someThreshold || contrastY > someThreshold)
                     {
-                        Debug.Log($"High contrast detected at block ({i}, {j})");
+                        Debug.Log($"[TextureContrastProcessor] High contrast detected at block ({i}, {j})");
                     }
                 }
             }

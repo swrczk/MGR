@@ -1,6 +1,7 @@
 ﻿using Manager;
 using Utils;
 using Utils.Common;
+using Utils.MVC;
 
 namespace UI.ImageProcessingScene
 {

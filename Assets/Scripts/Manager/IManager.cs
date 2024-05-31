@@ -1,4 +1,4 @@
-﻿namespace Utils
+﻿namespace Manager
 {
     public interface IManager
     {

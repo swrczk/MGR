@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Utils
+namespace Manager
 {
     public abstract class BaseManager : MonoBehaviour, IManager
     {

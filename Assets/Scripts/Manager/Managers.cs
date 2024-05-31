@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using Utils;
 
-namespace Utils
+namespace Manager
 {
     public class Managers : Singleton<Managers>
     {
-        private readonly Dictionary<Type, IManager> _managers = new Dictionary<Type, IManager>();
+        private readonly Dictionary<Type, IManager> _managers = new();
 
         protected override void Awake()
         {

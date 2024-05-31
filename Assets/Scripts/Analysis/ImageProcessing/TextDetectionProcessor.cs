@@ -32,7 +32,6 @@ namespace Analysis
 
             await _tesseractDriver.TryToSetup();
             var recognizedText = _tesseractDriver.Recognize(grayToTexture);
-            Debug.LogError(recognizedText);
             var highlightedTexture = _tesseractDriver.GetHighlightedTexture();
             return highlightedTexture;
         }

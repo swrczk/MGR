@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+﻿using Manager;
+using UnityEngine;
 using UnityEngine.SceneManagement;
+using Utils.Common;
 
-namespace Utils.Common
+namespace Utils.MVC
 {
     public abstract class BaseContext : MonoBehaviour, IContext
     {

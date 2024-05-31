@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Utils.Common
+namespace Utils.MVC
 {
     public abstract class BaseView : MonoBehaviour, IView
     {

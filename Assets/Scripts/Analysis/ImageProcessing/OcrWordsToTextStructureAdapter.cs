@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using OpenCvSharp;
 using UnityEngine;
 
 namespace Analysis
@@ -126,7 +127,36 @@ namespace Analysis
             TextBlocks.Add(textBlock);
             TextBlockCount++;
             LineCount += textBlock.Lines.Count;
-            WordCount += textBlock.Lines.Sum(l => l.Words.Count);
+            foreach (var line in textBlock.Lines)
+            {
+                WordCount += line.Words.Count;
+            }
+        }
+        
+        public List<Word> GetWords()
+        {
+            var words = new List<Word>();
+            foreach (var textBlock in TextBlocks)
+            {
+                foreach (var line in textBlock.Lines)
+                {
+                    words.AddRange(line.Words);
+                }
+            }
+
+            return words;
+        }
+        
+        public List<Line> GetLines()
+        {
+            //get all lines not using linq
+            var lines = new List<Line>();
+            foreach (var textBlock in TextBlocks)
+            {
+                lines.AddRange(textBlock.Lines);
+            }
+
+            return lines;
         }
     }
 
@@ -189,7 +219,19 @@ namespace Analysis
         public Box Box { get; set; } = new Box();
         public string Text { get; set; }
         public int FontSize { get; set; }
-        // public Color TextColor { get; set; }
-        // public bool IsImageBackground { get; set; }
+        public Color TextColor { get; set; }
+
+        public Color TextBackgroundColor { get; set; }
+        public bool IsUniformBackground { get; set; }
+        public void SaveTextColor(Color color)
+        {
+            TextColor = color;
+        }
+
+        public void SaveBackgroundColor(Color color, bool isUniform)
+        {
+            TextBackgroundColor = color;
+            IsUniformBackground = isUniform;
+        }
     }
 }

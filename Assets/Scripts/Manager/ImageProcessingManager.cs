@@ -9,7 +9,6 @@ namespace Manager
 {
     public class ImageProcessingManager : BaseManager
     {
-        [FormerlySerializedAs("colorDetectorProcessor")]
         [SerializeField]
         private ColorDetectionProcessor colorDetectionProcessor;
 
@@ -18,6 +17,9 @@ namespace Manager
         
         [SerializeField]
         private TextDetectionProcessor textDetectionProcessor;
+        
+        [SerializeField]
+        private TextPropertiesProcessor textPropertiesProcessor;
 
         private ScreenForAnalysisSo _screenForAnalysisData;
 
@@ -54,6 +56,7 @@ namespace Manager
                 ImageProcessingType.TextContours);
             var textDocument = textDetectionProcessor.GetTextDocument();
             _screenForAnalysisData.SaveTextDocument(textDocument);
+            textPropertiesProcessor.DetectTextColor(_screenForAnalysisData);
         }
 
         private List<Color> GetDominantColors()

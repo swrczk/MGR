@@ -2,6 +2,7 @@
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Utils.Common;
+using Utils.MVC;
 
 namespace UI.ConfigScene
 {

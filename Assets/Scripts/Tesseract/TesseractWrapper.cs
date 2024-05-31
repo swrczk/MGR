@@ -208,7 +208,7 @@ public class TesseractWrapper
 
         for (i = 0; i < boxes.Length; i++)
         {
-            Debug.Log(words[i] + " -> " + confidence[i]);
+            Debug.Log($"[Tesseract] confidence: {words[i]} -> {confidence[i]}");
             if (confidence[i] >= MinimumConfidence)
             {
                 result.Append(words[i]);

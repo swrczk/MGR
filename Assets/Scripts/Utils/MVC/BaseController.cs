@@ -2,7 +2,7 @@
 using Unity.VisualScripting;
 using UnityEngine;
 
-namespace Utils.Common
+namespace Utils.MVC
 {
     public abstract class BaseController<TView, TContext> : BaseController
         where TView : BaseView
