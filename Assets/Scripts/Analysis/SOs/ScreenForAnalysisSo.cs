@@ -23,6 +23,7 @@ namespace Analysis
         public List<Color> dominantColors;
         public Dictionary<ImageProcessingType, Texture2D> ProcessedImages = new();
         public bool isSelected;
+        public TextDocument textDocument;
 
         private List<string> _filePaths = new List<string>();
 
@@ -94,6 +95,11 @@ namespace Analysis
             var path = SaveAsAsset(texture2D, "texture");
             texture2D.name = path.Split("/")[^1].Split(".asset")[0];
             texture = texture2D;
+        }
+
+        public void SaveTextDocument(TextDocument obj)
+        {
+            textDocument = obj;
         }
     }
 }

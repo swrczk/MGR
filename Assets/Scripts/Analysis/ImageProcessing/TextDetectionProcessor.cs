@@ -34,10 +34,18 @@ namespace Analysis
             var recognizedText = _tesseractDriver.Recognize(grayToTexture);
             Debug.LogError(recognizedText);
             var highlightedTexture = _tesseractDriver.GetHighlightedTexture();
+            return highlightedTexture;
+        }
+
+        public TextDocument GetTextDocument()
+        {
             var detectedWords = _tesseractDriver.GetWords();
             var detectedBoxes = _tesseractDriver.GetTextBoxes();
-            var newStruct = OcrWordsToTextStructureAdapter.ConvertToTextBlock( detectedBoxes, detectedWords); 
-            return highlightedTexture;
+
+            if (detectedBoxes == null || detectedWords == null)
+                throw new Exception("OCR not initialized");
+            
+            return OcrWordsToTextStructureAdapter.Convert(detectedBoxes, detectedWords);
         }
     }
 }

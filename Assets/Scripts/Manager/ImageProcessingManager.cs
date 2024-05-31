@@ -50,7 +50,8 @@ namespace Manager
             var textContours2 = await textDetectionProcessor.Process(texture);
             _screenForAnalysisData.SaveProcessedImage(textContours2, "ProcessedTextures",
                 ImageProcessingType.TextContours);
-            // await textDetectionProcessor.CheckSerifs(texture) ; //not working :(
+            var textDocument = textDetectionProcessor.GetTextDocument();
+            _screenForAnalysisData.SaveTextDocument(textDocument);
         }
 
         private List<Color> GetDominantColors()
