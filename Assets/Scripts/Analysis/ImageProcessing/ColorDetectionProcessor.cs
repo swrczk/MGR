@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Analysis
 {
-    public class ColorDetectorProcessor : MonoBehaviour
+    public class ColorDetectionProcessor : MonoBehaviour
     {
         public Texture2D SegmentImageUsingKMeans(Texture2D inputTexture, int k)
         {

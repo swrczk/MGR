@@ -2,14 +2,16 @@
 using Analysis;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Serialization;
 using Utils;
 
 namespace Manager
 {
     public class ImageProcessingManager : BaseManager
     {
+        [FormerlySerializedAs("colorDetectorProcessor")]
         [SerializeField]
-        private ColorDetectorProcessor colorDetectorProcessor;
+        private ColorDetectionProcessor colorDetectionProcessor;
 
         [SerializeField]
         private int clusterCount = 5;
@@ -56,17 +58,17 @@ namespace Manager
 
         private List<Color> GetDominantColors()
         {
-            return colorDetectorProcessor.DetectDominantColors(_screenForAnalysisData.texture, clusterCount);
+            return colorDetectionProcessor.DetectDominantColors(_screenForAnalysisData.texture, clusterCount);
         }
 
         private Texture2D GetSegmentedTexture(int dominantColorsCount)
         {
-            return colorDetectorProcessor.SegmentImageUsingKMeans(_screenForAnalysisData.texture, dominantColorsCount);
+            return colorDetectionProcessor.SegmentImageUsingKMeans(_screenForAnalysisData.texture, dominantColorsCount);
         }
 
         private Texture2D DrawContours(Texture2D texture)
         {
-            return colorDetectorProcessor.DrawContours(texture);
+            return colorDetectionProcessor.DrawContours(texture);
         }
     }
 }
