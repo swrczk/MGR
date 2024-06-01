@@ -47,5 +47,12 @@ namespace Analysis
         {
             return Math.Sqrt(vec.Item0 * vec.Item0 + vec.Item1 * vec.Item1 + vec.Item2 * vec.Item2);
         }
+
+        public static Mat MatToGreyScale(Mat mat)
+        {
+            var gray = new Mat();
+            Cv2.CvtColor(mat, gray, ColorConversionCodes.RGB2GRAY);
+            return gray;
+        }
     }
 }

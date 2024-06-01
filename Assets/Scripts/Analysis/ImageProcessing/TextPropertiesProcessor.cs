@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using OpenCvSharp;
 using UnityEngine;
@@ -7,31 +8,39 @@ namespace Analysis
 {
     public class TextPropertiesProcessor : MonoBehaviour
     {
+        private const float EntropyThreshold = 5.0f;
+        private const int EdgesPerCharThreshold = 10;
+
         public void DetectTextColor(ScreenForAnalysisSo screenForAnalysisData)
         {
             var texture = screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation];
             var image = ImageProcessingUtils.TextureToMat(texture);
+            var originalImage = ImageProcessingUtils.TextureToMat(screenForAnalysisData.texture);
             var wordBoxes = screenForAnalysisData.textDocument.GetWords();
             foreach (var word in wordBoxes)
             {
                 var colors = ColorsSortedByFrequency(image, word.Box);
+                // var isUniformBackground = IsUniformBackground(image, word.Box, word.Text.Length);
+                var isUniformBackground = IsUniformBackground(originalImage, word);
 
-                var color0 = Vec3ToColor(colors[0]);
-                var color1 = Vec3ToColor(colors[1]);
-                
                 //for single letter text color is dominant color, for longer text background color is dominant
-                
-                bool isUniformBackground = IsUniformBackground(image, word.Box); 
+                Color textColor;
+                Color backgroundColor;
                 if (word.Text.Length == 1)
                 {
-                    word.SaveTextColor(color0);
-                    word.SaveBackgroundColor(color1, isUniformBackground);
+                    textColor = Vec3ToColor(colors[0]);
+                    backgroundColor = colors.Count < 2 //ex.: letter "I" takes whole box
+                        ? new Color(255f - textColor.r, 255f - textColor.g, 255f - textColor.b)
+                        : Vec3ToColor(colors[1]);
                 }
                 else
                 {
-                    word.SaveTextColor(color1);
-                    word.SaveBackgroundColor(color0, isUniformBackground);
+                    textColor = Vec3ToColor(colors[1]);
+                    backgroundColor = Vec3ToColor(colors[0]);
                 }
+
+                word.SaveTextColor(backgroundColor);
+                word.SaveBackgroundColor(textColor, isUniformBackground);
 
                 Debug.Log(
                     $"[TextPropertiesProcessor] GetDominantColor ({word.Text}): \n TextColor: {word.TextColor} - TextBackgroundColor: {word.TextBackgroundColor} - IsUniformBackground: {word.IsUniformBackground}");
@@ -61,42 +70,76 @@ namespace Analysis
             var dominantColors = GetColors(pixels);
             return dominantColors.OrderByDescending(x => x.Value).Select(kv => kv.Key).ToList();
         }
-        private bool IsUniformBackground(Mat image, Box box)
+
+
+        private bool IsUniformBackground(Mat image, Word word)
         {
+            var box = word.Box;
+            var charCount = word.Text.Length;
+
             // Wycięcie obszaru boxu z obrazu
-            Mat roi = new Mat(image, new OpenCvSharp.Rect(box.x, box.y, box.w, box.h));
+            var roi = new Mat(image, new OpenCvSharp.Rect(box.x, box.y, box.w, box.h));
+            var gray = ImageProcessingUtils.MatToGreyScale(roi);
 
-            // Konwersja obrazu na skalę szarości
-            Mat gray = new Mat();
-            Cv2.CvtColor(roi, gray, ColorConversionCodes.RGB2GRAY);
+            var edgesCondition = CheckUniformBackgroundEdgeCondition(gray, charCount);
+            var entropyCondition = CheckUniformBackgroundEntropyCondition(gray, charCount);
 
+            return edgesCondition && entropyCondition;
+        }
 
-            // Analiza odchylenia standardowego kolorów
-            Cv2.MeanStdDev(gray, out Scalar mean, out Scalar stdDev);
-            double variance = stdDev.Val0 * stdDev.Val0;
+        private static bool CheckUniformBackgroundEntropyCondition(Mat gray, int charCount)
+        {
+            var entropy = GetHistogramEntropy(gray);
+            // Adjust the entropy threshold based on the length of the text
+            var adjustedEntropyThreshold = EntropyThreshold + 0.15 * charCount;
+            var entropyCondition = entropy < adjustedEntropyThreshold;
+            return entropyCondition;
+        }
 
+        private bool CheckUniformBackgroundEdgeCondition(Mat gray, int charCount)
+        {
+            var edgesCount = GetNumberOfEdges(gray);
+            var edgesThreshold = EdgesPerCharThreshold * charCount;
+            var edgesCondition = edgesCount < edgesThreshold;
+            return edgesCondition;
+        }
 
-            // Użycie filtru Sobela do wykrywania krawędzi
-            Mat sobelX = new Mat();
-            Mat sobelY = new Mat();
-            Cv2.Sobel(gray, sobelX, MatType.CV_64F, 1, 0, ksize: 5);
-            Cv2.Sobel(gray, sobelY, MatType.CV_64F, 0, 1, ksize: 5);
-            Mat sobel = new Mat();
-            Cv2.Magnitude(sobelX, sobelY, sobel);
+        //Result Range <0;8>
+        private static float GetHistogramEntropy(Mat gray)
+        {
+            // Analiza histogramu kolorów
+            var hist = new Mat();
+            int[] histSize = { 256 };
+            Rangef[] ranges = { new Rangef(0, 256) };
+            Cv2.CalcHist(new Mat[] { gray }, new int[] { 0 }, null, hist, 1, histSize, ranges);
 
-            // Próg krawędzi
-            Mat edges = new Mat();
-            Cv2.Threshold(sobel, edges, 50, 255, ThresholdTypes.Binary);
+            // Normalizacja histogramu
+            Cv2.Normalize(hist, hist, 1.0, 0.0, NormTypes.L1);
 
-            // Analiza liczby krawędzi
-            int numEdges = Cv2.CountNonZero(edges);
+            // Obliczenie entropii histogramu
+            var entropy = 0.0f;
+            for (var i = 0; i < hist.Rows; i++)
+            {
+                var binVal = hist.At<float>(i);
+                if (binVal > 0)
+                {
+                    entropy -= binVal * (float)Math.Log(binVal, 2); // log base 2
+                }
+            }
 
-            // Ustalanie progów dla jednolitego tła (wartości do dostrojenia)
-            double varianceThreshold = 500;
-            int edgesThreshold = 100;
+            return entropy;
+        }
 
-            // Ocena jednolitości tła
-            return variance < varianceThreshold && numEdges < edgesThreshold;
+        private int GetNumberOfEdges(Mat gray)
+        {
+            var edges = new Mat();
+            Cv2.Canny(gray, edges, 50, 100);
+
+            // Find contours
+            Cv2.FindContours(edges, out var contours, out var hierarchy, RetrievalModes.Tree,
+                ContourApproximationModes.ApproxSimple);
+
+            return contours.Length;
         }
 
         private static Dictionary<Vec3b, int> GetColors(List<Vec3b> pixels)
