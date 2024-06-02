@@ -13,7 +13,9 @@ namespace Analysis
         ColorSegmentation,
         ColorContours,
         TextContours,
-        ContrastBlocks
+        ContrastBlocks,
+        ColorBlocksPreprocessed,
+        Test
     }
     
     [CreateAssetMenu(fileName = "SFA", menuName = "ScreenForAnalysisSO")]
@@ -28,7 +30,7 @@ namespace Analysis
         public TextDocument textDocument;
 
         private List<string> _filePaths = new List<string>();
-        public List<Rect> EntropyRects { get; set; }
+        public List<Rect> SegmentedByColorRects { get; set; }
 
         public void Delete()
         {

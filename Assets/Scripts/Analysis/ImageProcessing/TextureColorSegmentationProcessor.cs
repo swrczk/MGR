@@ -6,18 +6,19 @@ using Rect = OpenCvSharp.Rect;
 
 namespace Analysis
 {
-    public class TextureEntropyProcessor : MonoBehaviour
+    public class TextureColorSegmentationProcessor : MonoBehaviour
     { 
 
-        private const float TargetEntropy = 2.0f;
+        private const float TargetEntropy = 4.0f;
+        private const float TargetColorAmount =5;
         private const float EntropyTolerance = 0.5f; // Tolerancja dla wartości entropii 
-        public List<Rect> ProcessTexture(Texture2D inputTexture)
+        private const float ColorThreshold = 50;  
+        public (List<Rect> finalRects, Texture2D outputTexture) ProcessTexture(Texture2D inputTexture)
         {
             var image = ImageProcessingUtils.TextureToMat(inputTexture);
             List<Rect> finalRects = new List<Rect>();
             DivideAndConquer(image, new Rect(0, 0, image.Width, image.Height), finalRects);
 
-            return finalRects;
             // Wyświetl prostokąty lub wykonaj inne operacje
             foreach (var rect in finalRects)
             {
@@ -28,16 +29,17 @@ namespace Analysis
             }
 
             // Przekształć wynikowy obraz z powrotem do tekstury
-            Texture2D outputTexture = ImageProcessingUtils.MatToTexture(image);
-            GetComponent<Renderer>().material.mainTexture = outputTexture;
+            Texture2D outputTexture = ImageProcessingUtils.MatToTexture(image); 
+            return (finalRects, outputTexture);
         }
 
         private void DivideAndConquer(Mat image, Rect rect, List<Rect> finalRects)
         {
             var roi = new Mat(image, rect);
-            float entropy = GetHistogramEntropy(roi);
+            // float entropy = GetHistogramEntropy(roi);
+            int colorCount = GetDistinctColorCount(roi);
 
-            if (Math.Abs(entropy - TargetEntropy) <= EntropyTolerance || (rect.Width <= 10 || rect.Height <= 10))
+            if (colorCount  <= TargetColorAmount  || (rect.Width <= 10 || rect.Height <= 10))
             {
                 finalRects.Add(rect);
                 return;
@@ -56,6 +58,53 @@ namespace Analysis
                 DivideAndConquer(image, new Rect(rect.X, rect.Y + halfHeight, rect.Width, rect.Height - halfHeight), finalRects);
             }
         }
+        private int GetDistinctColorCount(Mat image)
+        {
+            // Konwersja obrazu do przestrzeni kolorów Lab
+            Mat labImage = new Mat();
+            Cv2.CvtColor(image, labImage, ColorConversionCodes.BGR2Lab);
+
+            // Zbieranie unikalnych kolorów w przestrzeni Lab
+            HashSet<Vec3b> uniqueColors = new HashSet<Vec3b>(new Vec3BEqualityComparer());
+            for (int y = 0; y < labImage.Rows; y++)
+            {
+                for (int x = 0; x < labImage.Cols; x++)
+                {
+                    uniqueColors.Add(labImage.At<Vec3b>(y, x));
+                }
+            }
+
+            // Grupowanie kolorów, które są percepcyjnie blisko siebie
+            List<Vec3b> distinctColors = new List<Vec3b>();
+            foreach (var color in uniqueColors)
+            {
+                bool isDistinct = true;
+                foreach (var distinctColor in distinctColors)
+                {
+                    if (ColorDistanceSqr(color, distinctColor) < ColorThreshold* ColorThreshold)
+                    {
+                        isDistinct = false;
+                        break;
+                    }
+                }
+                if (isDistinct)
+                {
+                    distinctColors.Add(color);
+                }
+            }
+
+            return distinctColors.Count;
+        }
+
+        private double ColorDistanceSqr(Vec3b color1, Vec3b color2)
+        {
+            double deltaL = color1.Item0 - color2.Item0;
+            double deltaA = color1.Item1 - color2.Item1;
+            double deltaB = color1.Item2 - color2.Item2;
+
+            return  deltaL * deltaL + deltaA * deltaA + deltaB * deltaB ;
+        }
+
 
         private static float GetHistogramEntropy(Mat roi)
         {

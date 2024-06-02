@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 626573014632125754}
   - component: {fileID: 3702454585279818098}
   - component: {fileID: 7308850827009557089}
+  - component: {fileID: 3921875263977277803}
   m_Layer: 0
   m_Name: ImageProcessingManager
   m_TagString: Untagged
@@ -55,6 +56,7 @@ MonoBehaviour:
   textPropertiesProcessor: {fileID: 626573014632125754}
   textureContrastProcessor: {fileID: 3702454585279818098}
   textureEntropyProcessor: {fileID: 7308850827009557089}
+  objectSegmentationProcessor: {fileID: 3921875263977277803}
 --- !u!114 &3854743607500365415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -109,6 +111,12 @@ MonoBehaviour:
   blockHeight: 100
   contrastThreshold: 4.5
   padding: 2
+  contrastLowerThreshold: 4.5
+  contrastUpperThreshold: 15
+  brightnessLowerThreshold: 50
+  brightnessUpperThreshold: 200
+  luminanceLowerThreshold: 0.2
+  luminanceUpperThreshold: 0.8
 --- !u!114 &7308850827009557089
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -119,5 +127,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f906a436f9b4626bcb0efa4a6883a41, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &3921875263977277803
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3031518545787281069}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe9b943ee8ac4b5c89ce77f6a6d8b199, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

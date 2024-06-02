@@ -20,7 +20,6 @@ namespace Analysis
 
     public static class ImageProcessingUtils
     {
-        
         public static Texture2D MatToTexture(Mat mat)
         {
             if (mat.Type() != MatType.CV_8UC4)
@@ -63,14 +62,24 @@ namespace Analysis
             return Math.Sqrt(vec.Item0 * vec.Item0 + vec.Item1 * vec.Item1 + vec.Item2 * vec.Item2);
         }
 
+        public static bool IsSmaller(Vec3b x, Vec3b y)
+        {
+            return x.Item0 < y.Item0 && x.Item1 < y.Item1 && x.Item2 < y.Item2;
+        }
+
+        public static bool IsBigger(Vec3b x, Vec3b y)
+        {
+            return x.Item0 > y.Item0 && x.Item1 > y.Item1 && x.Item2 > y.Item2;
+        }
+
         public static Mat MatToGreyScale(Mat mat, bool keepColorChannels = false)
         {
             var gray = new Mat();
             Cv2.CvtColor(mat, gray, ColorConversionCodes.RGB2GRAY);
-            if(keepColorChannels)
+            if (keepColorChannels)
                 Cv2.CvtColor(gray, gray, ColorConversionCodes.GRAY2BGR);
             return gray;
-        } 
+        }
 
         public static Color Vec3ToColor(Vec3b color)
         {
