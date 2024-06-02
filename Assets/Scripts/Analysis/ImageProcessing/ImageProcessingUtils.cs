@@ -62,14 +62,14 @@ namespace Analysis
             return Math.Sqrt(vec.Item0 * vec.Item0 + vec.Item1 * vec.Item1 + vec.Item2 * vec.Item2);
         }
 
-        public static bool IsSmaller(Vec3b x, Vec3b y)
+        public static bool HasColorLowerValue(Color x, Color y)
         {
-            return x.Item0 < y.Item0 && x.Item1 < y.Item1 && x.Item2 < y.Item2;
+            return x.r < y.r && x.g < y.g && x.b < y.b;
         }
 
-        public static bool IsBigger(Vec3b x, Vec3b y)
+        public static bool HasColorBiggerValue(Color x, Color y)
         {
-            return x.Item0 > y.Item0 && x.Item1 > y.Item1 && x.Item2 > y.Item2;
+            return x.r > y.r && x.g > y.g && x.b > y.b;
         }
 
         public static Mat MatToGreyScale(Mat mat, bool keepColorChannels = false)
@@ -95,6 +95,35 @@ namespace Analysis
         public static Vec3b Vec3dToVec3b(Vec3d color)
         {
             return new Vec3b((byte)color.Item0, (byte)color.Item1, (byte)color.Item2);
+        }
+
+
+        //Result Range <0;8>
+        private static float GetHistogramEntropy(Mat mat)
+        {
+            var gray = MatToGreyScale(mat);
+
+            // Analiza histogramu kolorów
+            var hist = new Mat();
+            int[] histSize = { 256 };
+            Rangef[] ranges = { new Rangef(0, 256) };
+            Cv2.CalcHist(new Mat[] { gray }, new int[] { 0 }, null, hist, 1, histSize, ranges);
+
+            // Normalizacja histogramu
+            Cv2.Normalize(hist, hist, 1.0, 0.0, NormTypes.L1);
+
+            // Obliczenie entropii histogramu
+            var entropy = 0.0f;
+            for (var i = 0; i < hist.Rows; i++)
+            {
+                var binVal = hist.At<float>(i);
+                if (binVal > 0)
+                {
+                    entropy -= binVal * (float)Math.Log(binVal, 2);
+                }
+            }
+
+            return entropy;
         }
     }
 }

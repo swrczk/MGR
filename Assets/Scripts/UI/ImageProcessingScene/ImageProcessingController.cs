@@ -1,6 +1,5 @@
 ﻿using Analysis;
 using UI.ImageProcessingScene;
-using Utils.Common;
 using Utils.MVC;
 
 namespace UI

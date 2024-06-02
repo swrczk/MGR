@@ -42,8 +42,10 @@ namespace Manager
 
         public void AnaliseContrast()
         {
+            var words = _screenForAnalysisData.textDocument?.GetWords() ?? new List<Word>();
+            var excludeWords = words.Count>0;
             var original = _screenForAnalysisData.texture;
-            var segmentedTextureByColors = textureColorSegmentationProcessor.ProcessTexture(original);
+            var segmentedTextureByColors = textureColorSegmentationProcessor.ProcessTexture(original, excludeWords, words);
             _screenForAnalysisData.SegmentedByColorRects = segmentedTextureByColors.finalRects;
             var result = textureContrastProcessor.CheckContrastInBlocks(segmentedTextureByColors.finalRects, original); 
             _screenForAnalysisData.SaveProcessedImage(result, "ProcessedTextures", ImageProcessingType.ContrastBlocks);
