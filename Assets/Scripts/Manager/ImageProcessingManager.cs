@@ -20,12 +20,33 @@ namespace Manager
         
         [SerializeField]
         private TextPropertiesProcessor textPropertiesProcessor;
+        
+        [SerializeField]
+        private TextureContrastProcessor textureContrastProcessor;
+        [SerializeField]
+        private TextureEntropyProcessor textureEntropyProcessor;
 
         private ScreenForAnalysisSo _screenForAnalysisData;
 
         public void SetupInput(ScreenForAnalysisSo screenForAnalysisData)
         {
             _screenForAnalysisData = screenForAnalysisData;
+        }
+
+        public void AnaliseText()
+        {
+            DetectText().Forget();
+        }
+
+        public void AnaliseContrast()
+        { 
+            var colorSegmentationTexture = _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation];
+            var original = _screenForAnalysisData.texture;
+            var input = textureEntropyProcessor.ProcessTexture(original);
+            _screenForAnalysisData.EntropyRects = input;
+            var result = textureContrastProcessor.CheckContrastInBlocks(input, original);
+            // var result = textureContrastProcessor.CheckContrastInBlocks( original);
+            _screenForAnalysisData.SaveProcessedImage(result, "ProcessedTextures", ImageProcessingType.ContrastBlocks);
         }
 
 
@@ -43,17 +64,13 @@ namespace Manager
             return preview;
         }
 
-        public void AnaliseText()
-        {
-            DetectText().Forget();
-        }
-
         private async UniTask DetectText()
         {
-            var texture = _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation];
-            var textContours2 = await textDetectionProcessor.Process(texture);
-            _screenForAnalysisData.SaveProcessedImage(textContours2, "ProcessedTextures",
+            var colorSegmentationTexture = _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation];
+            var highlightedTextTexture = await textDetectionProcessor.Process(colorSegmentationTexture);
+            _screenForAnalysisData.SaveProcessedImage(highlightedTextTexture, "ProcessedTextures",
                 ImageProcessingType.TextContours);
+            
             var textDocument = textDetectionProcessor.GetTextDocument();
             _screenForAnalysisData.SaveTextDocument(textDocument);
             textPropertiesProcessor.DetectTextColor(_screenForAnalysisData);

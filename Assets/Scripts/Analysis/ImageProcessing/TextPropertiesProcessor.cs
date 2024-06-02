@@ -28,15 +28,15 @@ namespace Analysis
                 Color backgroundColor;
                 if (word.Text.Length == 1)
                 {
-                    textColor = Vec3ToColor(colors[0]);
+                    textColor = ImageProcessingUtils.Vec3ToColor(colors[0]);
                     backgroundColor = colors.Count < 2 //ex.: letter "I" takes whole box
                         ? new Color(255f - textColor.r, 255f - textColor.g, 255f - textColor.b)
-                        : Vec3ToColor(colors[1]);
+                        : ImageProcessingUtils.Vec3ToColor(colors[1]);
                 }
                 else
                 {
-                    textColor = Vec3ToColor(colors[1]);
-                    backgroundColor = Vec3ToColor(colors[0]);
+                    textColor = ImageProcessingUtils.Vec3ToColor(colors[1]);
+                    backgroundColor = ImageProcessingUtils.Vec3ToColor(colors[0]);
                 }
 
                 word.SaveTextColor(backgroundColor);
@@ -45,11 +45,6 @@ namespace Analysis
                 Debug.Log(
                     $"[TextPropertiesProcessor] GetDominantColor ({word.Text}): \n TextColor: {word.TextColor} - TextBackgroundColor: {word.TextBackgroundColor} - IsUniformBackground: {word.IsUniformBackground}");
             }
-        }
-
-        private static Color Vec3ToColor(Vec3b dominantColor)
-        {
-            return new Color(dominantColor.Item0, dominantColor.Item1, dominantColor.Item2);
         }
 
         private List<Vec3b> ColorsSortedByFrequency(Mat image, Box box)
@@ -158,19 +153,6 @@ namespace Analysis
             }
 
             return colorCounts;
-        }
-
-        private class Vec3BEqualityComparer : IEqualityComparer<Vec3b>
-        {
-            public bool Equals(Vec3b x, Vec3b y)
-            {
-                return x.Item0 == y.Item0 && x.Item1 == y.Item1 && x.Item2 == y.Item2;
-            }
-
-            public int GetHashCode(Vec3b obj)
-            {
-                return obj.GetHashCode();
-            }
         }
     }
 }

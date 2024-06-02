@@ -30,10 +30,14 @@ namespace UI
 
         private void Analise()
         {
-            Context.ImageProcessingManager.SetupInput(_screenForAnalysisData);
-            var preview = Context.ImageProcessingManager.AnaliseColors();
-            View.ShowProcessedImage(preview);
+            Context.ImageProcessingManager.SetupInput(_screenForAnalysisData);  
+            Context.ImageProcessingManager.AnaliseColors(); 
             Context.ImageProcessingManager.AnaliseText();
+            Context.ImageProcessingManager.AnaliseContrast();
+            
+            
+            var preview = _screenForAnalysisData.ProcessedImages[ImageProcessingType.ContrastBlocks];
+            View.ShowProcessedImage(preview);
         }
     }
 }

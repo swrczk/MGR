@@ -4,6 +4,7 @@ using System.IO;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
+using Rect = OpenCvSharp.Rect;
 
 namespace Analysis
 {
@@ -12,6 +13,7 @@ namespace Analysis
         ColorSegmentation,
         ColorContours,
         TextContours,
+        ContrastBlocks
     }
     
     [CreateAssetMenu(fileName = "SFA", menuName = "ScreenForAnalysisSO")]
@@ -26,6 +28,7 @@ namespace Analysis
         public TextDocument textDocument;
 
         private List<string> _filePaths = new List<string>();
+        public List<Rect> EntropyRects { get; set; }
 
         public void Delete()
         {
