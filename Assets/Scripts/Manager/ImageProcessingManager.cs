@@ -2,8 +2,6 @@
 using Analysis;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Serialization;
-using Utils;
 
 namespace Manager
 {
@@ -23,8 +21,7 @@ namespace Manager
 
         [SerializeField]
         private TextureContrastProcessor textureContrastProcessor;
-
-        [FormerlySerializedAs("textureEntropyProcessor")]
+        
         [SerializeField]
         private TextureColorSegmentationProcessor textureColorSegmentationProcessor; 
 
@@ -46,9 +43,9 @@ namespace Manager
             var excludeWords = words.Count>0;
             var original = _screenForAnalysisData.texture;
             var segmentedTextureByColors = textureColorSegmentationProcessor.ProcessTexture(original, excludeWords, words);
-            _screenForAnalysisData.SegmentedByColorRects = segmentedTextureByColors.finalRects;
-            var result = textureContrastProcessor.CheckContrastInBlocks(segmentedTextureByColors.finalRects, original); 
-            _screenForAnalysisData.SaveProcessedImage(result, "ProcessedTextures", ImageProcessingType.ContrastBlocks);
+            _screenForAnalysisData.SegmentedByColorRects = segmentedTextureByColors.finalSegments;
+            var result = textureContrastProcessor.CheckContrastInBlocks(segmentedTextureByColors.finalSegments, original); 
+            _screenForAnalysisData.SaveProcessedImage(result.outputTexture, "ProcessedTextures", ImageProcessingType.ContrastBlocks);
             _screenForAnalysisData.SaveProcessedImage(segmentedTextureByColors.outputTexture, "ProcessedTextures",
                 ImageProcessingType.ColorBlocksPreprocessed); 
         }
@@ -72,11 +69,11 @@ namespace Manager
         {
             var colorSegmentationTexture =
                 _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation]; 
-            var highlightedTextTexture = await textDetectionProcessor.Process(colorSegmentationTexture);
-            _screenForAnalysisData.SaveProcessedImage(highlightedTextTexture, "ProcessedTextures",
-                ImageProcessingType.TextContours);
+            var ocrResult = await textDetectionProcessor.Process(colorSegmentationTexture);
+            _screenForAnalysisData.SaveProcessedImage(ocrResult.HighlightedTexture, "ProcessedTextures",
+                ImageProcessingType.OcrHighlightedTexture);
 
-            var textDocument = textDetectionProcessor.GetTextDocument();
+            var textDocument = textDetectionProcessor.GetTextDocument(ocrResult);
             _screenForAnalysisData.SaveTextDocument(textDocument);
             textPropertiesProcessor.DetectTextColor(_screenForAnalysisData);
         }
@@ -93,7 +90,7 @@ namespace Manager
 
         private Texture2D DrawContours(Texture2D texture)
         {
-            return colorDetectionProcessor.DrawContours(texture);
+            return colorDetectionProcessor.DrawDetectedContours(texture);
         }
     }
 }

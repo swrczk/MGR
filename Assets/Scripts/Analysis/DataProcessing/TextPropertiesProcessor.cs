@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using OpenCvSharp;
 using UnityEngine;
@@ -14,13 +13,12 @@ namespace Analysis
         public void DetectTextColor(ScreenForAnalysisSo screenForAnalysisData)
         {
             var texture = screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation];
-            var image = ImageProcessingUtils.TextureToMat(texture);
-            var originalImage = ImageProcessingUtils.TextureToMat(screenForAnalysisData.texture);
+            var image = AnalysisUtils.TextureToMat(texture);
+            var originalImage = AnalysisUtils.TextureToMat(screenForAnalysisData.texture);
             var wordBoxes = screenForAnalysisData.textDocument.GetWords();
             foreach (var word in wordBoxes)
             {
                 var colors = ColorsSortedByFrequency(image, word.Box);
-                // var isUniformBackground = IsUniformBackground(image, word.Box, word.Text.Length);
                 var isUniformBackground = IsUniformBackground(originalImage, word);
 
                 //for single letter text color is dominant color, for longer text background color is dominant
@@ -28,15 +26,15 @@ namespace Analysis
                 Color backgroundColor;
                 if (word.Text.Length == 1)
                 {
-                    textColor = ImageProcessingUtils.Vec3ToColor(colors[0]);
+                    textColor = AnalysisUtils.Vec3ToColor(colors[0]);
                     backgroundColor = colors.Count < 2 //ex.: letter "I" takes whole box
                         ? new Color(255f - textColor.r, 255f - textColor.g, 255f - textColor.b)
-                        : ImageProcessingUtils.Vec3ToColor(colors[1]);
+                        : AnalysisUtils.Vec3ToColor(colors[1]);
                 }
                 else
                 {
-                    textColor = ImageProcessingUtils.Vec3ToColor(colors[1]);
-                    backgroundColor = ImageProcessingUtils.Vec3ToColor(colors[0]);
+                    textColor = AnalysisUtils.Vec3ToColor(colors[1]);
+                    backgroundColor = AnalysisUtils.Vec3ToColor(colors[0]);
                 }
 
                 word.SaveTextColor(backgroundColor);
@@ -49,7 +47,6 @@ namespace Analysis
 
         private List<Vec3b> ColorsSortedByFrequency(Mat image, Box box)
         {
-            // Wycięcie obszaru boxu z obrazu
             var roi = new Mat(image, new OpenCvSharp.Rect(box.x, box.y, box.w, box.h));
 
             // Konwersja obrazu na listę pikseli
@@ -71,10 +68,8 @@ namespace Analysis
         {
             var box = word.Box;
             var charCount = word.Text.Length;
-
-            // Wycięcie obszaru boxu z obrazu
             var roi = new Mat(image, new OpenCvSharp.Rect(box.x, box.y, box.w, box.h));
-            var gray = ImageProcessingUtils.MatToGreyScale(roi);
+            var gray = AnalysisUtils.MatToGreyScale(roi);
 
             var edgesCondition = CheckUniformBackgroundEdgeCondition(gray, charCount);
             var entropyCondition = CheckUniformBackgroundEntropyCondition(gray, charCount);
@@ -84,7 +79,8 @@ namespace Analysis
 
         private static bool CheckUniformBackgroundEntropyCondition(Mat gray, int charCount)
         {
-            var entropy = GetHistogramEntropy(gray);
+            var entropy = AnalysisUtils.GetHistogramEntropy(gray);
+            
             // Adjust the entropy threshold based on the length of the text
             var adjustedEntropyThreshold = EntropyThreshold + 0.15 * charCount;
             var entropyCondition = entropy < adjustedEntropyThreshold;
@@ -99,38 +95,10 @@ namespace Analysis
             return edgesCondition;
         }
 
-        //Result Range <0;8>
-        private static float GetHistogramEntropy(Mat gray)
-        {
-            // Analiza histogramu kolorów
-            var hist = new Mat();
-            int[] histSize = { 256 };
-            Rangef[] ranges = { new Rangef(0, 256) };
-            Cv2.CalcHist(new Mat[] { gray }, new int[] { 0 }, null, hist, 1, histSize, ranges);
-
-            // Normalizacja histogramu
-            Cv2.Normalize(hist, hist, 1.0, 0.0, NormTypes.L1);
-
-            // Obliczenie entropii histogramu
-            var entropy = 0.0f;
-            for (var i = 0; i < hist.Rows; i++)
-            {
-                var binVal = hist.At<float>(i);
-                if (binVal > 0)
-                {
-                    entropy -= binVal * (float)Math.Log(binVal, 2); // log base 2
-                }
-            }
-
-            return entropy;
-        }
-
         private int GetNumberOfEdges(Mat gray)
         {
             var edges = new Mat();
             Cv2.Canny(gray, edges, 50, 100);
-
-            // Find contours
             Cv2.FindContours(edges, out var contours, out var hierarchy, RetrievalModes.Tree,
                 ContourApproximationModes.ApproxSimple);
 

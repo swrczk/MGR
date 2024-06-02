@@ -18,7 +18,7 @@ namespace Analysis
         }
     }
 
-    public static class ImageProcessingUtils
+    public static class AnalysisUtils
     {
         public static Texture2D MatToTexture(Mat mat)
         {
@@ -99,9 +99,9 @@ namespace Analysis
 
 
         //Result Range <0;8>
-        private static float GetHistogramEntropy(Mat mat)
+        public static float GetHistogramEntropy(Mat mat, bool convertToGreyScale = false)
         {
-            var gray = MatToGreyScale(mat);
+            var gray = convertToGreyScale ? MatToGreyScale(mat) : mat;
 
             // Analiza histogramu kolorów
             var hist = new Mat();

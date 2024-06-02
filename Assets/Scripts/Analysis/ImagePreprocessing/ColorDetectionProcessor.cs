@@ -9,15 +9,15 @@ namespace Analysis
     {
         public Texture2D SegmentImageUsingKMeans(Texture2D inputTexture, int k)
         {
-            Mat img = OpenCvSharp.Unity.TextureToMat(inputTexture);
-            Mat imgReshaped = img.Reshape(1, img.Rows * img.Cols);
-            Mat imgConverted = new Mat();
+            var img = OpenCvSharp.Unity.TextureToMat(inputTexture);
+            var imgReshaped = img.Reshape(1, img.Rows * img.Cols);
+            var imgConverted = new Mat();
             imgReshaped.ConvertTo(imgConverted, MatType.CV_32F);
 
-            Mat labels = new Mat();
-            Mat centers = new Mat();
-            // Correct use of TermCriteria with bitwise OR
-            TermCriteria criteria = new TermCriteria(CriteriaType.Eps | CriteriaType.MaxIter, 10, 1.0);
+            var labels = new Mat();
+            var centers = new Mat();
+            
+            var criteria = new TermCriteria(CriteriaType.Eps | CriteriaType.MaxIter, 10, 1.0);
             Cv2.Kmeans(imgConverted, k, labels, criteria, 10, KMeansFlags.PpCenters, centers);
 
             // Convert centers to uchar from float
@@ -25,17 +25,17 @@ namespace Analysis
             centers = centers.Reshape(3, k);
 
             // Replace each pixel with its center value
-            Mat result = new Mat(img.Size(), img.Type());
-            byte[] resultData = new byte[img.Rows * img.Cols * img.Channels()];
-            byte[] centersData = new byte[k * img.Channels()];
+            var result = new Mat(img.Size(), img.Type());
+            var resultData = new byte[img.Rows * img.Cols * img.Channels()];
+            var centersData = new byte[k * img.Channels()];
             Marshal.Copy(centers.Data, centersData, 0, k * img.Channels());
-            int[] labelsData = new int[img.Rows * img.Cols];
+            var labelsData = new int[img.Rows * img.Cols];
             Marshal.Copy(labels.Data, labelsData, 0, img.Rows * img.Cols);
 
-            for (int i = 0; i < labelsData.Length; i++)
+            for (var i = 0; i < labelsData.Length; i++)
             {
-                int label = labelsData[i];
-                int baseIndex = i * img.Channels();
+                var label = labelsData[i];
+                var baseIndex = i * img.Channels();
                 resultData[baseIndex + 0] = centersData[label * img.Channels() + 0]; // B
                 resultData[baseIndex + 1] = centersData[label * img.Channels() + 1]; // G
                 resultData[baseIndex + 2] = centersData[label * img.Channels() + 2]; // R
@@ -46,56 +46,44 @@ namespace Analysis
         }
 
 
-        public Texture2D DrawContours(Texture2D inputTexture)
+        public Texture2D DrawDetectedContours(Texture2D inputTexture)
         {
-            // Convert Texture2D to Mat
-            Mat image = ImageProcessingUtils.TextureToMat(inputTexture);
-            Mat grayImage = new Mat();
+            var image = AnalysisUtils.TextureToMat(inputTexture);
+            var grayImage = new Mat();
             Cv2.CvtColor(image, grayImage, ColorConversionCodes.RGB2GRAY);
 
             // Detect edges
-            Mat edges = new Mat();
-            Cv2.Canny(grayImage, edges, 50, 100); // Adjust thresholds as necessary
-
-            // Find contours
-            Cv2.FindContours(edges, out Point[][] contours, out HierarchyIndex[] hierarchy, RetrievalModes.Tree,
+            var edges = new Mat();
+            Cv2.Canny(grayImage, edges, 50, 100); 
+            Cv2.FindContours(edges, out var contours, out var hierarchy, RetrievalModes.Tree,
                 ContourApproximationModes.ApproxSimple);
 
-            // Prepare an image to draw the filled contours
-            Mat filledContours = image.Clone();
-
-            foreach (Point[] contour in contours)
+            var filledContours = image.Clone();
+            foreach (var contour in contours)
             {
-                // Calculate the dominant color for the given contour
-                Scalar color = new Scalar(0, 0, 255);
-
-                // Fill the contour with the dominant color
+                var color = new Scalar(0, 0, 255);
                 Cv2.DrawContours(filledContours, new Point[][] { contour }, -1, color, 1); // -1 fills the contour
             }
-
-            // Convert back to Texture2D
-            return ImageProcessingUtils.MatToTexture(filledContours);
+            
+            return AnalysisUtils.MatToTexture(filledContours);
         }
 
         public List<Color> DetectDominantColors(Texture2D inputTexture, int clusterCount)
         {
-            // Konwertuj Texture2D na OpenCvSharp Mat
-            Mat img = ImageProcessingUtils.TextureToMat(inputTexture);
-
-            // Konwersja na przestrzeń kolorów HSV
+            var img = AnalysisUtils.TextureToMat(inputTexture);
             img.CvtColor(ColorConversionCodes.RGB2HSV);
 
             // Zastosuj rozmycie Gaussa
-            Mat blurredImg = new Mat();
+            var blurredImg = new Mat();
             Cv2.GaussianBlur(img, blurredImg, new Size(5, 5), 0);
 
             // Przygotowanie danych do k-means
-            Mat samples = blurredImg.Reshape(3, blurredImg.Rows * blurredImg.Cols);
+            var samples = blurredImg.Reshape(3, blurredImg.Rows * blurredImg.Cols);
             samples.ConvertTo(samples, MatType.CV_32F);
 
             // Parametry klasteryzacji
-            Mat labels = new Mat();
-            Mat centers = new Mat();
+            var labels = new Mat();
+            var centers = new Mat();
             var criteria = TermCriteria.Both(10, 1.0);
 
             // Klasteryzacja kolorów
@@ -103,16 +91,16 @@ namespace Analysis
 
             var dominantColors = new List<Color>();
             // Wypisywanie środków klastrów jako kolorów
-            for (int i = 0; i < clusterCount; i++)
+            for (var i = 0; i < clusterCount; i++)
             {
-                Vec3f center = centers.At<Vec3f>(i);
+                var center = centers.At<Vec3f>(i);
                 // Konwertuj HSV na RGB dla wizualizacji
-                Scalar colorHsv = new Scalar(center[0], center[1], center[2]);
-                Mat colorMat = new Mat(1, 1, MatType.CV_32FC3, colorHsv);
+                var colorHsv = new Scalar(center[0], center[1], center[2]);
+                var colorMat = new Mat(1, 1, MatType.CV_32FC3, colorHsv);
                 colorMat.ConvertTo(colorMat, MatType.CV_8UC3);
                 colorMat.CvtColor(ColorConversionCodes.HSV2BGR);
-                Vec3b colorRgb = colorMat.Get<Vec3b>(0, 0);
-                Color color = new Color(colorRgb[2] / 255f, colorRgb[1] / 255f, colorRgb[0] / 255f);
+                var colorRgb = colorMat.Get<Vec3b>(0, 0);
+                var color = new Color(colorRgb[2] / 255f, colorRgb[1] / 255f, colorRgb[0] / 255f);
                 dominantColors.Add(color);
             }
 

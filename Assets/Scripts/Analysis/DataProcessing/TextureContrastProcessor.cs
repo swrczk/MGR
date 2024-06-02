@@ -15,37 +15,42 @@ namespace Analysis
         private float contrastUpperThreshold = 15.0f;
 
 
-        public Texture2D CheckContrastInBlocks(List<Rect> rects, Texture2D inputTexture)
+        public (List<ContrastAnalysisResult> analysisResults, Texture2D outputTexture) CheckContrastInBlocks(List<Segment> segments, Texture2D inputTexture)
         {
-            var image = ImageProcessingUtils.TextureToMat(inputTexture);
-            var outputImage = ImageProcessingUtils.MatToGreyScale(image.Clone(), true);
-            foreach (var rect in rects)
+            var analysisResults = new List<ContrastAnalysisResult>();
+            var image = AnalysisUtils.TextureToMat(inputTexture);
+            var outputImage = AnalysisUtils.MatToGreyScale(image.Clone(), true);
+            foreach (var segment in segments)
             {
-                Process(image, rect, outputImage);
+                var segmentResult = Process(image, segment, outputImage);
+                analysisResults.Add(segmentResult);
             }
 
-            var outputTexture = ImageProcessingUtils.MatToTexture(outputImage);
-            return outputTexture;
+            var outputTexture = AnalysisUtils.MatToTexture(outputImage);
+            return (analysisResults, outputTexture);
         }
 
-        private void Process(Mat image, Rect blockRect, Mat outputImage)
+        private ContrastAnalysisResult Process(Mat image, Segment segment, Mat outputImage)
         {
-            var block = new Mat(image, blockRect);
+            var block = new Mat(image, segment.Rect);
             var overallContrast = CalculateOverallContrast(block);
 
             if ((overallContrast < contrastLowerThreshold))
             {
                 // Oznacz blok czerwonym kwadratem
                 var rectColor = new Scalar(0, 0, 255);
-                DrawTransparentRectangle(blockRect, outputImage, rectColor);
+                DrawTransparentRectangle(segment.Rect, outputImage, rectColor);
+                return new ContrastAnalysisResult(segment,ContrastResultType.Low, overallContrast);
             }
 
             if (overallContrast > contrastUpperThreshold)
             {
                 // Oznacz blok niebieskim kwadratem
                 var rectColor = new Scalar(255, 0, 0);
-                DrawTransparentRectangle(blockRect, outputImage, rectColor);
+                DrawTransparentRectangle(segment.Rect, outputImage, rectColor);
+                return new ContrastAnalysisResult(segment,ContrastResultType.High, overallContrast);
             }
+            return new ContrastAnalysisResult(segment,ContrastResultType.Normal, overallContrast);
         }
 
         private void DrawTransparentRectangle(Rect rect, Mat image, Scalar color, float opacity = 0.5f)
@@ -65,8 +70,7 @@ namespace Analysis
         //values from 1 to 21
         private float CalculateOverallContrast(Mat roi)
         {
-            // Konwersja obrazu na skalę szarości
-            var gray = ImageProcessingUtils.MatToGreyScale(roi);
+            var gray = AnalysisUtils.MatToGreyScale(roi);
 
             // Znajdź najjaśniejszy i najciemniejszy piksel w wycinku
             double minVal, maxVal;
@@ -76,10 +80,7 @@ namespace Analysis
             var minColor = new Vec3b((byte)minVal, (byte)minVal, (byte)minVal);
             var maxColor = new Vec3b((byte)maxVal, (byte)maxVal, (byte)maxVal);
 
-            // Oblicz współczynnik kontrastu
-            var contrastRatio = CalculateContrastRatio(maxColor, minColor);
-
-            return contrastRatio;
+            return CalculateContrastRatio(maxColor, minColor);
         }
 
 

@@ -4,6 +4,14 @@ using System.Runtime.InteropServices;
 using System.Text;
 using UnityEngine;
 
+
+public class OcrResult
+{
+    public List<string> Text { get; set; }
+    public List<Box> Boxes { get; set; }
+    public Texture2D HighlightedTexture { get; set; }
+}
+
 public class TesseractWrapper
 {
 #if UNITY_EDITOR
@@ -60,11 +68,11 @@ public class TesseractWrapper
 
     [DllImport(TesseractDllName)]
     private static extern IntPtr TessBaseAPIGetWords(IntPtr handle, IntPtr pixa);
-    
+
     [DllImport(TesseractDllName)]
     private static extern IntPtr TessBaseAPIAllWordConfidences(IntPtr handle);
-    
-    
+
+
     public TesseractWrapper()
     {
         _tessHandle = IntPtr.Zero;
@@ -119,7 +127,7 @@ public class TesseractWrapper
         return true;
     }
 
-    public string Recognize(Texture2D texture)
+    public OcrResult Recognize(Texture2D texture)
     {
         if (_tessHandle.Equals(IntPtr.Zero))
             return null;
@@ -156,11 +164,11 @@ public class TesseractWrapper
             Marshal.FreeHGlobal(imagePtr);
             return null;
         }
-        
+
         IntPtr confidencesPointer = TessBaseAPIAllWordConfidences(_tessHandle);
         int i = 0;
         List<int> confidence = new List<int>();
-        
+
         while (true)
         {
             int tempConfidence = Marshal.ReadInt32(confidencesPointer, i * 4);
@@ -195,15 +203,15 @@ public class TesseractWrapper
             return null;
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-        string recognizedText = Marshal.PtrToStringAnsi (stringPtr);
+        string recognizedText = Marshal.PtrToStringAnsi(stringPtr);
 #else
         string recognizedText = Marshal.PtrToStringAuto(stringPtr);
 #endif
 
         TessBaseAPIClear(_tessHandle);
         TessDeleteText(stringPtr);
-        
-        var words = recognizedText.Split(new[] {' ', '\n'}, StringSplitOptions.RemoveEmptyEntries);
+
+        var words = recognizedText.Split(new[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries);
         StringBuilder result = new StringBuilder();
 
         for (i = 0; i < boxes.Length; i++)
@@ -218,15 +226,20 @@ public class TesseractWrapper
             }
         }
 
-        return result.ToString();
+        return new OcrResult()
+        {
+            Text = _words,
+            Boxes = _boxes,
+            HighlightedTexture = _highlightedTexture
+        };
     }
 
     private void DrawLines(Texture2D texture, Rect boundingRect, Color color, int thickness = 3)
     {
-        int x1 = (int) boundingRect.x;
-        int x2 = (int) (boundingRect.x + boundingRect.width);
-        int y1 = (int) boundingRect.y;
-        int y2 = (int) (boundingRect.y + boundingRect.height);
+        int x1 = (int)boundingRect.x;
+        int x2 = (int)(boundingRect.x + boundingRect.width);
+        int y1 = (int)boundingRect.y;
+        int y2 = (int)(boundingRect.y + boundingRect.height);
 
         for (int x = x1; x <= x2; x++)
         {
@@ -247,21 +260,6 @@ public class TesseractWrapper
         }
 
         texture.Apply();
-    }
-
-    public Texture2D GetHighlightedTexture()
-    {
-        return _highlightedTexture;
-    }
-    
-    public List<Box> GetTextBoxes()
-    {
-        return _boxes;
-    }
-    
-    public List<string> GetWords()
-    {
-        return _words;
     }
 
     public void Close()

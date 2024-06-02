@@ -104,23 +104,9 @@ public class TesseractDriver
         return _tesseract?.GetErrorMessage();
     }
 
-    public string Recognize(Texture2D imageToRecognize)
+    public OcrResult Recognize(Texture2D imageToRecognize)
     {
         return _tesseract.Recognize(imageToRecognize);
-    }
-
-    public Texture2D GetHighlightedTexture()
-    {
-        return _tesseract.GetHighlightedTexture();
-    }
-    public List<Box> GetTextBoxes()
-    {
-        return _tesseract.GetTextBoxes();
-    }
-    
-    public List<string> GetWords()
-    {
-        return _tesseract.GetWords();
     }
 
     private void UnZipData(string fileName)

@@ -12,25 +12,112 @@ namespace Analysis
     {
         ColorSegmentation,
         ColorContours,
-        TextContours,
+        OcrHighlightedTexture,
         ContrastBlocks,
         ColorBlocksPreprocessed,
         Test
     }
+
+    public class ProjectData
+    {
+        public List<ScreenData> ScreenData { get; set; }
+        public float OverallResult { get; set; }
+    }
+    public class ScreenData
+    {
+        public string Name { get; set; }
+        public ScreenForAnalysisSo ScreenForAnalysisSo { get; set; }
+        public PreprocessedTexture PreprocessedTexture { get; set; }
+        public TextureProperties TextureProperties { get; set; }
+        public AnalysisData AnalysisData { get; set; }
+        public float OverallResult { get; set; }
+    }
     
+    public class PreprocessedTexture
+    {
+        public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
+        public TextDocument TextDocument { get; set; }
+        public OcrResult OcrResult { get; set; }
+
+        private List<string> FilePaths { get; } = new List<string>(); // co z tym? czy jest wgl potrzebne?
+        public List<Rect> SegmentedByColorRects { get; set; }
+    }
+
+    //przeneisione do tesseraxra
+    // public class OcrResult
+    // {
+    //     public List<string> Text { get; set; }
+    //     public List<Box> Boxes { get; set; }
+    //     public Segment Segment { get; set; }//przenieść do result lub usunac
+    //     public Texture2D HighlightedDetectedWords { get; set; }
+    // }
+
+    public class TextureProperties
+    {
+        public List<Color> DominantColors { get; set; }
+        public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
+        public TextDocument TextDocument { get; set; }
+
+        private List<string> FilePaths { get; } = new List<string>(); // co z tym? czy jest wgl potrzebne?
+        public List<Segment> SegmentedByColorRects { get; set; }
+    }
+
+    public class Segment
+    {
+        public Rect Rect { get; set; }
+        public float VolumePercentage { get; set; }
+    }
+
+    public enum ContrastResultType
+    {
+        Low,
+        High,
+        Normal
+    }
+
+    public class ContrastAnalysisResult
+    {
+
+        public Segment Segment { get; private set; }
+        public float Contrast { get; private set; }
+        public ContrastResultType ContrastResultType { get; private set; }
+        public ContrastAnalysisResult(Segment segment, ContrastResultType low, float overallContrast)
+        {
+            Segment = segment;
+            ContrastResultType = low;
+            Contrast = overallContrast;
+        }
+    }
+
+    public class TextAnalysisResult
+    {
+        public TextDocument TextDocument { get; set; }
+        //zastanowić się nad tym
+    }
+
+    public class AnalysisData
+    {
+        public List<Rect> SegmentedByColorRects { get; set; }
+        public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
+        public TextAnalysisResult TextAnalysisResult { get; set; }
+        public List<ContrastAnalysisResult> ContrastResults { get; } = new();
+    }
+
     [CreateAssetMenu(fileName = "SFA", menuName = "ScreenForAnalysisSO")]
     public class ScreenForAnalysisSo : ScriptableObject
     {
         public string fileName;
         public string saveFilesPath;
         public Texture2D texture;
+        public bool isSelected;
+
+        //-----------------Analysis Data-----------------
         public List<Color> dominantColors;
         public Dictionary<ImageProcessingType, Texture2D> ProcessedImages = new();
-        public bool isSelected;
         public TextDocument textDocument;
 
         private List<string> _filePaths = new List<string>();
-        public List<Rect> SegmentedByColorRects { get; set; }
+        public List<Segment> SegmentedByColorRects { get; set; }
 
         public void Delete()
         {
@@ -58,19 +145,22 @@ namespace Analysis
 
         public Texture2D SaveProcessedImage(Texture2D texture2D, string folder, ImageProcessingType type)
         {
-            var path = SaveAsAsset(texture2D,folder, type.ToString());
+            var path = SaveAsAsset(texture2D, folder, type.ToString());
             texture2D.name = path.Split("/")[^1].Split(".asset")[0];
             SaveAsPNG(texture2D, type.ToString());
             ProcessedImages[type] = texture2D;
             return texture2D;
         }
+
         public string SaveAsAsset(Object element, string suffix)
         {
             var path = $"{saveFilesPath}/{fileName}_{suffix}.asset";
             AssetDatabase.CreateAsset(element, path);
             _filePaths.Add(path);
             return path;
-        }        public string SaveAsAsset(Object element,string folder, string suffix)
+        }
+
+        public string SaveAsAsset(Object element, string folder, string suffix)
         {
             var path = $"{saveFilesPath}/{folder}/{fileName}_{suffix}.asset";
             AssetDatabase.CreateAsset(element, path);

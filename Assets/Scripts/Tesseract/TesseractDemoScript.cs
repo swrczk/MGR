@@ -10,6 +10,7 @@ public class TesseractDemoScript : MonoBehaviour
     private TesseractDriver _tesseractDriver;
     private string _text = "";
     private Texture2D _texture;
+    private OcrResult ocrResult;
 
     private void Start()
     {
@@ -32,7 +33,8 @@ public class TesseractDemoScript : MonoBehaviour
 
     private void OnSetupCompleteRecognize()
     {
-        AddToTextDisplay(_tesseractDriver.Recognize(_texture));
+        ocrResult = _tesseractDriver.Recognize(_texture);
+        AddToTextDisplay(ocrResult.Text.ToString());
         AddToTextDisplay(_tesseractDriver.GetErrorMessage(), true);
         SetImageDisplay();
     }
@@ -62,8 +64,9 @@ public class TesseractDemoScript : MonoBehaviour
     private void SetImageDisplay()
     {
         RectTransform rectTransform = outputImage.GetComponent<RectTransform>();
+        var highlightedTexture = ocrResult.HighlightedTexture;
         rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
-            rectTransform.rect.width * _tesseractDriver.GetHighlightedTexture().height / _tesseractDriver.GetHighlightedTexture().width);
-        outputImage.texture = _tesseractDriver.GetHighlightedTexture();
+            rectTransform.rect.width * highlightedTexture.height / highlightedTexture.width);
+        outputImage.texture = highlightedTexture;
     }
 }

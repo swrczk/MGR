@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using Cysharp.Threading.Tasks;
 using OpenCvSharp;
 using UnityEngine;
@@ -8,13 +7,6 @@ namespace Analysis
 {
     public class TextDetectionProcessor : MonoBehaviour
     {
-        [SerializeField]
-        private int lowerThreshold = 200; // Zmniejsz, aby uwzględnić cieńsze linie
-
-        [SerializeField]
-        private int upperThreshold = 400; // Zwiększ, aby unikać fałszywych pozytywów w pogrubionych literach
-
-
         private TesseractDriver _tesseractDriver;
 
         private void Awake()
@@ -22,28 +14,27 @@ namespace Analysis
             _tesseractDriver = new TesseractDriver();
         }
 
-        public async UniTask<Texture2D> Process(Texture2D texture)
+        public async UniTask<OcrResult> Process(Texture2D texture)
         {
-            var image = ImageProcessingUtils.TextureToMat(texture);
+            var image = AnalysisUtils.TextureToMat(texture);
 
             var gray = new Mat();
             Cv2.CvtColor(image, gray, ColorConversionCodes.BGR2GRAY);
-            var grayToTexture = ImageProcessingUtils.MatToTexture(gray);
+            var grayToTexture = AnalysisUtils.MatToTexture(gray);
 
             await _tesseractDriver.TryToSetup();
             var recognizedText = _tesseractDriver.Recognize(grayToTexture);
-            var highlightedTexture = _tesseractDriver.GetHighlightedTexture();
-            return highlightedTexture;
+            return recognizedText;
         }
 
-        public TextDocument GetTextDocument()
+        public TextDocument GetTextDocument(OcrResult recognizedText)
         {
-            var detectedWords = _tesseractDriver.GetWords();
-            var detectedBoxes = _tesseractDriver.GetTextBoxes();
+            var detectedWords = recognizedText.Text;
+            var detectedBoxes = recognizedText.Boxes;
 
             if (detectedBoxes == null || detectedWords == null)
                 throw new Exception("OCR not initialized");
-            
+
             return OcrWordsToTextStructureAdapter.Convert(detectedBoxes, detectedWords);
         }
     }

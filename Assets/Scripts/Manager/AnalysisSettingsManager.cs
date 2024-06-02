@@ -2,7 +2,6 @@
 using Analysis;
 using UI;
 using UnityEngine;
-using Utils;
 
 namespace Manager
 {
