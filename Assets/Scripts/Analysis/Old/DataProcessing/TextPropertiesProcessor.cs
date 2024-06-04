@@ -69,7 +69,7 @@ namespace Analysis
             var box = word.Box;
             var charCount = word.Text.Length;
             var roi = new Mat(image, new OpenCvSharp.Rect(box.x, box.y, box.w, box.h));
-            var gray = AnalysisUtils.MatToGreyScale(roi);
+            var gray = AnalysisUtils.MatToGrayScale(roi);
 
             var edgesCondition = CheckUniformBackgroundEdgeCondition(gray, charCount);
             var entropyCondition = CheckUniformBackgroundEntropyCondition(gray, charCount);

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using OpenCvSharp;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -23,6 +24,7 @@ namespace Analysis
         public List<ScreenData> ScreenData { get; set; }
         public float OverallResult { get; set; }
     }
+
     public class ScreenData
     {
         public string Name { get; set; }
@@ -32,7 +34,7 @@ namespace Analysis
         public AnalysisData AnalysisData { get; set; }
         public float OverallResult { get; set; }
     }
-    
+
     public class PreprocessedTexture
     {
         public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
@@ -59,7 +61,34 @@ namespace Analysis
         public TextDocument TextDocument { get; set; }
 
         private List<string> FilePaths { get; } = new List<string>(); // co z tym? czy jest wgl potrzebne?
-        public List<Segment> SegmentedByColorRects { get; set; }
+        public SegmentedTexture SegmentedTexture { get; set; }
+    }
+
+    public class SegmentedTexture
+    {
+        public SegmentedTexture(Rect imageRect, List<Segment> segments, Mat outputTexture)
+        {
+            ImageRect = imageRect;
+            Segments = segments;
+            OutputTexture = outputTexture;
+            RecalculateVolumePercentage();
+        }
+
+        public Rect ImageRect { get; set; }
+        public List<Segment> Segments { get; set; }
+        public Mat OutputTexture { get; set; }
+
+        public void RecalculateVolumePercentage()
+        {
+            float imageArea = ImageRect.Width * ImageRect.Height;
+
+            foreach (var rect in Segments)
+            {
+                float rectArea = rect.Rect.Width * rect.Rect.Height;
+                float volumePercentage = (rectArea / imageArea) * 100;
+                rect.VolumePercentage = volumePercentage;
+            }
+        }
     }
 
     public class Segment
@@ -77,10 +106,10 @@ namespace Analysis
 
     public class ContrastAnalysisResult
     {
-
         public Segment Segment { get; private set; }
         public float Contrast { get; private set; }
         public ContrastResultType ContrastResultType { get; private set; }
+
         public ContrastAnalysisResult(Segment segment, ContrastResultType low, float overallContrast)
         {
             Segment = segment;

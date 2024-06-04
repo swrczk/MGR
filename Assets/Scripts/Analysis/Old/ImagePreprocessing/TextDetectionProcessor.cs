@@ -8,10 +8,12 @@ namespace Analysis
     public class TextDetectionProcessor : MonoBehaviour
     {
         private TesseractDriver _tesseractDriver;
+        private OcrWordsToTextStructureAdapter _ocrWordsToTextStructureAdapter;
 
         private void Awake()
         {
             _tesseractDriver = new TesseractDriver();
+            _ocrWordsToTextStructureAdapter = new OcrWordsToTextStructureAdapter();
         }
 
         public async UniTask<OcrResult> Process(Texture2D texture)
@@ -35,7 +37,7 @@ namespace Analysis
             if (detectedBoxes == null || detectedWords == null)
                 throw new Exception("OCR not initialized");
 
-            return OcrWordsToTextStructureAdapter.Convert(detectedBoxes, detectedWords);
+            return _ocrWordsToTextStructureAdapter.Convert(detectedBoxes, detectedWords);
         }
     }
 }

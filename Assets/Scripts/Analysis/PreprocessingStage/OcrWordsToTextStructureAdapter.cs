@@ -5,9 +5,9 @@ using UnityEngine;
 
 namespace Analysis
 {
-    public static class OcrWordsToTextStructureAdapter
+    public class OcrWordsToTextStructureAdapter
     {
-        public static TextDocument Convert(List<Box> detectedBoxes, List<string> detectedWords)
+        public TextDocument Convert(List<Box> detectedBoxes, List<string> detectedWords)
         {
             var words = ConvertToWords(detectedBoxes, detectedWords);
             var lines = ConvertToLines(words);
@@ -16,7 +16,7 @@ namespace Analysis
             return textDocument;
         }
 
-        private static TextDocument ConvertToTextDocument(List<TextBlock> textBlocks)
+        private TextDocument ConvertToTextDocument(List<TextBlock> textBlocks)
         {
             var textDocument = new TextDocument();
             foreach (var textBlock in textBlocks)
@@ -27,7 +27,7 @@ namespace Analysis
             return textDocument;
         }
 
-        private static List<TextBlock> ConvertToTextBlock(List<Line> lines)
+        private List<TextBlock> ConvertToTextBlock(List<Line> lines)
         {
             var textBlocks = new List<TextBlock>();
             var currentBlock = new TextBlock();
@@ -52,8 +52,8 @@ namespace Analysis
                     currentBlock.AddLine(line);
                 }
             }
-            
-            if(currentBlock.Lines.Count > 0)
+
+            if (currentBlock.Lines.Count > 0)
             {
                 currentBlock.RevalidateBox();
                 textBlocks.Add(currentBlock);
@@ -62,9 +62,9 @@ namespace Analysis
             return textBlocks;
         }
 
-        private static List<Line> ConvertToLines(List<Word> words)
+        private List<Line> ConvertToLines(List<Word> words)
         {
-            var lines = new List<Line> ();
+            var lines = new List<Line>();
             var currentLine = new Line();
             foreach (var word in words)
             {
@@ -96,12 +96,12 @@ namespace Analysis
             return lines;
         }
 
-        private static List<Word> ConvertToWords(List<Box> detectedBoxes, List<string> detectedWords)
+        private List<Word> ConvertToWords(List<Box> detectedBoxes, List<string> detectedWords)
         {
             var words = new List<Word>();
             for (int i = 0; i < detectedBoxes.Count; i++)
             {
-                words.Add( new Word
+                words.Add(new Word
                 {
                     Box = detectedBoxes[i],
                     Text = detectedWords[i],
@@ -131,7 +131,7 @@ namespace Analysis
                 WordCount += line.Words.Count;
             }
         }
-        
+
         public List<Word> GetWords()
         {
             var words = new List<Word>();
@@ -145,7 +145,7 @@ namespace Analysis
 
             return words;
         }
-        
+
         public List<Line> GetLines()
         {
             //get all lines not using linq
@@ -164,6 +164,7 @@ namespace Analysis
     {
         public List<Line> Lines { get; set; } = new List<Line>();
         public Box Box { get; set; } = new Box();
+
         public float AverageFontSize { get; set; }
         // public float AverageFontColor { get; set; }
         // public float AverageFontBackground { get; set; }
@@ -222,6 +223,7 @@ namespace Analysis
 
         public Color TextBackgroundColor { get; set; }
         public bool IsUniformBackground { get; set; }
+
         public void SaveTextColor(Color color)
         {
             TextColor = color;

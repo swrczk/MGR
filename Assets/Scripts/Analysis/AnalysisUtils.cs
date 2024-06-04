@@ -72,7 +72,7 @@ namespace Analysis
             return x.r > y.r && x.g > y.g && x.b > y.b;
         }
 
-        public static Mat MatToGreyScale(Mat mat, bool keepColorChannels = false)
+        public static Mat MatToGrayScale(Mat mat, bool keepColorChannels = false)
         {
             var gray = new Mat();
             Cv2.CvtColor(mat, gray, ColorConversionCodes.RGB2GRAY);
@@ -101,7 +101,7 @@ namespace Analysis
         //Result Range <0;8>
         public static float GetHistogramEntropy(Mat mat, bool convertToGreyScale = false)
         {
-            var gray = convertToGreyScale ? MatToGreyScale(mat) : mat;
+            var gray = convertToGreyScale ? MatToGrayScale(mat) : mat;
 
             // Analiza histogramu kolorów
             var hist = new Mat();
@@ -124,6 +124,11 @@ namespace Analysis
             }
 
             return entropy;
+        }
+        
+        public static Scalar ColorToScalar(Color color)
+        {
+            return new Scalar(color.r, color.g, color.b);
         }
     }
 }

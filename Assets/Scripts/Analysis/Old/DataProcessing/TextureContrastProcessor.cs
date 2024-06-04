@@ -19,7 +19,7 @@ namespace Analysis
         {
             var analysisResults = new List<ContrastAnalysisResult>();
             var image = AnalysisUtils.TextureToMat(inputTexture);
-            var outputImage = AnalysisUtils.MatToGreyScale(image.Clone(), true);
+            var outputImage = AnalysisUtils.MatToGrayScale(image.Clone(), true);
             foreach (var segment in segments)
             {
                 var segmentResult = Process(image, segment, outputImage);
@@ -70,7 +70,7 @@ namespace Analysis
         //values from 1 to 21
         private float CalculateOverallContrast(Mat roi)
         {
-            var gray = AnalysisUtils.MatToGreyScale(roi);
+            var gray = AnalysisUtils.MatToGrayScale(roi);
 
             // Znajdź najjaśniejszy i najciemniejszy piksel w wycinku
             double minVal, maxVal;
