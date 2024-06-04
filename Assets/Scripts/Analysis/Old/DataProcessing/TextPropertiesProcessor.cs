@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Analysis
 {
+    //done
     public class TextPropertiesProcessor : MonoBehaviour
     {
         private const float EntropyThreshold = 5.0f;

@@ -9,8 +9,8 @@ namespace Analysis
         private ColorProcessor _colorProcessor;
         private OcrProcessor _ocrProcessor;
         private SegmentationProcessor _segmentationProcessor;
-        private int _clusterCount;
-        private bool _excludeWords;
+        private int _clusterCount = 5;
+        private bool _excludeWords = false;
 
         public PreprocessingStage()
         {
@@ -26,14 +26,14 @@ namespace Analysis
             var rect = new OpenCvSharp.Rect(0, 0, mat.Width, mat.Height);
 
             var dominantColors = _colorProcessor.GetDominantColors(mat, _clusterCount);
-            var segmentedTexture = _colorProcessor.KMeansSegmentation(mat, _clusterCount);
+            var colorSegmentedMat = _colorProcessor.KMeansSegmentation(mat, _clusterCount);
             var (edgesMat, contours) = _colorProcessor.FindContours(grayMat);
             var contoursTexture = _colorProcessor.DrawContours(mat, contours);
 
-            var ocrResult = await _ocrProcessor.RecognizeTextStructure(segmentedTexture);
+            var ocrResult = await _ocrProcessor.RecognizeTextStructure(AnalysisUtils.MatToTexture(colorSegmentedMat));
             var documentStructure = _ocrProcessor.GetTextDocument(ocrResult);
 
-            var fullSegmentation = _segmentationProcessor.FindSegments(grayMat, rect);
+            var fullSegmentation = _segmentationProcessor.FindSegments(mat, rect);
             var finalSegmentation = _excludeWords
                 ? _segmentationProcessor.ExcludeRectsOverlappingWithWords(grayMat, fullSegmentation,
                     documentStructure.GetWords())
@@ -44,7 +44,7 @@ namespace Analysis
                 DefaultMat = mat,
                 GrayMat = grayMat,
                 DominantColors = dominantColors,
-                ColorSegmentedTexture = segmentedTexture,
+                ColorSegmentedMat = colorSegmentedMat,
                 ContoursTexture = contoursTexture,
                 EdgesMat = edgesMat,
                 Contours = contours,

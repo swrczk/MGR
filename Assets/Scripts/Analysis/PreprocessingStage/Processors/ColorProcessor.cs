@@ -9,7 +9,7 @@ namespace Analysis
     {
         private Color _defaultContoursColor = Color.red;
 
-        public Texture2D KMeansSegmentation(Mat img, int k)
+        public Mat KMeansSegmentation(Mat img, int k)
         {
             var imgReshaped = img.Reshape(1, img.Rows * img.Cols);
             var imgConverted = new Mat();
@@ -43,7 +43,7 @@ namespace Analysis
             }
 
             Marshal.Copy(resultData, 0, result.Data, resultData.Length);
-            return OpenCvSharp.Unity.MatToTexture(result);
+            return  result ;
         }
 
 
@@ -70,8 +70,9 @@ namespace Analysis
             return (edges, contours);
         }
 
-        public List<Color> GetDominantColors(Mat img, int clusterCount)
+        public List<Color> GetDominantColors(Mat mat, int clusterCount)
         {
+            var img = mat.Clone();
             img.CvtColor(ColorConversionCodes.RGB2HSV);
 
             // Zastosuj rozmycie Gaussa

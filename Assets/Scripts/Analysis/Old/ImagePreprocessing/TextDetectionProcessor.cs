@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Analysis
 {
+    //done
     public class TextDetectionProcessor : MonoBehaviour
     {
         private TesseractDriver _tesseractDriver;

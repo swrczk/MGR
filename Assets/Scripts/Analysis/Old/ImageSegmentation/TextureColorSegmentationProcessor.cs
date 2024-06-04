@@ -6,6 +6,7 @@ using Rect = OpenCvSharp.Rect;
 
 namespace Analysis
 {
+    //done - but not working
     public class TextureColorSegmentationProcessor : MonoBehaviour
     {
         private const float TargetColorAmount = 3;

@@ -72,12 +72,46 @@ namespace Analysis
             return x.r > y.r && x.g > y.g && x.b > y.b;
         }
 
+
         public static Mat MatToGrayScale(Mat mat, bool keepColorChannels = false)
         {
-            var gray = new Mat();
-            Cv2.CvtColor(mat, gray, ColorConversionCodes.RGB2GRAY);
+            Mat gray = new Mat();
+
+            // Handle different cases based on the number of channels
+            if (mat.Channels() == 1)
+            {
+                // If the image is already grayscale, just copy it
+                gray = mat.Clone();
+            }
+            else if (mat.Channels() == 3)
+            {
+                // If the image is RGB, convert it to grayscale
+                Cv2.CvtColor(mat, gray, ColorConversionCodes.RGB2GRAY);
+            }
+            else if (mat.Channels() == 4)
+            {
+                // If the image is RGBA, convert it to grayscale
+                Cv2.CvtColor(mat, gray, ColorConversionCodes.RGBA2GRAY);
+            }
+            else
+            {
+                // Handle unexpected number of channels
+                throw new Exception($"Unsupported number of channels: {mat.Channels()}");
+            }
+
             if (keepColorChannels)
+            {
+                // Convert grayscale image back to BGR (3 channels)
                 Cv2.CvtColor(gray, gray, ColorConversionCodes.GRAY2BGR);
+            }
+
+            return gray;
+        }
+
+        public static Mat AddColorChannelsToGrayScale(Mat mat)
+        {
+            var gray = new Mat();
+            Cv2.CvtColor(gray, gray, ColorConversionCodes.GRAY2BGR);
             return gray;
         }
 
@@ -125,7 +159,7 @@ namespace Analysis
 
             return entropy;
         }
-        
+
         public static Scalar ColorToScalar(Color color)
         {
             return new Scalar(color.r, color.g, color.b);

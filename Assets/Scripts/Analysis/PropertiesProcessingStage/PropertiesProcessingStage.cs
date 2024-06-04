@@ -1,14 +1,55 @@
-﻿namespace Analysis.PropertiesProcessingStage
+﻿using System.Collections.Generic;
+using OpenCvSharp;
+
+namespace Analysis.PropertiesProcessingStage
 {
     public class PropertiesModel
     {
-        
+        public TextDocument DocumentProperties { get; set; }
+        public List<ContrastAnalysisResult> ContrastProperties { get; set; }
+        public Mat ContrastVisualizationMat { get; set; }
     }
+
     public class PropertiesProcessingStage
     {
-        public void Run(PreprocessedModel model)
+        private DocumentProcessor _documentProcessor;
+        private ContrastProcessor _contrastProcessor;
+
+        public PropertiesProcessingStage()
         {
-            
+            _documentProcessor = new DocumentProcessor();
+            _contrastProcessor = new ContrastProcessor();
+        }
+
+        public PropertiesModel Run(PreprocessedModel model)
+        {
+            var documentProperties = DefineDocumentProperties(model);
+            var contrastProperties = _contrastProcessor.CheckContrast(model);
+            var visualizationMat =
+                _contrastProcessor.GetContrastVisualizationTexture(contrastProperties, model.DefaultMat);
+            return new PropertiesModel
+            {
+                DocumentProperties = documentProperties,
+                ContrastProperties = contrastProperties,
+                ContrastVisualizationMat = visualizationMat
+            };
+        }
+
+        private TextDocument DefineDocumentProperties(PreprocessedModel model)
+        {
+            var result = model.DocumentStructure;
+            foreach (var word in result.GetWords())
+            {
+                var colors = _documentProcessor.ColorsSortedByFrequency(model.ColorSegmentedMat, word.Box);
+                var isUniformBackground = _documentProcessor.IsBackgroundUniform(model.DefaultMat, word);
+
+                var (textColor, backgroundColor) = _documentProcessor.DefineWordColors(colors, word.Text.Length < 2);
+
+                word.SaveTextColor(backgroundColor);
+                word.SaveBackgroundColor(textColor, isUniformBackground);
+            }
+
+            return result;
         }
     }
 }

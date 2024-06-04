@@ -11,7 +11,7 @@ namespace Analysis
         public Mat EdgesMat { get; set; }
         public Point[][] Contours { get; set; }
         public List<Color> DominantColors { get; set; }
-        public Texture2D ColorSegmentedTexture { get; set; }
+        public Mat ColorSegmentedMat { get; set; }
         public Texture2D ContoursTexture { get; set; }
         public OcrResult OcrResult { get; set; }
         public TextDocument DocumentStructure { get; set; }

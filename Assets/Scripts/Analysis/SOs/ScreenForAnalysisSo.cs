@@ -66,17 +66,17 @@ namespace Analysis
 
     public class SegmentedTexture
     {
-        public SegmentedTexture(Rect imageRect, List<Segment> segments, Mat outputTexture)
+        public SegmentedTexture(Rect imageRect, List<Segment> segments, Mat visualizationMat)
         {
             ImageRect = imageRect;
             Segments = segments;
-            OutputTexture = outputTexture;
+            VisualizationMat = visualizationMat;
             RecalculateVolumePercentage();
         }
 
         public Rect ImageRect { get; set; }
         public List<Segment> Segments { get; set; }
-        public Mat OutputTexture { get; set; }
+        public Mat VisualizationMat { get; set; }
 
         public void RecalculateVolumePercentage()
         {
