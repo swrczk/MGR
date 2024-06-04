@@ -9,8 +9,9 @@ namespace Analysis
     {
         private Color _defaultContoursColor = Color.red;
 
-        public Mat KMeansSegmentation(Mat img, int k)
+        public Mat KMeansSegmentation(Mat mat, int k)
         {
+            var img = mat.Clone();
             var imgReshaped = img.Reshape(1, img.Rows * img.Cols);
             var imgConverted = new Mat();
             imgReshaped.ConvertTo(imgConverted, MatType.CV_32F);
@@ -43,16 +44,15 @@ namespace Analysis
             }
 
             Marshal.Copy(resultData, 0, result.Data, resultData.Length);
-            return  result ;
+            return result;
         }
 
 
-        public Texture2D DrawContours(Mat image, Point[][] contours, Color contourColor = default)
+        public Texture2D DrawContours(Mat mat, Point[][] contours, Color contourColor = default)
         {
-
             var color = AnalysisUtils.ColorToScalar(contourColor == default ? _defaultContoursColor : contourColor);
 
-            var filledContours = image.Clone();
+            var filledContours = mat.Clone();
             foreach (var contour in contours)
             {
                 Cv2.DrawContours(filledContours, new Point[][] { contour }, -1, color);

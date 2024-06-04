@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OpenCvSharp;
+using UnityEngine;
 
 namespace Analysis.PropertiesProcessingStage
 {
@@ -21,10 +22,11 @@ namespace Analysis.PropertiesProcessingStage
             _contrastProcessor = new ContrastProcessor();
         }
 
-        public PropertiesModel Run(PreprocessedModel model)
+        public PropertiesModel Run(PreprocessedModel model, Texture2D originalTexture)
         {
             var documentProperties = DefineDocumentProperties(model);
-            var contrastProperties = _contrastProcessor.CheckContrast(model);
+            var contrastProperties = _contrastProcessor.CheckContrast(model.SegmentedTexture.Segments,
+                AnalysisUtils.TextureToMat(originalTexture));
             var visualizationMat =
                 _contrastProcessor.GetContrastVisualizationTexture(contrastProperties, model.DefaultMat);
             return new PropertiesModel

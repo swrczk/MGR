@@ -11,11 +11,12 @@ namespace Analysis
         private const float ColorThreshold = 50;
         private const float EntropyThreshold = 0.3f;
 
-        public SegmentedTexture FindSegments(Mat mat, Rect imageRect)
+        public SegmentedTexture FindSegments(Mat mat)
         {
             var finalRects = new List<Rect>();
-            DivideAndConquer(mat, new Rect(0, 0, mat.Width, mat.Height), finalRects);
-            return CreateSegments(mat, finalRects, imageRect);
+            var rect = new Rect(0, 0, mat.Width, mat.Height);
+            DivideAndConquer(mat, rect, finalRects);
+            return CreateSegments(mat, finalRects, rect);
         }
 
         private Mat GetSegmentationTexture(Mat mat, List<Segment> finalSegments)

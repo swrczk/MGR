@@ -19,7 +19,8 @@ namespace UI
             base.Setup();
             _screenForAnalysisData = Context.ResultsManager.GetFirstSelectedScreen();
             View.Setup(_screenForAnalysisData);
-            AnaliseRefactored().Forget();
+            // AnaliseRefactored().Forget();
+            Analise();
         }
 
         protected override void CreateDispatcher()
@@ -47,8 +48,9 @@ namespace UI
 
         private async UniTask AnaliseRefactored()
         {
-            var preprocessedModel = await _preprocessingStage.Run(_screenForAnalysisData.texture);
-            var propertiesModel = _propertiesProcessingStage.Run(preprocessedModel);
+            var texture = _screenForAnalysisData.texture;
+            var preprocessedModel = await _preprocessingStage.Run(texture);
+            var propertiesModel = _propertiesProcessingStage.Run(preprocessedModel, texture);
 
             _screenForAnalysisData.SaveDominantColors(preprocessedModel.DominantColors);
             _screenForAnalysisData.SaveProcessedImage(preprocessedModel.ContoursTexture, "ProcessedTextures",

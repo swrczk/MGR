@@ -10,7 +10,7 @@ namespace Analysis
         private OcrProcessor _ocrProcessor;
         private SegmentationProcessor _segmentationProcessor;
         private int _clusterCount = 5;
-        private bool _excludeWords = false;
+        private bool _excludeWords = true;
 
         public PreprocessingStage()
         {
@@ -23,7 +23,6 @@ namespace Analysis
         {
             var mat = AnalysisUtils.TextureToMat(texture);
             var grayMat = AnalysisUtils.MatToGrayScale(mat);
-            var rect = new OpenCvSharp.Rect(0, 0, mat.Width, mat.Height);
 
             var dominantColors = _colorProcessor.GetDominantColors(mat, _clusterCount);
             var colorSegmentedMat = _colorProcessor.KMeansSegmentation(mat, _clusterCount);
@@ -33,7 +32,7 @@ namespace Analysis
             var ocrResult = await _ocrProcessor.RecognizeTextStructure(AnalysisUtils.MatToTexture(colorSegmentedMat));
             var documentStructure = _ocrProcessor.GetTextDocument(ocrResult);
 
-            var fullSegmentation = _segmentationProcessor.FindSegments(mat, rect);
+            var fullSegmentation = _segmentationProcessor.FindSegments(mat);
             var finalSegmentation = _excludeWords
                 ? _segmentationProcessor.ExcludeRectsOverlappingWithWords(grayMat, fullSegmentation,
                     documentStructure.GetWords())

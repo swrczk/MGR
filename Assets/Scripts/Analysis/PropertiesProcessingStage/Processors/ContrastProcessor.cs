@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using OpenCvSharp;
+using Unity.VisualScripting;
 using Rect = OpenCvSharp.Rect;
 
 namespace Analysis
@@ -15,12 +16,12 @@ namespace Analysis
         
         private ColorPropertiesProcessor _colorPropertiesProcessor = new();
 
-        public List<ContrastAnalysisResult>  CheckContrast(PreprocessedModel model)
+        public List<ContrastAnalysisResult> CheckContrast(List<Segment> segments, Mat mat)
         {
             var analysisResults = new List<ContrastAnalysisResult>();
-            foreach (var segment in model.SegmentedTexture.Segments)
+            foreach (var segment in segments)
             {
-                var segmentResult = CheckContrast(model.DefaultMat, segment);
+                var segmentResult = CheckContrast(mat, segment);
                 analysisResults.Add(segmentResult);
             }
 

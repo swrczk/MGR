@@ -66,6 +66,11 @@ namespace Analysis
 
     public class SegmentedTexture
     {
+
+        public Rect ImageRect { get; set; }
+        public List<Segment> Segments { get; set; }
+        public Mat VisualizationMat { get; set; }
+        
         public SegmentedTexture(Rect imageRect, List<Segment> segments, Mat visualizationMat)
         {
             ImageRect = imageRect;
@@ -74,19 +79,15 @@ namespace Analysis
             RecalculateVolumePercentage();
         }
 
-        public Rect ImageRect { get; set; }
-        public List<Segment> Segments { get; set; }
-        public Mat VisualizationMat { get; set; }
-
         public void RecalculateVolumePercentage()
         {
             float imageArea = ImageRect.Width * ImageRect.Height;
 
-            foreach (var rect in Segments)
+            foreach (var segment in Segments)
             {
-                float rectArea = rect.Rect.Width * rect.Rect.Height;
+                float rectArea = segment.Rect.Width * segment.Rect.Height;
                 float volumePercentage = (rectArea / imageArea) * 100;
-                rect.VolumePercentage = volumePercentage;
+                segment.VolumePercentage = volumePercentage;
             }
         }
     }
