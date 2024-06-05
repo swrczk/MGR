@@ -13,10 +13,10 @@ namespace Manager
 
         public async UniTask AnaliseRefactored(ScreenForAnalysisSo screen)
         {
-            await UniTask.WaitForFixedUpdate();
+            await UniTask.WaitForSeconds(3);
             _screenForAnalysisData = screen;
             var texture = _screenForAnalysisData.texture;
-
+            
             var preprocessedModel = await _preprocessingStage.Run(texture);
             SavePreprocessingStageResults(preprocessedModel);
 

@@ -13,9 +13,7 @@ namespace UI.ConfigScene
         public event Action UploadButtonClicked;
         public event Action AnaliseButtonClicked;
         public event Action<string, ScreenElement> RemoveElementClicked;
-
-        public GifAnimator GifAnimator => gifAnimator;
-
+        
         [SerializeField]
         private ScreenElement filePrefab;
 
@@ -30,8 +28,6 @@ namespace UI.ConfigScene
         
         [SerializeField]
         private GameObject loadingOverlay;
-        [SerializeField]
-        private GifAnimator gifAnimator;
 
         protected override void RegisterEvents()
         {

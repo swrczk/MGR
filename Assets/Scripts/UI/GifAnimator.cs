@@ -33,11 +33,14 @@ namespace UI
             if (frames.Length == 0) return;
             while (!token.IsCancellationRequested)
             {
+                await UniTask.SwitchToThreadPool();
                 _currentFrame = (_currentFrame + 1) % frames.Length;
-                rawImage.texture = frames[_currentFrame];
                 Debug.LogError("Frame: " + _currentFrame + " Delay: " + delay + "ms");
-                await UniTask.Delay( delay, cancellationToken: token);
-            }
+                await UniTask.Delay(delay, cancellationToken: token);
+                
+                await UniTask.SwitchToMainThread(); 
+                rawImage.texture = frames[_currentFrame];
+            } 
         }
     }
 }

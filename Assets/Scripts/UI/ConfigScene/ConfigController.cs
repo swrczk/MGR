@@ -27,19 +27,13 @@ namespace UI.ConfigScene
 
         private void Analise()
         {
-              RunAnalysis().Forget();
+            RunAnalysis().Forget();
         }
 
         private async UniTaskVoid RunAnalysis()
         {
-            var cts = new CancellationTokenSource();
-            var gifTask =View.GifAnimator.Run(cts.Token);
-            
             var screenData = Context.ResultsManager.GetFirstSelectedScreen();
-            var imageProcessing= Context.ImageProcessingManager.AnaliseRefactored(screenData);
-
-            await UniTask.WhenAny(gifTask, imageProcessing);
-            cts.Cancel();
+            await Context.ImageProcessingManager.AnaliseRefactored(screenData);
             Context.ChangeScene("Scenes/ImageProcessingScene");
         }
 
