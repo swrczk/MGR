@@ -1,96 +1,49 @@
-﻿using System.Collections.Generic;
-using Analysis;
+﻿using Analysis;
+using Analysis.PropertiesProcessingStage;
 using Cysharp.Threading.Tasks;
-using UnityEngine;
 
 namespace Manager
 {
     public class ImageProcessingManager : BaseManager
     {
-        [SerializeField]
-        private ColorDetectionProcessor colorDetectionProcessor;
-
-        [SerializeField]
-        private int clusterCount = 5;
-
-        [SerializeField]
-        private TextDetectionProcessor textDetectionProcessor;
-
-        [SerializeField]
-        private TextPropertiesProcessor textPropertiesProcessor;
-
-        [SerializeField]
-        private TextureContrastProcessor textureContrastProcessor;
-        
-        [SerializeField]
-        private TextureColorSegmentationProcessor textureColorSegmentationProcessor; 
-
         private ScreenForAnalysisSo _screenForAnalysisData;
+        private PreprocessingStage _preprocessingStage = new();
+        private PropertiesProcessingStage _propertiesProcessingStage = new();
 
-        public void SetupInput(ScreenForAnalysisSo screenForAnalysisData)
+
+        public async UniTask AnaliseRefactored(ScreenForAnalysisSo screen)
         {
-            _screenForAnalysisData = screenForAnalysisData;
+            await UniTask.WaitForFixedUpdate();
+            _screenForAnalysisData = screen;
+            var texture = _screenForAnalysisData.texture;
+
+            var preprocessedModel = await _preprocessingStage.Run(texture);
+            SavePreprocessingStageResults(preprocessedModel);
+
+            var propertiesModel = _propertiesProcessingStage.Run(preprocessedModel, texture);
+            SavePropertiesProcessingResults(propertiesModel);
         }
 
-        public void AnaliseText()
+        private void SavePreprocessingStageResults(PreprocessedModel preprocessedModel)
         {
-            DetectText().Forget();
-        }
-
-        public void AnaliseContrast()
-        {
-            var words = _screenForAnalysisData.textDocument?.GetWords() ?? new List<Word>();
-            var excludeWords = words.Count>0;
-            var original = _screenForAnalysisData.texture;
-            var segmentedTextureByColors = textureColorSegmentationProcessor.ProcessTexture(original, excludeWords, words);
-            _screenForAnalysisData.SegmentedByColorRects = segmentedTextureByColors.finalSegments;
-            var result = textureContrastProcessor.CheckContrastInBlocks(segmentedTextureByColors.finalSegments, original); 
-            _screenForAnalysisData.SaveProcessedImage(result.outputTexture, "ProcessedTextures", ImageProcessingType.SegmentedTexture);
-            _screenForAnalysisData.SaveProcessedImage(segmentedTextureByColors.outputTexture, "ProcessedTextures",
-                ImageProcessingType.ContrastValuesInterpretation); 
-        }
-
-
-        public Texture2D AnaliseColors()
-        {
-            var dominantColors = GetDominantColors();
-            var segmentedTexture = GetSegmentedTexture(dominantColors.Count);
-            var processedTexture = DrawContours(segmentedTexture);
-
-            _screenForAnalysisData.SaveDominantColors(dominantColors);
-            _screenForAnalysisData.SaveProcessedImage(segmentedTexture, "ProcessedTextures",
-                ImageProcessingType.ColorSegmentedTexture);
-            var preview = _screenForAnalysisData.SaveProcessedImage(processedTexture, "ProcessedTextures",
+            _screenForAnalysisData.SaveDominantColors(preprocessedModel.DominantColors);
+            _screenForAnalysisData.SaveProcessedImage(preprocessedModel.ContoursTexture, "ProcessedTextures",
                 ImageProcessingType.ContoursTexture);
-            return preview;
-        }
-
-        private async UniTask DetectText()
-        {
-            var colorSegmentationTexture =
-                _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentedTexture]; 
-            var ocrResult = await textDetectionProcessor.Process(colorSegmentationTexture);
-            _screenForAnalysisData.SaveProcessedImage(ocrResult.HighlightedTexture, "ProcessedTextures",
+            _screenForAnalysisData.SaveProcessedImage(preprocessedModel.ColorSegmentedMat.ToTexture(),
+                "ProcessedTextures",
+                ImageProcessingType.ColorSegmentedTexture);
+            _screenForAnalysisData.SaveProcessedImage(preprocessedModel.OcrResult.HighlightedTexture,
+                "ProcessedTextures",
                 ImageProcessingType.OcrHighlightedResults);
-
-            var textDocument = textDetectionProcessor.GetTextDocument(ocrResult);
-            _screenForAnalysisData.SaveTextDocument(textDocument);
-            textPropertiesProcessor.DetectTextColor(_screenForAnalysisData);
+            _screenForAnalysisData.SaveProcessedImage(preprocessedModel.SegmentedTexture.VisualizationMat.ToTexture(),
+                "ProcessedTextures", ImageProcessingType.SegmentedTexture);
         }
 
-        private List<Color> GetDominantColors()
+        private void SavePropertiesProcessingResults(PropertiesModel propertiesModel)
         {
-            return colorDetectionProcessor.DetectDominantColors(_screenForAnalysisData.texture, clusterCount);
-        }
-
-        private Texture2D GetSegmentedTexture(int dominantColorsCount)
-        {
-            return colorDetectionProcessor.SegmentImageUsingKMeans(_screenForAnalysisData.texture, dominantColorsCount);
-        }
-
-        private Texture2D DrawContours(Texture2D texture)
-        {
-            return colorDetectionProcessor.DrawDetectedContours(texture);
+            _screenForAnalysisData.SaveProcessedImage(propertiesModel.ContrastVisualizationMat.ToTexture(),
+                "ProcessedTextures",
+                ImageProcessingType.ContrastValuesInterpretation);
         }
     }
 }

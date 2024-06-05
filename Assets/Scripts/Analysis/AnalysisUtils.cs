@@ -5,6 +5,19 @@ using UnityEngine;
 
 namespace Analysis
 {
+    
+
+    public static class ExtenstionAnalysis
+    {
+        public static Texture2D ToTexture(this Mat mat)
+        {
+            return AnalysisUtils.MatToTexture(mat);
+        }
+        public static Mat ToMat(this Texture2D texture)
+        {
+            return AnalysisUtils.TextureToMat(texture);
+        }
+    }
     public class Vec3BEqualityComparer : IEqualityComparer<Vec3b>
     {
         public bool Equals(Vec3b x, Vec3b y)

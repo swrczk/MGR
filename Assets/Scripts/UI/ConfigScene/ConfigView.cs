@@ -1,6 +1,7 @@
 ﻿using System;
 using Analysis;
 using UnityEngine;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utils.Common;
 using Utils.MVC;
@@ -13,6 +14,8 @@ namespace UI.ConfigScene
         public event Action AnaliseButtonClicked;
         public event Action<string, ScreenElement> RemoveElementClicked;
 
+        public GifAnimator GifAnimator => gifAnimator;
+
         [SerializeField]
         private ScreenElement filePrefab;
 
@@ -24,6 +27,11 @@ namespace UI.ConfigScene
 
         [SerializeField]
         private Button analiseButton;
+        
+        [SerializeField]
+        private GameObject loadingOverlay;
+        [SerializeField]
+        private GifAnimator gifAnimator;
 
         protected override void RegisterEvents()
         {
@@ -66,6 +74,7 @@ namespace UI.ConfigScene
 
         private void OnAnaliseButtonClicked()
         {
+            loadingOverlay.SetActive(true);
             AnaliseButtonClicked?.Invoke();
         }
     }

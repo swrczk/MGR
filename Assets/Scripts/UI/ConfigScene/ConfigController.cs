@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 using Utils.Common;
@@ -25,6 +27,19 @@ namespace UI.ConfigScene
 
         private void Analise()
         {
+              RunAnalysis().Forget();
+        }
+
+        private async UniTaskVoid RunAnalysis()
+        {
+            var cts = new CancellationTokenSource();
+            var gifTask =View.GifAnimator.Run(cts.Token);
+            
+            var screenData = Context.ResultsManager.GetFirstSelectedScreen();
+            var imageProcessing= Context.ImageProcessingManager.AnaliseRefactored(screenData);
+
+            await UniTask.WhenAny(gifTask, imageProcessing);
+            cts.Cancel();
             Context.ChangeScene("Scenes/ImageProcessingScene");
         }
 
