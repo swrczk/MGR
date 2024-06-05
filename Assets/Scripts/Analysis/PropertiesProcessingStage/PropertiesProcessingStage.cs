@@ -28,7 +28,7 @@ namespace Analysis.PropertiesProcessingStage
             var contrastProperties = _contrastProcessor.CheckContrast(model.SegmentedTexture.Segments,
                 AnalysisUtils.TextureToMat(originalTexture));
             var visualizationMat =
-                _contrastProcessor.GetContrastVisualizationTexture(contrastProperties, model.DefaultMat);
+                _contrastProcessor.GetContrastVisualizationTexture(contrastProperties, model.GrayMatWithColorChannels);
             return new PropertiesModel
             {
                 DocumentProperties = documentProperties,

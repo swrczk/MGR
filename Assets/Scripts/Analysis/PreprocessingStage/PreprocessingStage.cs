@@ -23,6 +23,7 @@ namespace Analysis
         {
             var mat = AnalysisUtils.TextureToMat(texture);
             var grayMat = AnalysisUtils.MatToGrayScale(mat);
+            var grayMatWithColorChannels = AnalysisUtils.AddColorChannelsToGrayScale(grayMat);
 
             var dominantColors = _colorProcessor.GetDominantColors(mat, _clusterCount);
             var colorSegmentedMat = _colorProcessor.KMeansSegmentation(mat, _clusterCount);
@@ -34,7 +35,7 @@ namespace Analysis
 
             var fullSegmentation = _segmentationProcessor.FindSegments(mat);
             var finalSegmentation = _excludeWords
-                ? _segmentationProcessor.ExcludeRectsOverlappingWithWords(grayMat, fullSegmentation,
+                ? _segmentationProcessor.ExcludeRectsOverlappingWithWords(grayMatWithColorChannels, fullSegmentation,
                     documentStructure.GetWords())
                 : fullSegmentation;
             
@@ -42,6 +43,7 @@ namespace Analysis
             {
                 DefaultMat = mat,
                 GrayMat = grayMat,
+                GrayMatWithColorChannels = grayMatWithColorChannels,
                 DominantColors = dominantColors,
                 ColorSegmentedMat = colorSegmentedMat,
                 ContoursTexture = contoursTexture,

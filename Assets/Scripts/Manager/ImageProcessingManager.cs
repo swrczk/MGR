@@ -45,9 +45,9 @@ namespace Manager
             var segmentedTextureByColors = textureColorSegmentationProcessor.ProcessTexture(original, excludeWords, words);
             _screenForAnalysisData.SegmentedByColorRects = segmentedTextureByColors.finalSegments;
             var result = textureContrastProcessor.CheckContrastInBlocks(segmentedTextureByColors.finalSegments, original); 
-            _screenForAnalysisData.SaveProcessedImage(result.outputTexture, "ProcessedTextures", ImageProcessingType.ContrastBlocks);
+            _screenForAnalysisData.SaveProcessedImage(result.outputTexture, "ProcessedTextures", ImageProcessingType.SegmentedTexture);
             _screenForAnalysisData.SaveProcessedImage(segmentedTextureByColors.outputTexture, "ProcessedTextures",
-                ImageProcessingType.ColorBlocksPreprocessed); 
+                ImageProcessingType.ContrastValuesInterpretation); 
         }
 
 
@@ -59,19 +59,19 @@ namespace Manager
 
             _screenForAnalysisData.SaveDominantColors(dominantColors);
             _screenForAnalysisData.SaveProcessedImage(segmentedTexture, "ProcessedTextures",
-                ImageProcessingType.ColorSegmentation);
+                ImageProcessingType.ColorSegmentedTexture);
             var preview = _screenForAnalysisData.SaveProcessedImage(processedTexture, "ProcessedTextures",
-                ImageProcessingType.ColorContours);
+                ImageProcessingType.ContoursTexture);
             return preview;
         }
 
         private async UniTask DetectText()
         {
             var colorSegmentationTexture =
-                _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation]; 
+                _screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentedTexture]; 
             var ocrResult = await textDetectionProcessor.Process(colorSegmentationTexture);
             _screenForAnalysisData.SaveProcessedImage(ocrResult.HighlightedTexture, "ProcessedTextures",
-                ImageProcessingType.OcrHighlightedTexture);
+                ImageProcessingType.OcrHighlightedResults);
 
             var textDocument = textDetectionProcessor.GetTextDocument(ocrResult);
             _screenForAnalysisData.SaveTextDocument(textDocument);

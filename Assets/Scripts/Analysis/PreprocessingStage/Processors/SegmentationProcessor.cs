@@ -24,7 +24,7 @@ namespace Analysis
             var segmentedTexture = mat.Clone();
             foreach (var segment in finalSegments)
             {
-                Cv2.Rectangle(mat, new Point(segment.Rect.X, segment.Rect.Y),
+                Cv2.Rectangle(segmentedTexture, new Point(segment.Rect.X, segment.Rect.Y),
                     new Point(segment.Rect.X + segment.Rect.Width, segment.Rect.Y + segment.Rect.Height),
                     new Scalar(0, 0, 255), 2);
             }

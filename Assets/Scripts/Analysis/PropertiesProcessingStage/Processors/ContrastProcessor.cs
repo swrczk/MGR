@@ -30,7 +30,7 @@ namespace Analysis
         
         public Mat GetContrastVisualizationTexture(List<ContrastAnalysisResult> analysisResults, Mat mat)
         {
-            var outputImage = AnalysisUtils.AddColorChannelsToGrayScale(mat);
+            var outputImage = mat.Clone();
             var rectColor = new Scalar(0, 0, 0);
             foreach (var result in analysisResults)
             {

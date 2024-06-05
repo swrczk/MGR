@@ -13,7 +13,7 @@ namespace Analysis
 
         public void DetectTextColor(ScreenForAnalysisSo screenForAnalysisData)
         {
-            var texture = screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentation];
+            var texture = screenForAnalysisData.ProcessedImages[ImageProcessingType.ColorSegmentedTexture];
             var image = AnalysisUtils.TextureToMat(texture);
             var originalImage = AnalysisUtils.TextureToMat(screenForAnalysisData.texture);
             var wordBoxes = screenForAnalysisData.textDocument.GetWords();

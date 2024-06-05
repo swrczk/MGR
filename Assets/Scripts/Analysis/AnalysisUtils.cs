@@ -111,7 +111,7 @@ namespace Analysis
         public static Mat AddColorChannelsToGrayScale(Mat mat)
         {
             var gray = new Mat();
-            Cv2.CvtColor(gray, gray, ColorConversionCodes.GRAY2BGR);
+            Cv2.CvtColor(mat, gray, ColorConversionCodes.GRAY2BGR);
             return gray;
         }
 

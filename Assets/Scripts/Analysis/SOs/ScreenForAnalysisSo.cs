@@ -11,11 +11,11 @@ namespace Analysis
 {
     public enum ImageProcessingType
     {
-        ColorSegmentation,
-        ColorContours,
-        OcrHighlightedTexture,
-        ContrastBlocks,
-        ColorBlocksPreprocessed,
+        ColorSegmentedTexture,
+        ContoursTexture,
+        OcrHighlightedResults,
+        SegmentedTexture,
+        ContrastValuesInterpretation,
         Test
     }
 

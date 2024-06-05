@@ -8,6 +8,7 @@ namespace Analysis
     {
         public Mat DefaultMat { get; set; }
         public Mat GrayMat { get; set; }
+        public Mat GrayMatWithColorChannels { get; set; }
         public Mat EdgesMat { get; set; }
         public Point[][] Contours { get; set; }
         public List<Color> DominantColors { get; set; }

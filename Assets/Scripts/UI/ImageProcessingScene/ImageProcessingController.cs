@@ -19,8 +19,8 @@ namespace UI
             base.Setup();
             _screenForAnalysisData = Context.ResultsManager.GetFirstSelectedScreen();
             View.Setup(_screenForAnalysisData);
-            // AnaliseRefactored().Forget();
-            Analise();
+            AnaliseRefactored().Forget();
+            // Analise();
         }
 
         protected override void CreateDispatcher()
@@ -42,34 +42,44 @@ namespace UI
             Context.ImageProcessingManager.AnaliseContrast();
 
 
-            var preview = _screenForAnalysisData.ProcessedImages[ImageProcessingType.ContrastBlocks];
+            var preview = _screenForAnalysisData.ProcessedImages[ImageProcessingType.SegmentedTexture];
             View.ShowProcessedImage(preview);
         }
 
         private async UniTask AnaliseRefactored()
         {
             var texture = _screenForAnalysisData.texture;
+            
             var preprocessedModel = await _preprocessingStage.Run(texture);
+            SavePreprocessingStageResults(preprocessedModel);
+            
             var propertiesModel = _propertiesProcessingStage.Run(preprocessedModel, texture);
+            SavePropertiesProcessingResults(propertiesModel);
 
+            var preview = _screenForAnalysisData.ProcessedImages[ImageProcessingType.SegmentedTexture];
+            View.ShowProcessedImage(preview);
+        }
+
+        private void SavePreprocessingStageResults(PreprocessedModel preprocessedModel)
+        {
             _screenForAnalysisData.SaveDominantColors(preprocessedModel.DominantColors);
             _screenForAnalysisData.SaveProcessedImage(preprocessedModel.ContoursTexture, "ProcessedTextures",
-                ImageProcessingType.ColorContours);
+                ImageProcessingType.ContoursTexture);
             _screenForAnalysisData.SaveProcessedImage(preprocessedModel.ColorSegmentedMat.ToTexture(),
                 "ProcessedTextures",
-                ImageProcessingType.ColorSegmentation);
+                ImageProcessingType.ColorSegmentedTexture);
             _screenForAnalysisData.SaveProcessedImage(preprocessedModel.OcrResult.HighlightedTexture,
                 "ProcessedTextures",
-                ImageProcessingType.OcrHighlightedTexture);
+                ImageProcessingType.OcrHighlightedResults);
             _screenForAnalysisData.SaveProcessedImage(preprocessedModel.SegmentedTexture.VisualizationMat.ToTexture(),
-                "ProcessedTextures", ImageProcessingType.ContrastBlocks);
+                "ProcessedTextures", ImageProcessingType.SegmentedTexture);
+        }
 
+        private void SavePropertiesProcessingResults(PropertiesModel propertiesModel)
+        {
             _screenForAnalysisData.SaveProcessedImage(propertiesModel.ContrastVisualizationMat.ToTexture(),
                 "ProcessedTextures",
-                ImageProcessingType.ColorBlocksPreprocessed);
-
-            var preview = _screenForAnalysisData.ProcessedImages[ImageProcessingType.ContrastBlocks];
-            View.ShowProcessedImage(preview);
+                ImageProcessingType.ContrastValuesInterpretation);
         }
     }
 
