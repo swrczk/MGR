@@ -1,21 +1,15 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using OpenCvSharp;
+﻿using System.Linq;
 
-namespace Analysis
+namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class LinePropertiesProcessor
     {
-        public void ProcessLineProperties(List<LineModel> lines, Mat mat)
+        public void ProcessLineProperties(LineModel line, int imageArea)
         {
-            var imageArea = mat.Width * mat.Height;
-            foreach (var line in lines)
-            {
-                line.Box = CalculateLineBox(line);
-                line.AverageFontSize = CalculateAverageFontSize(line);
-                line.AverageSpacing = CalculateAverageSpacing(line);
-                line.ImagePercentage = CalculateLinePercentage(line, imageArea);
-            }
+            line.Box = CalculateLineBox(line);
+            line.AverageFontSize = CalculateAverageFontSize(line);
+            line.AverageSpacing = CalculateAverageSpacing(line);
+            line.ImagePercentage = CalculateLinePercentage(line, imageArea);
         }
 
         private float CalculateLinePercentage(LineModel line, int imageArea)

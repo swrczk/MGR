@@ -14,15 +14,6 @@ namespace Analysis
             _tesseractDriver = new TesseractDriver();
             _ocrWordsToTextStructureAdapter = new OcrWordsToTextStructureAdapter();
         }
-        public async UniTask<TextDocumentModel> ProcessText(Texture2D texture)
-        {
-            var mat = AnalysisUtils.TextureToMat(texture);
-            var grayMat = AnalysisUtils.MatToGrayScale(mat);
-            var grayTexture = AnalysisUtils.MatToTexture(grayMat);
-            var ocrResult = await RecognizeTextStructure(grayTexture) ;
-            var documentStructure = GetTextDocument(ocrResult);
-            return documentStructure;
-        }
 
         public async UniTask<OcrResult> RecognizeTextStructure(Texture2D grayTexture)
         {

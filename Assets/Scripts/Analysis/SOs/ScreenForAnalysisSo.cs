@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using Analysis.PropertiesProcessingStage.Model;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;

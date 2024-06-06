@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using Analysis.PropertiesProcessingStage.Model;
+using Analysis.PropertiesProcessingStage.Processor;
+using UnityEngine;
 
 namespace Analysis.PropertiesProcessingStage
 {
@@ -9,6 +11,7 @@ namespace Analysis.PropertiesProcessingStage
         private WordPropertiesProcessor _wordPropertiesProcessor;
         private LinePropertiesProcessor _linePropertiesProcessor;
         private TextBlockPropertiesProcessor _textBlockPropertiesProcessor;
+        private TextDocumentPropertiesProcessor _textDocumentPropertiesProcessor;
 
         public PropertiesProcessingStage()
         {
@@ -17,11 +20,13 @@ namespace Analysis.PropertiesProcessingStage
             _wordPropertiesProcessor = new WordPropertiesProcessor();
             _linePropertiesProcessor = new LinePropertiesProcessor();
             _textBlockPropertiesProcessor = new TextBlockPropertiesProcessor();
+            _textDocumentPropertiesProcessor = new TextDocumentPropertiesProcessor();
         }
 
         public PropertiesModel Run(PreprocessedModel model, Texture2D originalTexture)
         {
-            var documentProperties = DefineDocumentProperties(model);
+            DefineDocumentStructureProperties(model);
+            var documentProperties = DefineDocumentColorProperties(model);
             var contrastProperties = _contrastProcessor.CheckContrast(model.SegmentedTextureModel.Segments,
                 AnalysisUtils.TextureToMat(originalTexture));
             var visualizationMat =
@@ -34,7 +39,7 @@ namespace Analysis.PropertiesProcessingStage
             };
         }
 
-        private TextDocumentModel DefineDocumentProperties(PreprocessedModel model)
+        private TextDocumentModel DefineDocumentColorProperties(PreprocessedModel model)
         {
             var result = model.DocumentModelStructure;
             foreach (var word in result.GetWords())
@@ -50,6 +55,31 @@ namespace Analysis.PropertiesProcessingStage
             }
 
             return result;
+        }
+
+        private TextDocumentModel DefineDocumentStructureProperties(PreprocessedModel model)
+        {
+            var mat = model.DefaultMat;
+            var imageArea = mat.Width * mat.Height;
+            var document = model.DocumentModelStructure;
+            foreach (var word in document.GetWords())
+            {
+                _wordPropertiesProcessor.ProcessWordProperties(  word, imageArea);
+            }
+
+            foreach (var line in document.GetLines())
+            {
+                _linePropertiesProcessor.ProcessLineProperties(  line, imageArea);
+            }
+
+            foreach (var block in document.TextBlocks)
+            {
+                _textBlockPropertiesProcessor.ProcessTextBlockProperties(  block, imageArea);
+            }
+            
+            _textDocumentPropertiesProcessor.ProcessTextDocumentProperties(document);
+
+            return document;
         }
     }
 }

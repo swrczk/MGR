@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenCvSharp;
 
-namespace Analysis.PropertiesProcessingStage
+namespace Analysis.PropertiesProcessingStage.Model
 {
     public class PropertiesModel
     {

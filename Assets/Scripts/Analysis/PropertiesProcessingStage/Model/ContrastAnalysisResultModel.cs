@@ -1,4 +1,4 @@
-﻿namespace Analysis
+﻿namespace Analysis.PropertiesProcessingStage.Model
 {
     public enum ContrastResultType
     {

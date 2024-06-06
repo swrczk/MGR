@@ -1,5 +1,6 @@
 ﻿using Analysis;
 using Analysis.PropertiesProcessingStage;
+using Analysis.PropertiesProcessingStage.Model;
 using Cysharp.Threading.Tasks;
 
 namespace Manager

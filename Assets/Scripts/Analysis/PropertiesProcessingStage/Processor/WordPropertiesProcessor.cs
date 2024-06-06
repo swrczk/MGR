@@ -1,19 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using OpenCvSharp;
-
-namespace Analysis
+﻿namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class WordPropertiesProcessor
     {
-        public void ProcessWordProperties(List<WordModel> words, Mat mat)
+        public void ProcessWordProperties(WordModel word, int imageArea)
         {
-            var imageArea = mat.Width * mat.Height;
-
-            foreach (var word in words)
-            {
-                word.ImagePercentage  = CalculateWordPercentage(word, imageArea);
-            }
+            word.ImagePercentage = CalculateWordPercentage(word, imageArea);
         }
 
         private static float CalculateWordPercentage(WordModel word, int imageArea)

@@ -9,21 +9,10 @@ namespace Analysis
         public Box Box { get;   set; }
         public float AverageFontSize { get; set; }
         public float AverageInterline { get; set; }
+        
+        public bool IsLeftAligned { get; set; }
         // public float AverageFontColor { get; set; }
         // public float AverageFontBackground { get; set; }
-        // public float AverageDistanceBetweenLines { get; set; }
  
-
-        public void RevalidateBox()
-        {
-            AverageFontSize = (float)Lines.Average(l => l.AverageFontSize);
-            Box = new Box
-            {
-                x = Lines[0].Box.x,
-                y = Lines[0].Box.y,
-                w = Lines[^1].Box.x + Lines[^1].Box.w - Lines[0].Box.x,
-                h = Lines[0].Box.h
-            };
-        }
     }
 }

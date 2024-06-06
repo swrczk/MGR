@@ -44,7 +44,6 @@ namespace Analysis
                 }
                 else
                 {
-                    currentBlock.RevalidateBox();
                     textBlocks.Add(currentBlock);
                     currentBlock = new TextBlockModel();
                     currentBlock.Lines.Add(line);
@@ -53,7 +52,6 @@ namespace Analysis
 
             if (currentBlock.Lines.Count > 0)
             {
-                currentBlock.RevalidateBox();
                 textBlocks.Add(currentBlock);
             }
 

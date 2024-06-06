@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
+using Analysis.PropertiesProcessingStage.Model;
 using OpenCvSharp;
-using Unity.VisualScripting;
 using Rect = OpenCvSharp.Rect;
 
-namespace Analysis
+namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class ContrastProcessor
     {

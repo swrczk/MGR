@@ -3,7 +3,7 @@ using System.Linq;
 using OpenCvSharp;
 using UnityEngine;
 
-namespace Analysis
+namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class WordsColorProcessor
     {

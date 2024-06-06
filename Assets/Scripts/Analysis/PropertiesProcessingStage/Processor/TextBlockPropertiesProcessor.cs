@@ -1,19 +1,29 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Analysis
+namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class TextBlockPropertiesProcessor
     {
-        public void ProcessLineProperties(List<TextBlockModel> blocks)
+        public void ProcessTextBlockProperties(TextBlockModel block, int imageArea)
         {
-            foreach (var block in blocks)
-            {
-                block.Box = CalculateBoxSize(block);
-                block.AverageFontSize = CalculateAverageFontSize(block);
-                block.AverageInterline = CalculateAverageLineSpacing(block.Lines);
-            }
+            block.Box = CalculateBoxSize(block);
+            block.AverageFontSize = CalculateAverageFontSize(block);
+            block.AverageInterline = CalculateAverageLineSpacing(block.Lines);
+            block.IsLeftAligned = CheckLeftAlignment(block.Lines);
         }
+
+        private bool CheckLeftAlignment(List<LineModel> lines)
+        {
+            if (lines.Count < 1)
+            {
+                return false;
+            }
+
+            var firstLineX = lines[0].Box.x;
+            return lines.All(line => line.Box.x == firstLineX);
+        }
+
 
         private float CalculateAverageLineSpacing(List<LineModel> lines)
         {

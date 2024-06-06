@@ -1,7 +1,7 @@
 ﻿using System;
 using OpenCvSharp;
 
-namespace Analysis
+namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class ColorPropertiesProcessor
     {
