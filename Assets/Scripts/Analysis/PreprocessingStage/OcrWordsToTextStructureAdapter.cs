@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 
 namespace Analysis
 {
     public class OcrWordsToTextStructureAdapter
     {
-        public TextDocument Convert(List<Box> detectedBoxes, List<string> detectedWords)
+        public TextDocumentModel Convert(List<Box> detectedBoxes, List<string> detectedWords)
         {
             var words = ConvertToWords(detectedBoxes, detectedWords);
             var lines = ConvertToLines(words);
@@ -16,9 +15,9 @@ namespace Analysis
             return textDocument;
         }
 
-        private TextDocument ConvertToTextDocument(List<TextBlock> textBlocks)
+        private TextDocumentModel ConvertToTextDocument(List<TextBlockModel> textBlocks)
         {
-            var textDocument = new TextDocument();
+            var textDocument = new TextDocumentModel();
             foreach (var textBlock in textBlocks)
             {
                 textDocument.AddTextBlock(textBlock);
@@ -27,10 +26,10 @@ namespace Analysis
             return textDocument;
         }
 
-        private List<TextBlock> ConvertToTextBlock(List<Line> lines)
+        private List<TextBlockModel> ConvertToTextBlock(List<LineModel> lines)
         {
-            var textBlocks = new List<TextBlock>();
-            var currentBlock = new TextBlock();
+            var textBlocks = new List<TextBlockModel>();
+            var currentBlock = new TextBlockModel();
             foreach (var line in lines)
             {
                 if (currentBlock.Lines.Count == 0)
@@ -48,7 +47,7 @@ namespace Analysis
                 {
                     currentBlock.RevalidateBox();
                     textBlocks.Add(currentBlock);
-                    currentBlock = new TextBlock();
+                    currentBlock = new TextBlockModel();
                     currentBlock.AddLine(line);
                 }
             }
@@ -62,10 +61,10 @@ namespace Analysis
             return textBlocks;
         }
 
-        private List<Line> ConvertToLines(List<Word> words)
+        private List<LineModel> ConvertToLines(List<WordModel> words)
         {
-            var lines = new List<Line>();
-            var currentLine = new Line();
+            var lines = new List<LineModel>();
+            var currentLine = new LineModel();
             foreach (var word in words)
             {
                 if (currentLine.Words.Count == 0)
@@ -82,7 +81,7 @@ namespace Analysis
                 {
                     currentLine.RevalidateBox();
                     lines.Add(currentLine);
-                    currentLine = new Line();
+                    currentLine = new LineModel();
                     currentLine.AddWordToLine(word);
                 }
             }
@@ -96,12 +95,12 @@ namespace Analysis
             return lines;
         }
 
-        private List<Word> ConvertToWords(List<Box> detectedBoxes, List<string> detectedWords)
+        private List<WordModel> ConvertToWords(List<Box> detectedBoxes, List<string> detectedWords)
         {
-            var words = new List<Word>();
+            var words = new List<WordModel>();
             for (int i = 0; i < detectedBoxes.Count; i++)
             {
-                words.Add(new Word
+                words.Add(new WordModel
                 {
                     Box = detectedBoxes[i],
                     Text = detectedWords[i],
@@ -110,129 +109,6 @@ namespace Analysis
             }
 
             return words;
-        }
-    }
-
-    [Serializable]
-    public class TextDocument
-    {
-        public List<TextBlock> TextBlocks { get; set; } = new List<TextBlock>();
-        public int WordCount { get; private set; }
-        public int LineCount { get; private set; }
-        public int TextBlockCount { get; private set; }
-
-        public void AddTextBlock(TextBlock textBlock)
-        {
-            TextBlocks.Add(textBlock);
-            TextBlockCount++;
-            LineCount += textBlock.Lines.Count;
-            foreach (var line in textBlock.Lines)
-            {
-                WordCount += line.Words.Count;
-            }
-        }
-
-        public List<Word> GetWords()
-        {
-            var words = new List<Word>();
-            foreach (var textBlock in TextBlocks)
-            {
-                foreach (var line in textBlock.Lines)
-                {
-                    words.AddRange(line.Words);
-                }
-            }
-
-            return words;
-        }
-
-        public List<Line> GetLines()
-        {
-            //get all lines not using linq
-            var lines = new List<Line>();
-            foreach (var textBlock in TextBlocks)
-            {
-                lines.AddRange(textBlock.Lines);
-            }
-
-            return lines;
-        }
-    }
-
-    [Serializable]
-    public class TextBlock
-    {
-        public List<Line> Lines { get; set; } = new List<Line>();
-        public Box Box { get; set; } = new Box();
-
-        public float AverageFontSize { get; set; }
-        // public float AverageFontColor { get; set; }
-        // public float AverageFontBackground { get; set; }
-        // public float AverageDistanceBetweenLines { get; set; }
-
-        public void AddLine(Line line)
-        {
-            Lines.Add(line);
-        }
-
-        public void RevalidateBox()
-        {
-            AverageFontSize = (float)Lines.Average(l => l.AverageFontSize);
-            Box = new Box
-            {
-                x = Lines[0].Box.x,
-                y = Lines[0].Box.y,
-                w = Lines[^1].Box.x + Lines[^1].Box.w - Lines[0].Box.x,
-                h = Lines[0].Box.h
-            };
-        }
-    }
-
-    [Serializable]
-    public class Line
-    {
-        public List<Word> Words { get; set; } = new List<Word>();
-        public Box Box { get; private set; }
-        public float AverageFontSize { get; private set; }
-
-        public void AddWordToLine(Word word)
-        {
-            Words.Add(word);
-        }
-
-        public void RevalidateBox()
-        {
-            AverageFontSize = (float)Words.Average(w => w.FontSize);
-            Box = new Box
-            {
-                x = Words[0].Box.x,
-                y = Words[0].Box.y,
-                w = Words[^1].Box.x + Words[^1].Box.w - Words[0].Box.x,
-                h = Words[0].Box.h
-            };
-        }
-    }
-
-    [Serializable]
-    public class Word
-    {
-        public Box Box { get; set; } = new Box();
-        public string Text { get; set; }
-        public int FontSize { get; set; }
-        public Color TextColor { get; set; }
-
-        public Color TextBackgroundColor { get; set; }
-        public bool IsUniformBackground { get; set; }
-
-        public void SaveTextColor(Color color)
-        {
-            TextColor = color;
-        }
-
-        public void SaveBackgroundColor(Color color, bool isUniform)
-        {
-            TextBackgroundColor = color;
-            IsUniformBackground = isUniform;
         }
     }
 }

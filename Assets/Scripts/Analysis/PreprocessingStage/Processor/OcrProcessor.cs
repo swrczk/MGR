@@ -14,7 +14,7 @@ namespace Analysis
             _tesseractDriver = new TesseractDriver();
             _ocrWordsToTextStructureAdapter = new OcrWordsToTextStructureAdapter();
         }
-        public async UniTask<TextDocument> ProcessText(Texture2D texture)
+        public async UniTask<TextDocumentModel> ProcessText(Texture2D texture)
         {
             var mat = AnalysisUtils.TextureToMat(texture);
             var grayMat = AnalysisUtils.MatToGrayScale(mat);
@@ -31,7 +31,7 @@ namespace Analysis
             return recognizedText;
         }
 
-        public TextDocument GetTextDocument(OcrResult recognizedText)
+        public TextDocumentModel GetTextDocument(OcrResult recognizedText)
         {
             var detectedWords = recognizedText.Text;
             var detectedBoxes = recognizedText.Boxes;

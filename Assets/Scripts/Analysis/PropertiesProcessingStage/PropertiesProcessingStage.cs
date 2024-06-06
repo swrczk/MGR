@@ -1,16 +1,7 @@
-﻿using System.Collections.Generic;
-using OpenCvSharp;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Analysis.PropertiesProcessingStage
 {
-    public class PropertiesModel
-    {
-        public TextDocument DocumentProperties { get; set; }
-        public List<ContrastAnalysisResult> ContrastProperties { get; set; }
-        public Mat ContrastVisualizationMat { get; set; }
-    }
-
     public class PropertiesProcessingStage
     {
         private DocumentProcessor _documentProcessor;
@@ -31,15 +22,15 @@ namespace Analysis.PropertiesProcessingStage
                 _contrastProcessor.GetContrastVisualizationTexture(contrastProperties, model.GrayMatWithColorChannels);
             return new PropertiesModel
             {
-                DocumentProperties = documentProperties,
+                DocumentModelProperties = documentProperties,
                 ContrastProperties = contrastProperties,
                 ContrastVisualizationMat = visualizationMat
             };
         }
 
-        private TextDocument DefineDocumentProperties(PreprocessedModel model)
+        private TextDocumentModel DefineDocumentProperties(PreprocessedModel model)
         {
-            var result = model.DocumentStructure;
+            var result = model.DocumentModelStructure;
             foreach (var word in result.GetWords())
             {
                 var colors = _documentProcessor.ColorsSortedByFrequency(model.ColorSegmentedMat, word.Box);

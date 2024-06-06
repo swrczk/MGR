@@ -134,7 +134,7 @@ namespace Analysis
         }
 
         public SegmentedTexture ExcludeRectsOverlappingWithWords(Mat mat, SegmentedTexture originalSegmentation,
-            List<Word> ocrWords)
+            List<WordModel> ocrWords)
         {
             var filteredRects = new List<Segment>();
             foreach (var segment in originalSegmentation.Segments)

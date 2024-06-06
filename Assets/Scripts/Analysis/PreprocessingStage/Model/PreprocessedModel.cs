@@ -15,7 +15,7 @@ namespace Analysis
         public Mat ColorSegmentedMat { get; set; }
         public Texture2D ContoursTexture { get; set; }
         public OcrResult OcrResult { get; set; }
-        public TextDocument DocumentStructure { get; set; }
+        public TextDocumentModel DocumentModelStructure { get; set; }
         public SegmentedTexture SegmentedTexture { get; set; }
     }
 }

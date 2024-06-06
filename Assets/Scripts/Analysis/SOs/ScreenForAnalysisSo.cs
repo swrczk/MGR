@@ -38,7 +38,7 @@ namespace Analysis
     public class PreprocessedTexture
     {
         public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
-        public TextDocument TextDocument { get; set; }
+        public TextDocumentModel TextDocumentModel { get; set; }
         public OcrResult OcrResult { get; set; }
 
         private List<string> FilePaths { get; } = new List<string>(); // co z tym? czy jest wgl potrzebne?
@@ -58,7 +58,7 @@ namespace Analysis
     {
         public List<Color> DominantColors { get; set; }
         public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
-        public TextDocument TextDocument { get; set; }
+        public TextDocumentModel TextDocumentModel { get; set; }
 
         private List<string> FilePaths { get; } = new List<string>(); // co z tym? czy jest wgl potrzebne?
         public SegmentedTexture SegmentedTexture { get; set; }
@@ -121,7 +121,7 @@ namespace Analysis
 
     public class TextAnalysisResult
     {
-        public TextDocument TextDocument { get; set; }
+        public TextDocumentModel TextDocumentModel { get; set; }
         //zastanowić się nad tym
     }
 
@@ -144,7 +144,7 @@ namespace Analysis
         //-----------------Analysis Data-----------------
         public List<Color> dominantColors;
         public Dictionary<ImageProcessingType, Texture2D> ProcessedImages = new();
-        public TextDocument textDocument;
+        public TextDocumentModel TextDocumentModel;
 
         private List<string> _filePaths = new List<string>();
         public List<Segment> SegmentedByColorRects { get; set; }
@@ -222,9 +222,9 @@ namespace Analysis
             texture = texture2D;
         }
 
-        public void SaveTextDocument(TextDocument obj)
+        public void SaveTextDocument(TextDocumentModel obj)
         {
-            textDocument = obj;
+            TextDocumentModel = obj;
         }
     }
 }

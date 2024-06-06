@@ -50,7 +50,7 @@ namespace Analysis
                 EdgesMat = edgesMat,
                 Contours = contours,
                 OcrResult = ocrResult,
-                DocumentStructure = documentStructure,
+                DocumentModelStructure = documentStructure,
                 SegmentedTexture = finalSegmentation
             };
         }

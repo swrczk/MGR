@@ -51,10 +51,10 @@ namespace Analysis
         }
 
 
-        public bool IsBackgroundUniform(Mat image, Word word)
+        public bool IsBackgroundUniform(Mat image, WordModel wordModel)
         {
-            var box = word.Box;
-            var charCount = word.Text.Length;
+            var box = wordModel.Box;
+            var charCount = wordModel.Text.Length;
             var roi = new Mat(image, new OpenCvSharp.Rect(box.x, box.y, box.w, box.h));
             var gray = AnalysisUtils.MatToGrayScale(roi);
 
