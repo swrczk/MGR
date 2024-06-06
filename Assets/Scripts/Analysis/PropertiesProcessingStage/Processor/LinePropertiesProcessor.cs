@@ -9,7 +9,7 @@ namespace Analysis.PropertiesProcessingStage.Processor
             line.Box = CalculateLineBox(line);
             line.AverageFontSize = CalculateAverageFontSize(line);
             line.AverageSpacing = CalculateAverageSpacing(line);
-            line.ImagePercentage = CalculateLinePercentage(line, imageArea);
+            line.ImageAreaPercentage = CalculateLinePercentage(line, imageArea);
         }
 
         private float CalculateLinePercentage(LineModel line, int imageArea)

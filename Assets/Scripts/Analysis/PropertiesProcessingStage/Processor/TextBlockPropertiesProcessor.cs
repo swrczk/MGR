@@ -11,6 +11,13 @@ namespace Analysis.PropertiesProcessingStage.Processor
             block.AverageFontSize = CalculateAverageFontSize(block);
             block.AverageInterline = CalculateAverageLineSpacing(block.Lines);
             block.IsLeftAligned = CheckLeftAlignment(block.Lines);
+            block.ImageAreaPercentage = CalculatePercentageArea(block, imageArea);
+        }
+
+        private float CalculatePercentageArea(TextBlockModel block, int imageArea)
+        {
+            var blockArea = block.Box.w * block.Box.h;
+            return  blockArea / (float)imageArea * 100f;
         }
 
         private bool CheckLeftAlignment(List<LineModel> lines)

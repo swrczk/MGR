@@ -11,6 +11,8 @@ namespace Analysis
         public float AverageInterline { get; set; }
         
         public bool IsLeftAligned { get; set; }
+
+        public float ImageAreaPercentage { get; set; }
         // public float AverageFontColor { get; set; }
         // public float AverageFontBackground { get; set; }
  

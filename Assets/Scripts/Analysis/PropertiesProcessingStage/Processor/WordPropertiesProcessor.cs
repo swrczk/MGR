@@ -1,10 +1,13 @@
-﻿namespace Analysis.PropertiesProcessingStage.Processor
+﻿using System.Collections.Generic;
+
+namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class WordPropertiesProcessor
     {
+
         public void ProcessWordProperties(WordModel word, int imageArea)
         {
-            word.ImagePercentage = CalculateWordPercentage(word, imageArea);
+            word.ImageAreaPercentage = CalculateWordPercentage(word, imageArea);
         }
 
         private static float CalculateWordPercentage(WordModel word, int imageArea)

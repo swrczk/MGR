@@ -8,6 +8,6 @@ namespace Analysis
         public Box Box { get; set; }
         public float AverageFontSize { get; set; }
         public float AverageSpacing{ get; set; }
-        public float ImagePercentage { get; set; }
+        public float ImageAreaPercentage { get; set; }
     }
 }
