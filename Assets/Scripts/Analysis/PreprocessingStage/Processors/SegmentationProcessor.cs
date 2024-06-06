@@ -32,12 +32,12 @@ namespace Analysis
             return segmentedTexture;
         }
 
-        private void DivideAndConquer(Mat image, Rect rect, List<Rect> finalRects)
+        private void DivideAndConquer(Mat mat, Rect rect, List<Rect> finalRects)
         {
             while (true)
             {
-                var roi = new Mat(image, rect);
-                var entropy = AnalysisUtils.GetHistogramEntropy(roi, convertToGreyScale: true);
+                var roi = new Mat(mat, rect);
+                var entropy = AnalysisUtils.GetHistogramEntropy(roi, convertToGreyScale:true);
                 var colorCount = GetDistinctColorCount(roi);
                 if (colorCount <= TargetColorAmount || entropy < EntropyThreshold ||
                     (rect.Width <= 10 || rect.Height <= 10))
@@ -49,13 +49,13 @@ namespace Analysis
                 if (rect.Width >= rect.Height)
                 {
                     var halfWidth = rect.Width / 2;
-                    DivideAndConquer(image, new Rect(rect.X, rect.Y, halfWidth, rect.Height), finalRects);
+                    DivideAndConquer(mat, new Rect(rect.X, rect.Y, halfWidth, rect.Height), finalRects);
                     rect = new Rect(rect.X + halfWidth, rect.Y, rect.Width - halfWidth, rect.Height);
                 }
                 else
                 {
                     var halfHeight = rect.Height / 2;
-                    DivideAndConquer(image, new Rect(rect.X, rect.Y, rect.Width, halfHeight), finalRects);
+                    DivideAndConquer(mat, new Rect(rect.X, rect.Y, rect.Width, halfHeight), finalRects);
                     rect = new Rect(rect.X, rect.Y + halfHeight, rect.Width, rect.Height - halfHeight);
                 }
             }

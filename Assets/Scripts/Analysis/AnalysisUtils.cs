@@ -5,19 +5,19 @@ using UnityEngine;
 
 namespace Analysis
 {
-    
-
     public static class ExtenstionAnalysis
     {
         public static Texture2D ToTexture(this Mat mat)
         {
             return AnalysisUtils.MatToTexture(mat);
         }
+
         public static Mat ToMat(this Texture2D texture)
         {
             return AnalysisUtils.TextureToMat(texture);
         }
     }
+
     public class Vec3BEqualityComparer : IEqualityComparer<Vec3b>
     {
         public bool Equals(Vec3b x, Vec3b y)
@@ -86,36 +86,22 @@ namespace Analysis
         }
 
 
-        public static Mat MatToGrayScale(Mat mat, bool keepColorChannels = false)
+        public static Mat MatToGrayScale(Mat mat)
         {
-            Mat gray = new Mat();
-
-            // Handle different cases based on the number of channels
-            if (mat.Channels() == 1)
+            var gray = new Mat();
+            if (mat.Channels() == 1) //already grayscale
             {
-                // If the image is already grayscale, just copy it
                 gray = mat.Clone();
             }
-            else if (mat.Channels() == 3)
+
+            if (mat.Channels() == 3) //RGB
             {
-                // If the image is RGB, convert it to grayscale
                 Cv2.CvtColor(mat, gray, ColorConversionCodes.RGB2GRAY);
             }
-            else if (mat.Channels() == 4)
-            {
-                // If the image is RGBA, convert it to grayscale
-                Cv2.CvtColor(mat, gray, ColorConversionCodes.RGBA2GRAY);
-            }
-            else
-            {
-                // Handle unexpected number of channels
-                throw new Exception($"Unsupported number of channels: {mat.Channels()}");
-            }
 
-            if (keepColorChannels)
+            if (mat.Channels() == 4) //RGBA
             {
-                // Convert grayscale image back to BGR (3 channels)
-                Cv2.CvtColor(gray, gray, ColorConversionCodes.GRAY2BGR);
+                Cv2.CvtColor(mat, gray, ColorConversionCodes.RGBA2GRAY);
             }
 
             return gray;
