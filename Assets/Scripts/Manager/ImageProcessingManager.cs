@@ -2,19 +2,25 @@
 using Analysis.PropertiesProcessingStage;
 using Analysis.PropertiesProcessingStage.Model;
 using Cysharp.Threading.Tasks;
+using UnityEngine;
 
 namespace Manager
 {
     public class ImageProcessingManager : BaseManager
     {
+        [SerializeField]
+        private ImageProcessingParametersSo _imageProcessingParametersSo;
+        
         private ScreenForAnalysisSo _screenForAnalysisData;
-        private PreprocessingStage _preprocessingStage = new();
-        private PropertiesProcessingStage _propertiesProcessingStage = new();
+        private PreprocessingStage _preprocessingStage;
+        private PropertiesProcessingStage _propertiesProcessingStage;
 
 
         public async UniTask AnaliseRefactored(ScreenForAnalysisSo screen)
         {
-            await UniTask.WaitForSeconds(3);
+            InitStages();
+            await UniTask.WaitForFixedUpdate();
+            
             _screenForAnalysisData = screen;
             var texture = _screenForAnalysisData.texture;
             
@@ -23,6 +29,12 @@ namespace Manager
 
             var propertiesModel = _propertiesProcessingStage.Run(preprocessedModel, texture);
             SavePropertiesProcessingResults(propertiesModel);
+        }
+
+        private void InitStages()
+        {
+            _preprocessingStage = new PreprocessingStage(_imageProcessingParametersSo);
+            _propertiesProcessingStage = new PropertiesProcessingStage(_imageProcessingParametersSo);
         }
 
         private void SavePreprocessingStageResults(PreprocessedModel preprocessedModel)

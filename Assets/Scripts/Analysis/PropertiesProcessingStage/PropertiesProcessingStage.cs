@@ -7,17 +7,19 @@ namespace Analysis.PropertiesProcessingStage
 {
     public class PropertiesProcessingStage
     {
-        private WordsColorProcessor _wordsColorProcessor;
-        private ContrastProcessor _contrastProcessor;
-        private WordPropertiesProcessor _wordPropertiesProcessor;
-        private LinePropertiesProcessor _linePropertiesProcessor;
-        private TextBlockPropertiesProcessor _textBlockPropertiesProcessor;
-        private TextDocumentPropertiesProcessor _textDocumentPropertiesProcessor;
+        private readonly WordsColorProcessor _wordsColorProcessor;
+        private readonly ContrastProcessor _contrastProcessor;
+        private readonly WordPropertiesProcessor _wordPropertiesProcessor;
+        private readonly LinePropertiesProcessor _linePropertiesProcessor;
+        private readonly TextBlockPropertiesProcessor _textBlockPropertiesProcessor;
+        private readonly TextDocumentPropertiesProcessor _textDocumentPropertiesProcessor;
 
-        public PropertiesProcessingStage()
+        public PropertiesProcessingStage(ImageProcessingParametersSo parameters)
         {
-            _wordsColorProcessor = new WordsColorProcessor();
-            _contrastProcessor = new ContrastProcessor();
+            _wordsColorProcessor =
+                new WordsColorProcessor(parameters.entropyThresholdWords, parameters.edgesPerCharThreshold);
+            _contrastProcessor =
+                new ContrastProcessor(parameters.contrastLowerThreshold, parameters.contrastUpperThreshold);
             _wordPropertiesProcessor = new WordPropertiesProcessor();
             _linePropertiesProcessor = new LinePropertiesProcessor();
             _textBlockPropertiesProcessor = new TextBlockPropertiesProcessor();

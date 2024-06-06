@@ -46,7 +46,7 @@ namespace Analysis.PropertiesProcessingStage.Processor
             };
         }
 
-        private static float CalculateAverageFontSize(LineModel line)
+        private float CalculateAverageFontSize(LineModel line)
         {
             return (float)line.Words.Average(w => w.FontSize);
         }

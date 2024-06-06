@@ -7,9 +7,14 @@ namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class WordsColorProcessor
     {
-        //move to config
-        private const float EntropyThreshold = 5.0f;
-        private const int EdgesPerCharThreshold = 10;
+        private readonly float _entropyThreshold;
+        private readonly int _edgesPerCharThreshold;
+
+        public WordsColorProcessor(float entropyThreshold, int edgesPerCharThreshold)
+        {
+            _entropyThreshold = entropyThreshold;
+            _edgesPerCharThreshold = edgesPerCharThreshold;
+        }
 
         public (Color textColor, Color backgroundColor) DefineWordColors(List<Vec3b> colors, bool isSingleLetter)
         {
@@ -64,12 +69,12 @@ namespace Analysis.PropertiesProcessingStage.Processor
             return edgesCondition && entropyCondition;
         }
 
-        private static bool CheckUniformBackgroundEntropyCondition(Mat gray, int charCount)
+        private bool CheckUniformBackgroundEntropyCondition(Mat gray, int charCount)
         {
             var entropy = AnalysisUtils.GetHistogramEntropy(gray);
 
             // Adjust the entropy threshold based on the length of the text
-            var adjustedEntropyThreshold = EntropyThreshold + 0.15 * charCount;
+            var adjustedEntropyThreshold = _entropyThreshold + 0.15 * charCount;
             var entropyCondition = entropy < adjustedEntropyThreshold;
             return entropyCondition;
         }
@@ -77,7 +82,7 @@ namespace Analysis.PropertiesProcessingStage.Processor
         private bool CheckUniformBackgroundEdgeCondition(Mat gray, int charCount)
         {
             var edgesCount = GetNumberOfEdges(gray);
-            var edgesThreshold = EdgesPerCharThreshold * charCount;
+            var edgesThreshold = _edgesPerCharThreshold * charCount;
             var edgesCondition = edgesCount < edgesThreshold;
             return edgesCondition;
         }

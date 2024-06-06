@@ -7,14 +7,20 @@ namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class ContrastProcessor
     {
-        //move to config
-        private readonly float _contrastLowerThreshold = 4.5f;
-        private readonly float _contrastUpperThreshold = 15.0f;
+        private readonly ColorPropertiesProcessor _colorPropertiesProcessor;
+        
+        private readonly float _contrastLowerThreshold;
+        private readonly float _contrastUpperThreshold;
 
         private readonly Scalar _redScalar = new(0, 0, 255);
         private readonly Scalar _blueScalar = new(255, 0, 0);
-        
-        private ColorPropertiesProcessor _colorPropertiesProcessor = new();
+
+        public ContrastProcessor(float contrastLowerThreshold, float contrastUpperThreshold)
+        {
+            _contrastLowerThreshold = contrastLowerThreshold;
+            _contrastUpperThreshold = contrastUpperThreshold;
+            _colorPropertiesProcessor = new();
+        }
 
         public List<ContrastAnalysisResultModel> CheckContrast(List<SegmentModel> segments, Mat mat)
         {
@@ -27,16 +33,16 @@ namespace Analysis.PropertiesProcessingStage.Processor
 
             return analysisResults;
         }
-        
+
         public Mat GetContrastVisualizationTexture(List<ContrastAnalysisResultModel> analysisResults, Mat mat)
         {
             var outputImage = mat.Clone();
             var rectColor = new Scalar(0, 0, 0);
             foreach (var result in analysisResults)
             {
-                if(result.ContrastResultType == ContrastResultType.Normal)
+                if (result.ContrastResultType == ContrastResultType.Normal)
                     continue;
-                
+
                 rectColor = result.ContrastResultType switch
                 {
                     ContrastResultType.Low => _redScalar,

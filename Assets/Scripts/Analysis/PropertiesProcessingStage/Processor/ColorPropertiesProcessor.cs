@@ -38,6 +38,5 @@ namespace Analysis.PropertiesProcessingStage.Processor
 
             return (luminance1 + 0.05f) / (luminance2 + 0.05f);
         }
-        
     }
 }

@@ -1,10 +1,7 @@
-﻿using System.Collections.Generic;
-
-namespace Analysis.PropertiesProcessingStage.Processor
+﻿namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class WordPropertiesProcessor
     {
-
         public void ProcessWordProperties(WordModel word, int imageArea)
         {
             word.ImageAreaPercentage = CalculateWordPercentage(word, imageArea);

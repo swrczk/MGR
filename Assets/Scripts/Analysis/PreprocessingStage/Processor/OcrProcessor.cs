@@ -6,8 +6,8 @@ namespace Analysis
 {
     public class OcrProcessor
     {
-        private TesseractDriver _tesseractDriver;
-        private OcrWordsToTextStructureAdapter _ocrWordsToTextStructureAdapter;
+        private readonly TesseractDriver _tesseractDriver;
+        private readonly OcrWordsToTextStructureAdapter _ocrWordsToTextStructureAdapter;
 
         public OcrProcessor()
         {
@@ -27,7 +27,7 @@ namespace Analysis
             var detectedWords = recognizedText.Text;
             var detectedBoxes = recognizedText.Boxes;
 
-            if (recognizedText.Text== null || recognizedText.Text == null)
+            if (recognizedText.Text == null || recognizedText.Text == null)
                 throw new Exception("OCR not initialized");
 
             return _ocrWordsToTextStructureAdapter.Convert(detectedBoxes, detectedWords);

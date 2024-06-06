@@ -7,7 +7,12 @@ namespace Analysis
 {
     public class ColorProcessor
     {
-        private Color _defaultContoursColor = Color.red;
+        private readonly Color _defaultContoursColor;
+
+        public ColorProcessor(Color defaultContoursColor)
+        {
+            _defaultContoursColor = defaultContoursColor;
+        }
 
         public Mat KMeansSegmentation(Mat mat, int k)
         {

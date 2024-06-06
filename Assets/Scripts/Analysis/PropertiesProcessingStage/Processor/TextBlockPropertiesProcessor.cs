@@ -17,7 +17,7 @@ namespace Analysis.PropertiesProcessingStage.Processor
         private float CalculatePercentageArea(TextBlockModel block, int imageArea)
         {
             var blockArea = block.Box.w * block.Box.h;
-            return  blockArea / (float)imageArea * 100f;
+            return blockArea / (float)imageArea * 100f;
         }
 
         private bool CheckLeftAlignment(List<LineModel> lines)
@@ -61,7 +61,7 @@ namespace Analysis.PropertiesProcessingStage.Processor
             };
         }
 
-        private static float CalculateAverageFontSize(TextBlockModel block)
+        private float CalculateAverageFontSize(TextBlockModel block)
         {
             return block.Lines.Average(l => l.AverageFontSize);
         }

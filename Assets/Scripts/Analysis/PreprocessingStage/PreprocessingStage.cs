@@ -1,22 +1,25 @@
 ﻿using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Analysis
 {
     public class PreprocessingStage
     {
-        private ColorProcessor _colorProcessor;
-        private OcrProcessor _ocrProcessor;
-        private SegmentationProcessor _segmentationProcessor;
-        private int _clusterCount = 5;
-        private bool _excludeWords = true;
+        private readonly ColorProcessor _colorProcessor;
+        private readonly OcrProcessor _ocrProcessor;
+        private readonly SegmentationProcessor _segmentationProcessor;
 
-        public PreprocessingStage()
+        private readonly int _clusterCount;
+        private readonly bool _excludeWords;
+
+        public PreprocessingStage(ImageProcessingParametersSo parameters)
         {
-            _colorProcessor = new ColorProcessor();
+            _clusterCount = parameters.clusterCount;
+            _excludeWords = parameters.excludeWords;
+            _colorProcessor = new ColorProcessor(parameters.defaultContoursColor);
             _ocrProcessor = new OcrProcessor();
-            _segmentationProcessor = new SegmentationProcessor();
+            _segmentationProcessor = new SegmentationProcessor(parameters.targetColorAmount, parameters.colorThreshold,
+                parameters.entropyThreshold);
         }
 
         public async UniTask<PreprocessedModel> Run(Texture2D texture)
@@ -38,7 +41,7 @@ namespace Analysis
                 ? _segmentationProcessor.ExcludeRectsOverlappingWithWords(grayMatWithColorChannels, fullSegmentation,
                     documentStructure.GetWords())
                 : fullSegmentation;
-            
+
             return new PreprocessedModel
             {
                 DefaultMat = mat,

@@ -6,10 +6,17 @@ namespace Analysis
 {
     public class SegmentationProcessor
     {
-        //move to config
-        private const float TargetColorAmount = 3;
-        private const float ColorThreshold = 50;
-        private const float EntropyThreshold = 0.3f;
+        
+        private readonly float _targetColorAmount;
+        private readonly float _colorThreshold;
+        private readonly float _entropyThreshold;
+
+        public SegmentationProcessor(float targetColorAmount, float colorThreshold, float entropyThreshold)
+        {
+            _targetColorAmount = targetColorAmount;
+            _colorThreshold = colorThreshold;
+            _entropyThreshold = entropyThreshold;
+        }
 
         public SegmentedTextureModel FindSegments(Mat mat)
         {
@@ -37,9 +44,9 @@ namespace Analysis
             while (true)
             {
                 var roi = new Mat(mat, rect);
-                var entropy = AnalysisUtils.GetHistogramEntropy(roi, convertToGreyScale:true);
+                var entropy = AnalysisUtils.GetHistogramEntropy(roi, convertToGreyScale: true);
                 var colorCount = GetDistinctColorCount(roi);
-                if (colorCount <= TargetColorAmount || entropy < EntropyThreshold ||
+                if (colorCount <= _targetColorAmount || entropy < _entropyThreshold ||
                     (rect.Width <= 10 || rect.Height <= 10))
                 {
                     finalRects.Add(rect);
@@ -89,7 +96,7 @@ namespace Analysis
                 var isDistinct = true;
                 foreach (var distinctColor in distinctColors)
                 {
-                    if (ColorDistanceSqr(color, distinctColor) < ColorThreshold * ColorThreshold)
+                    if (ColorDistanceSqr(color, distinctColor) < _colorThreshold * _colorThreshold)
                     {
                         isDistinct = false;
                         break;
@@ -133,7 +140,8 @@ namespace Analysis
             return deltaL * deltaL + deltaA * deltaA + deltaB * deltaB;
         }
 
-        public SegmentedTextureModel ExcludeRectsOverlappingWithWords(Mat mat, SegmentedTextureModel originalSegmentation,
+        public SegmentedTextureModel ExcludeRectsOverlappingWithWords(Mat mat,
+            SegmentedTextureModel originalSegmentation,
             List<WordModel> ocrWords)
         {
             var filteredRects = new List<SegmentModel>();
