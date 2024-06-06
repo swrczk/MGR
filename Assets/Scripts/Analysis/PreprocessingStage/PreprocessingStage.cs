@@ -51,7 +51,7 @@ namespace Analysis
                 Contours = contours,
                 OcrResult = ocrResult,
                 DocumentModelStructure = documentStructure,
-                SegmentedTexture = finalSegmentation
+                SegmentedTextureModel = finalSegmentation
             };
         }
     }

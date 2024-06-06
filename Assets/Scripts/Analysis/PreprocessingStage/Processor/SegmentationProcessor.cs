@@ -11,7 +11,7 @@ namespace Analysis
         private const float ColorThreshold = 50;
         private const float EntropyThreshold = 0.3f;
 
-        public SegmentedTexture FindSegments(Mat mat)
+        public SegmentedTextureModel FindSegments(Mat mat)
         {
             var finalRects = new List<Rect>();
             var rect = new Rect(0, 0, mat.Width, mat.Height);
@@ -19,7 +19,7 @@ namespace Analysis
             return CreateSegments(mat, finalRects, rect);
         }
 
-        private Mat GetSegmentationTexture(Mat mat, List<Segment> finalSegments)
+        private Mat GetSegmentationTexture(Mat mat, List<SegmentModel> finalSegments)
         {
             var segmentedTexture = mat.Clone();
             foreach (var segment in finalSegments)
@@ -61,21 +61,21 @@ namespace Analysis
             }
         }
 
-        private SegmentedTexture CreateSegments(Mat mat, List<Rect> rects, Rect imageRect)
+        private SegmentedTextureModel CreateSegments(Mat mat, List<Rect> rects, Rect imageRect)
         {
-            var segments = new List<Segment>();
+            var segments = new List<SegmentModel>();
             float imageArea = imageRect.Width * imageRect.Height;
 
             foreach (var rect in rects)
             {
                 float rectArea = rect.Width * rect.Height;
                 float volumePercentage = (rectArea / imageArea) * 100;
-                segments.Add(new Segment { Rect = rect, VolumePercentage = volumePercentage });
+                segments.Add(new SegmentModel { Rect = rect, VolumePercentage = volumePercentage });
             }
 
             var outputTexture = GetSegmentationTexture(mat, segments);
 
-            return new SegmentedTexture(imageRect, segments, outputTexture);
+            return new SegmentedTextureModel(imageRect, segments, outputTexture);
         }
 
         private int GetDistinctColorCount(Mat image)
@@ -133,10 +133,10 @@ namespace Analysis
             return deltaL * deltaL + deltaA * deltaA + deltaB * deltaB;
         }
 
-        public SegmentedTexture ExcludeRectsOverlappingWithWords(Mat mat, SegmentedTexture originalSegmentation,
+        public SegmentedTextureModel ExcludeRectsOverlappingWithWords(Mat mat, SegmentedTextureModel originalSegmentation,
             List<WordModel> ocrWords)
         {
-            var filteredRects = new List<Segment>();
+            var filteredRects = new List<SegmentModel>();
             foreach (var segment in originalSegmentation.Segments)
             {
                 var overlaps = false;
@@ -158,7 +158,7 @@ namespace Analysis
 
             var outputTexture = GetSegmentationTexture(mat, filteredRects);
 
-            return new SegmentedTexture(originalSegmentation.ImageRect, filteredRects, outputTexture);
+            return new SegmentedTextureModel(originalSegmentation.ImageRect, filteredRects, outputTexture);
         }
     }
 }

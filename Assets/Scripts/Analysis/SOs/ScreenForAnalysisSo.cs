@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using OpenCvSharp;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
@@ -9,16 +8,6 @@ using Rect = OpenCvSharp.Rect;
 
 namespace Analysis
 {
-    public enum ImageProcessingType
-    {
-        ColorSegmentedTexture,
-        ContoursTexture,
-        OcrHighlightedResults,
-        SegmentedTexture,
-        ContrastValuesInterpretation,
-        Test
-    }
-
     public class ProjectData
     {
         public List<ScreenData> ScreenData { get; set; }
@@ -61,62 +50,7 @@ namespace Analysis
         public TextDocumentModel TextDocumentModel { get; set; }
 
         private List<string> FilePaths { get; } = new List<string>(); // co z tym? czy jest wgl potrzebne?
-        public SegmentedTexture SegmentedTexture { get; set; }
-    }
-
-    public class SegmentedTexture
-    {
-
-        public Rect ImageRect { get; set; }
-        public List<Segment> Segments { get; set; }
-        public Mat VisualizationMat { get; set; }
-        
-        public SegmentedTexture(Rect imageRect, List<Segment> segments, Mat visualizationMat)
-        {
-            ImageRect = imageRect;
-            Segments = segments;
-            VisualizationMat = visualizationMat;
-            RecalculateVolumePercentage();
-        }
-
-        public void RecalculateVolumePercentage()
-        {
-            float imageArea = ImageRect.Width * ImageRect.Height;
-
-            foreach (var segment in Segments)
-            {
-                float rectArea = segment.Rect.Width * segment.Rect.Height;
-                float volumePercentage = (rectArea / imageArea) * 100;
-                segment.VolumePercentage = volumePercentage;
-            }
-        }
-    }
-
-    public class Segment
-    {
-        public Rect Rect { get; set; }
-        public float VolumePercentage { get; set; }
-    }
-
-    public enum ContrastResultType
-    {
-        Low,
-        High,
-        Normal
-    }
-
-    public class ContrastAnalysisResult
-    {
-        public Segment Segment { get; private set; }
-        public float Contrast { get; private set; }
-        public ContrastResultType ContrastResultType { get; private set; }
-
-        public ContrastAnalysisResult(Segment segment, ContrastResultType low, float overallContrast)
-        {
-            Segment = segment;
-            ContrastResultType = low;
-            Contrast = overallContrast;
-        }
+        public SegmentedTextureModel SegmentedTextureModel { get; set; }
     }
 
     public class TextAnalysisResult
@@ -130,7 +64,7 @@ namespace Analysis
         public List<Rect> SegmentedByColorRects { get; set; }
         public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
         public TextAnalysisResult TextAnalysisResult { get; set; }
-        public List<ContrastAnalysisResult> ContrastResults { get; } = new();
+        public List<ContrastAnalysisResultModel> ContrastResults { get; } = new();
     }
 
     [CreateAssetMenu(fileName = "SFA", menuName = "ScreenForAnalysisSO")]
@@ -147,7 +81,7 @@ namespace Analysis
         public TextDocumentModel TextDocumentModel;
 
         private List<string> _filePaths = new List<string>();
-        public List<Segment> SegmentedByColorRects { get; set; }
+        public List<SegmentModel> SegmentedByColorRects { get; set; }
 
         public void Delete()
         {

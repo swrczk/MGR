@@ -16,9 +16,9 @@ namespace Analysis
         
         private ColorPropertiesProcessor _colorPropertiesProcessor = new();
 
-        public List<ContrastAnalysisResult> CheckContrast(List<Segment> segments, Mat mat)
+        public List<ContrastAnalysisResultModel> CheckContrast(List<SegmentModel> segments, Mat mat)
         {
-            var analysisResults = new List<ContrastAnalysisResult>();
+            var analysisResults = new List<ContrastAnalysisResultModel>();
             foreach (var segment in segments)
             {
                 var segmentResult = CheckContrast(mat, segment);
@@ -28,7 +28,7 @@ namespace Analysis
             return analysisResults;
         }
         
-        public Mat GetContrastVisualizationTexture(List<ContrastAnalysisResult> analysisResults, Mat mat)
+        public Mat GetContrastVisualizationTexture(List<ContrastAnalysisResultModel> analysisResults, Mat mat)
         {
             var outputImage = mat.Clone();
             var rectColor = new Scalar(0, 0, 0);
@@ -44,28 +44,28 @@ namespace Analysis
                     _ => rectColor
                 };
 
-                DrawTransparentRectangle(result.Segment.Rect, outputImage, rectColor);
+                DrawTransparentRectangle(result.SegmentModel.Rect, outputImage, rectColor);
             }
 
             return outputImage;
         }
 
-        private ContrastAnalysisResult CheckContrast(Mat image, Segment segment)
+        private ContrastAnalysisResultModel CheckContrast(Mat image, SegmentModel segmentModel)
         {
-            var roi = new Mat(image, segment.Rect);
+            var roi = new Mat(image, segmentModel.Rect);
             var overallContrast = CalculateOverallContrast(roi);
 
             if ((overallContrast < _contrastLowerThreshold))
             {
-                return new ContrastAnalysisResult(segment, ContrastResultType.Low, overallContrast);
+                return new ContrastAnalysisResultModel(segmentModel, ContrastResultType.Low, overallContrast);
             }
 
             if (overallContrast > _contrastUpperThreshold)
             {
-                return new ContrastAnalysisResult(segment, ContrastResultType.High, overallContrast);
+                return new ContrastAnalysisResultModel(segmentModel, ContrastResultType.High, overallContrast);
             }
 
-            return new ContrastAnalysisResult(segment, ContrastResultType.Normal, overallContrast);
+            return new ContrastAnalysisResultModel(segmentModel, ContrastResultType.Normal, overallContrast);
         }
 
         private void DrawTransparentRectangle(Rect rect, Mat image, Scalar color, float opacity = 0.5f)

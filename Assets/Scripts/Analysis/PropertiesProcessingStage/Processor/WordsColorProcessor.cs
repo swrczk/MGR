@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Analysis
 {
-    public class DocumentProcessor
+    public class WordsColorProcessor
     {
         //move to config
         private const float EntropyThreshold = 5.0f;

@@ -16,6 +16,6 @@ namespace Analysis
         public Texture2D ContoursTexture { get; set; }
         public OcrResult OcrResult { get; set; }
         public TextDocumentModel DocumentModelStructure { get; set; }
-        public SegmentedTexture SegmentedTexture { get; set; }
+        public SegmentedTextureModel SegmentedTextureModel { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 namespace Analysis
@@ -34,21 +33,21 @@ namespace Analysis
             {
                 if (currentBlock.Lines.Count == 0)
                 {
-                    currentBlock.AddLine(line);
+                    currentBlock.Lines.Add(line);
                     continue;
                 }
 
                 var box = currentBlock.Lines[0].Words[0].Box;
                 if (Mathf.Abs(line.Box.y - box.y) <= box.h * 2)
                 {
-                    currentBlock.AddLine(line);
+                    currentBlock.Lines.Add(line);
                 }
                 else
                 {
                     currentBlock.RevalidateBox();
                     textBlocks.Add(currentBlock);
                     currentBlock = new TextBlockModel();
-                    currentBlock.AddLine(line);
+                    currentBlock.Lines.Add(line);
                 }
             }
 
@@ -69,26 +68,24 @@ namespace Analysis
             {
                 if (currentLine.Words.Count == 0)
                 {
-                    currentLine.AddWordToLine(word);
+                    currentLine.Words.Add(word);
                     continue;
                 }
 
                 if (Mathf.Abs(word.Box.y - currentLine.Words[0].Box.y) < word.FontSize)
                 {
-                    currentLine.AddWordToLine(word);
+                    currentLine.Words.Add(word);
                 }
                 else
                 {
-                    currentLine.RevalidateBox();
                     lines.Add(currentLine);
                     currentLine = new LineModel();
-                    currentLine.AddWordToLine(word);
+                    currentLine.Words.Add(word);
                 }
             }
 
             if (currentLine.Words.Count > 0)
             {
-                currentLine.RevalidateBox();
                 lines.Add(currentLine);
             }
 
@@ -100,12 +97,9 @@ namespace Analysis
             var words = new List<WordModel>();
             for (int i = 0; i < detectedBoxes.Count; i++)
             {
-                words.Add(new WordModel
-                {
-                    Box = detectedBoxes[i],
-                    Text = detectedWords[i],
-                    FontSize = detectedBoxes[i].h,
-                });
+                var box = detectedBoxes[i];
+                var word = detectedWords[i];
+                words.Add(new WordModel( box, word));
             }
 
             return words;

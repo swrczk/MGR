@@ -35,7 +35,7 @@ namespace Manager
             _screenForAnalysisData.SaveProcessedImage(preprocessedModel.OcrResult.HighlightedTexture,
                 "ProcessedTextures",
                 ImageProcessingType.OcrHighlightedResults);
-            _screenForAnalysisData.SaveProcessedImage(preprocessedModel.SegmentedTexture.VisualizationMat.ToTexture(),
+            _screenForAnalysisData.SaveProcessedImage(preprocessedModel.SegmentedTextureModel.VisualizationMat.ToTexture(),
                 "ProcessedTextures", ImageProcessingType.SegmentedTexture);
         }
 

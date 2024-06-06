@@ -4,7 +4,7 @@ namespace Analysis
 {
     public class TextDocumentModel
     {
-        public List<TextBlockModel> TextBlocks { get; set; } = new List<TextBlockModel>();
+        public List<TextBlockModel> TextBlocks { get; } = new();
         public int WordCount { get; private set; }
         public int LineCount { get; private set; }
         public int TextBlockCount { get; private set; }
@@ -36,7 +36,6 @@ namespace Analysis
 
         public List<LineModel> GetLines()
         {
-            //get all lines not using linq
             var lines = new List<LineModel>();
             foreach (var textBlock in TextBlocks)
             {
