@@ -1,21 +1,23 @@
 ﻿using System.Collections.Generic;
-using System.Drawing;
 using Analysis.PropertiesProcessingStage.Processor;
 using OpenCvSharp;
+using UnityEngine;
 using Point = OpenCvSharp.Point;
 
 namespace Analysis.AccessibilityProcessingStage.Processor
 {
     public class TextAccessibilityProcessor
     {
-        private ColorPropertiesProcessor _colorPropertiesProcessor;
+        private readonly ColorPropertiesProcessor _colorPropertiesProcessor;
 
         //to config
-        private int _fontSizeThreshold = 14;
-        private float _imageAsBackgroundThresholdPropability = 0.3f;
-        private float _minimalDistanceBetweenLines = 1.5f;
+        private readonly int _fontSizeThreshold = 14;
+        private readonly float _imageAsBackgroundThresholdProbability = 0.3f;
+        private readonly float _minimalDistanceBetweenLines = 1.5f;
         private readonly float _contrastLowerThreshold = 4.5f;
         private readonly float _contrastUpperThreshold = 15.5f;
+
+        private readonly Color _defaultColor = Color.red;
 
 
         public TextAccessibilityProcessor(ColorPropertiesProcessor colorPropertiesProcessor)
@@ -29,6 +31,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
                 _colorPropertiesProcessor.CalculateContrastRatio(m.TextColor, m.TextBackgroundColor) <
                 _contrastLowerThreshold);
         }
+
         public List<WordModel> TooHighContrastBetweenTextAndBackground(List<WordModel> model)
         {
             return model.FindAll(m =>
@@ -36,30 +39,19 @@ namespace Analysis.AccessibilityProcessingStage.Processor
                 _contrastUpperThreshold);
         }
 
-        public (float areaPercentage, int wordCount) SmallFontIndicator(List<WordModel> words, int imageArea)
-        {
-            var areaCount = 0;
-            var count = 0;
-            foreach (var word in words)
-            {
-                if (word.FontSize < _fontSizeThreshold)
-                {
-                    areaCount += word.Box.w * word.Box.h;
-                    count++;
-                }
-            }
-
-            return (areaCount / (float)imageArea, count);
-        }
-
         public List<WordModel> WordsWithTooSmallFont(List<WordModel> model)
         {
             return model.FindAll(m => m.FontSize < _fontSizeThreshold);
         }
 
-        public bool CheckDistanceBetweenLines(TextBlockModel model)
+        public List<TextBlockModel> BlocksWithTooSmallInterlines(List<TextBlockModel> models)
         {
-            return model.AverageFontSize * _minimalDistanceBetweenLines < model.AverageInterline;
+            return models.FindAll(CheckIfDistanceBetweenLinesIsTooSmall);
+        }
+
+        public bool CheckIfDistanceBetweenLinesIsTooSmall(TextBlockModel model)
+        {
+            return model.AverageFontSize * _minimalDistanceBetweenLines > model.AverageInterline;
         }
 
         public List<TextBlockModel> TextInBlockAlignmentToRight(List<TextBlockModel> models)
@@ -70,23 +62,23 @@ namespace Analysis.AccessibilityProcessingStage.Processor
         public List<TextBlockModel> BlocksWithImageAsBackground(List<TextBlockModel> models)
         {
             return models.FindAll(m =>
-                ImageAsBackgroundInBlockPercentage(m) > _imageAsBackgroundThresholdPropability);
+                ImageAsBackgroundInBlockPercentage(m) > _imageAsBackgroundThresholdProbability);
         }
 
-        public float ImageAsBackgroundInBlockPercentage(TextBlockModel model)
+        private float ImageAsBackgroundInBlockPercentage(TextBlockModel model)
         {
             var wordsWithImageAsBackground = ImageAsBackground(model.GetWords());
-            return AreaPercentage(wordsWithImageAsBackground, model.Box);
+            var area = model.Box.w * model.Box.h;
+            return AreaPercentage(wordsWithImageAsBackground, area);
         }
 
-        public List<WordModel> ImageAsBackground(List<WordModel> model)
+        private List<WordModel> ImageAsBackground(List<WordModel> model)
         {
             return model.FindAll(m => !m.IsUniformBackground);
         }
 
-        public float AreaPercentage(IEnumerable<ITextModel> models, Box area)
+        public float AreaPercentage(IEnumerable<ITextModel> models, int imageArea)
         {
-            var imageArea = area.w * area.h;
             var areaCount = 0;
             foreach (var textModel in models)
             {
@@ -96,14 +88,15 @@ namespace Analysis.AccessibilityProcessingStage.Processor
             return areaCount / (float)imageArea;
         }
 
-        public Mat DrawAreas(List<Box> areas, Color color, Mat mat)
+        public Mat DrawAreas(IEnumerable<ITextModel> areas, Mat mat, Color customColor = default)
         {
             var result = mat.Clone();
-            var colorScalar = new Scalar(color.R, color.G, color.G);
+            var color = customColor == default ? _defaultColor : customColor;
+            var colorScalar = new Scalar(color.r, color.g, color.b);
             foreach (var area in areas)
             {
-                Cv2.Rectangle(result, new Point(area.x, area.y),
-                    new Point(area.x + area.w, area.y + area.h),
+                Cv2.Rectangle(result, new Point(area.Box.x, area.Box.y),
+                    new Point(area.Box.x + area.Box.w, area.Box.y + area.Box.h),
                     colorScalar, 2);
             }
 

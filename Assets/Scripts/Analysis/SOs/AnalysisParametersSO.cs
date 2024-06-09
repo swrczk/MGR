@@ -9,5 +9,9 @@ namespace Analysis
     { 
         public List<AnalysisParameter> parameters;
 
+        public float GetWeight(FeatureType feature)
+        {
+            return parameters.Find(p => p.feature == feature).weight;
+        }
     }
 }
