@@ -2,7 +2,7 @@
 
 namespace Analysis
 {
-    public class LineModel
+    public class LineModel:ITextModel
     {
         public List<WordModel> Words { get;  } = new();
         public Box Box { get; set; }

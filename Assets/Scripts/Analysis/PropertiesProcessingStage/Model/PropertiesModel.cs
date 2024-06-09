@@ -8,5 +8,7 @@ namespace Analysis.PropertiesProcessingStage.Model
         public TextDocumentModel DocumentModelProperties { get; set; }
         public List<ContrastAnalysisResultModel> ContrastProperties { get; set; }
         public Mat ContrastVisualizationMat { get; set; }
+        
+        public DominantColorsPropertiesModel DominantColorsProperties { get; set; }
     }
 }

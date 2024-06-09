@@ -16,6 +16,11 @@ namespace Analysis
         {
             return AnalysisUtils.TextureToMat(texture);
         }
+        
+        public static Vec3b ToVec3B(this Color color)
+        {
+            return AnalysisUtils.ColorToVec3b(color);
+        }
     }
 
     public class Vec3BEqualityComparer : IEqualityComparer<Vec3b>
@@ -129,6 +134,11 @@ namespace Analysis
         {
             return new Vec3b((byte)color.Item0, (byte)color.Item1, (byte)color.Item2);
         }
+        
+        public static Vec3d ColorToVec3d(Color color)
+        {
+            return new Vec3d(color.r, color.g, color.b);
+        }
 
 
         //Result Range <0;8>
@@ -162,6 +172,11 @@ namespace Analysis
         public static Scalar ColorToScalar(Color color)
         {
             return new Scalar(color.r, color.g, color.b);
+        }
+
+        public static Vec3b ColorToVec3b(Color color)
+        {
+            return new Vec3b((byte)color.r, (byte)color.g, (byte)color.b);
         }
     }
 }

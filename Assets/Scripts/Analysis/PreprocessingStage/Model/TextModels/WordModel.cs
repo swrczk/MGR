@@ -2,9 +2,9 @@
 
 namespace Analysis
 {
-    public class WordModel
+    public class WordModel : ITextModel
     {
-        public Box Box { get; }
+        public Box Box { get; set; }
         public string Text { get; }
         public Color TextColor { get; set; }
         public Color TextBackgroundColor { get; set; }

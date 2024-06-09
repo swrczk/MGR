@@ -15,11 +15,11 @@ namespace Analysis.PropertiesProcessingStage.Processor
         private readonly Scalar _redScalar = new(0, 0, 255);
         private readonly Scalar _blueScalar = new(255, 0, 0);
 
-        public ContrastProcessor(float contrastLowerThreshold, float contrastUpperThreshold)
+        public ContrastProcessor(float contrastLowerThreshold, float contrastUpperThreshold, ColorPropertiesProcessor colorPropertiesProcessor )
         {
             _contrastLowerThreshold = contrastLowerThreshold;
             _contrastUpperThreshold = contrastUpperThreshold;
-            _colorPropertiesProcessor = new();
+            _colorPropertiesProcessor = colorPropertiesProcessor;
         }
 
         public List<ContrastAnalysisResultModel> CheckContrast(List<SegmentModel> segments, Mat mat)

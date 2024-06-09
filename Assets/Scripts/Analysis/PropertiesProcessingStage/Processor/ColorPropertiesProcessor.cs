@@ -1,5 +1,6 @@
 ﻿using System;
 using OpenCvSharp;
+using UnityEngine;
 
 namespace Analysis.PropertiesProcessingStage.Processor
 {
@@ -37,6 +38,11 @@ namespace Analysis.PropertiesProcessingStage.Processor
             }
 
             return (luminance1 + 0.05f) / (luminance2 + 0.05f);
+        }
+
+        public float CalculateContrastRatio(Color color1, Color color2)
+        {
+            return CalculateContrastRatio(color1.ToVec3B(), color2.ToVec3B());
         }
     }
 }

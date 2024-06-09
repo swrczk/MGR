@@ -10,8 +10,10 @@ namespace Analysis
         public float Left { get; set; }
         public float Right { get; set; }
     }
-    public class TextDocumentModel
+    public class TextDocumentModel:ITextModel
     {
+
+        public Box Box { get; set; }
         public List<TextBlockModel> TextBlocks { get; } = new();
         public int WordCount { get; private set; }
         public int LineCount { get; private set; }

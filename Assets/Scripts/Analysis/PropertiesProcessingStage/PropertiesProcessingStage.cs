@@ -13,17 +13,21 @@ namespace Analysis.PropertiesProcessingStage
         private readonly LinePropertiesProcessor _linePropertiesProcessor;
         private readonly TextBlockPropertiesProcessor _textBlockPropertiesProcessor;
         private readonly TextDocumentPropertiesProcessor _textDocumentPropertiesProcessor;
+        private readonly DominantColorsPropertiesProcessor _dominantColorsPropertiesProcessor;
+        private readonly ColorPropertiesProcessor _colorPropertiesProcessor;
 
         public PropertiesProcessingStage(ImageProcessingParametersSo parameters)
         {
+            _colorPropertiesProcessor = new ColorPropertiesProcessor();
             _wordsColorProcessor =
                 new WordsColorProcessor(parameters.entropyThresholdWords, parameters.edgesPerCharThreshold);
             _contrastProcessor =
-                new ContrastProcessor(parameters.contrastLowerThreshold, parameters.contrastUpperThreshold);
+                new ContrastProcessor(parameters.contrastLowerThreshold, parameters.contrastUpperThreshold, _colorPropertiesProcessor);
             _wordPropertiesProcessor = new WordPropertiesProcessor();
             _linePropertiesProcessor = new LinePropertiesProcessor();
             _textBlockPropertiesProcessor = new TextBlockPropertiesProcessor();
             _textDocumentPropertiesProcessor = new TextDocumentPropertiesProcessor();
+            _dominantColorsPropertiesProcessor = new DominantColorsPropertiesProcessor(_colorPropertiesProcessor);
         }
 
         public PropertiesModel Run(PreprocessedModel model, Texture2D originalTexture)
@@ -35,11 +39,17 @@ namespace Analysis.PropertiesProcessingStage
                 AnalysisUtils.TextureToMat(originalTexture));
             var visualizationMat =
                 _contrastProcessor.GetContrastVisualizationTexture(contrastProperties, model.GrayMatWithColorChannels);
+            var dominantColorsProperties = new DominantColorsPropertiesModel
+            {
+                DominantColors = model.DominantColors,
+                ColorContrast = _dominantColorsPropertiesProcessor.Process(model.DominantColors)
+            };
             return new PropertiesModel
             {
                 DocumentModelProperties = document,
                 ContrastProperties = contrastProperties,
-                ContrastVisualizationMat = visualizationMat
+                ContrastVisualizationMat = visualizationMat,
+                DominantColorsProperties = dominantColorsProperties
             };
         }
 
