@@ -1,4 +1,5 @@
-﻿using OpenCvSharp;
+﻿using System.Collections.Generic;
+using OpenCvSharp;
 
 namespace Analysis.AccessibilityProcessingStage
 {
@@ -6,6 +7,6 @@ namespace Analysis.AccessibilityProcessingStage
     {
         public float BaseValue { get; set; }
         public float Weight { get; set; }
-        public Mat Visualization { get; set; }
+        public List<Mat> Visualization { get; set; } = new List<Mat>();
     }
 }

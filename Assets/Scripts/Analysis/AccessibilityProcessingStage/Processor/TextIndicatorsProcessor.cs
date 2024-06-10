@@ -9,12 +9,13 @@ using UnityEngine;
 namespace Analysis.AccessibilityProcessingStage
 {
     public class TextIndicatorsProcessor
-    { 
+    {
         private readonly TextAccessibilityProcessor _textAccessibilityProcessor;
         private readonly AnalysisParametersSO _parameters;
- 
 
-        public TextIndicatorsProcessor(AnalysisParametersSO analysisParametersSo, TextAccessibilityProcessor textAccessibilityProcessor)
+
+        public TextIndicatorsProcessor(AnalysisParametersSO analysisParametersSo,
+            TextAccessibilityProcessor textAccessibilityProcessor)
         {
             _textAccessibilityProcessor = textAccessibilityProcessor;
             _parameters = analysisParametersSo;
@@ -42,14 +43,14 @@ namespace Analysis.AccessibilityProcessingStage
         private AccessibilityIndicatorModel TooSmallInterlineInTextBlockIndicator(List<TextBlockModel> models, Mat mat)
         {
             var color = Color.red;
-            var items =  _textAccessibilityProcessor.BlocksWithTooSmallInterlines(models);
+            var items = _textAccessibilityProcessor.BlocksWithTooSmallInterlines(models);
             return CalculateTextPropertyIndex(items, mat, color, FeatureType.TooSmallInterlineInTextBlock);
         }
 
         private AccessibilityIndicatorModel HighContrastTextColorsIndicator(List<WordModel> models, Mat mat)
         {
             var color = Color.red;
-            var items =  _textAccessibilityProcessor.TooHighContrastBetweenTextAndBackground(models);
+            var items = _textAccessibilityProcessor.TooHighContrastBetweenTextAndBackground(models);
             return CalculateTextPropertyIndex(items, mat, color, FeatureType.HighTextBackgroundContrast);
         }
 
@@ -64,7 +65,7 @@ namespace Analysis.AccessibilityProcessingStage
         {
             var color = Color.blue;
 
-            var items =  _textAccessibilityProcessor.TooSmallContrastBetweenTextAndBackground(models);
+            var items = _textAccessibilityProcessor.TooSmallContrastBetweenTextAndBackground(models);
             return CalculateTextPropertyIndex(items, mat, color, FeatureType.LowTextBackgroundContrast);
         }
 
@@ -72,7 +73,7 @@ namespace Analysis.AccessibilityProcessingStage
         {
             var color = Color.red;
 
-            var items =  _textAccessibilityProcessor.WordsWithTooSmallFont(models);
+            var items = _textAccessibilityProcessor.WordsWithTooSmallFont(models);
             return CalculateTextPropertyIndex(items, mat, color, FeatureType.TooSmallFont);
         }
 
@@ -88,13 +89,14 @@ namespace Analysis.AccessibilityProcessingStage
         {
             var imageArea = mat.Width * mat.Height;
             var areaPercentage = _textAccessibilityProcessor.AreaPercentage(models, imageArea);
-            var visualization =  _textAccessibilityProcessor.DrawAreas(models, mat, color);
-            Debug.LogError( $"Area percentage: {areaPercentage}, weight: {_parameters.GetWeight(featureType)}, type: {featureType}"); 
+            var visualization = _textAccessibilityProcessor.DrawAreas(models, mat, color);
+            Debug.LogError(
+                $"Area percentage: {areaPercentage}, weight: {_parameters.GetWeight(featureType)}, type: {featureType}");
             return new AccessibilityIndicatorModel()
             {
                 BaseValue = areaPercentage,
-                Weight =  _parameters.GetWeight(featureType),
-                Visualization = visualization
+                Weight = _parameters.GetWeight(featureType),
+                Visualization = new List<Mat> { visualization }
             };
         }
     }
