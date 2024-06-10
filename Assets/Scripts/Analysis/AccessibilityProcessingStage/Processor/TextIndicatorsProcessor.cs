@@ -3,6 +3,7 @@ using Analysis.AccessibilityProcessingStage.Processor;
 using Analysis.PropertiesProcessingStage.Model;
 using OpenCvSharp;
 using UI;
+using UnityEditor;
 using UnityEngine;
 
 namespace Analysis.AccessibilityProcessingStage
@@ -13,10 +14,10 @@ namespace Analysis.AccessibilityProcessingStage
         private readonly AnalysisParametersSO _parameters;
  
 
-        public TextIndicatorsProcessor(AnalysisParametersSO analysisParametersSO, TextAccessibilityProcessor textAccessibilityProcessor)
+        public TextIndicatorsProcessor(AnalysisParametersSO analysisParametersSo, TextAccessibilityProcessor textAccessibilityProcessor)
         {
             _textAccessibilityProcessor = textAccessibilityProcessor;
-            _parameters = analysisParametersSO;
+            _parameters = analysisParametersSo;
         }
 
         public TextAccessibilityModel GenerateTextAccessibilityModel(PropertiesModel model, Mat originalMat)
@@ -88,6 +89,7 @@ namespace Analysis.AccessibilityProcessingStage
             var imageArea = mat.Width * mat.Height;
             var areaPercentage = _textAccessibilityProcessor.AreaPercentage(models, imageArea);
             var visualization =  _textAccessibilityProcessor.DrawAreas(models, mat, color);
+            Debug.LogError( $"Area percentage: {areaPercentage}, weight: {_parameters.GetWeight(featureType)}, type: {featureType}"); 
             return new AccessibilityIndicatorModel()
             {
                 BaseValue = areaPercentage,

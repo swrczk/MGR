@@ -85,19 +85,26 @@ namespace Analysis.AccessibilityProcessingStage.Processor
                 areaCount += textModel.Box.w * textModel.Box.h;
             }
 
-            return areaCount / (float)imageArea;
+            return areaCount / (float)imageArea * 100f;
         }
 
         public Mat DrawAreas(IEnumerable<ITextModel> areas, Mat mat, Color customColor = default)
         {
             var result = mat.Clone();
             var color = customColor == default ? _defaultColor : customColor;
-            var colorScalar = new Scalar(color.r, color.g, color.b);
+            var colorScalar = new Scalar(color.b * 255, color.g * 255, color.r * 255); // Convert Unity color to BGR
+
             foreach (var area in areas)
             {
-                Cv2.Rectangle(result, new Point(area.Box.x, area.Box.y),
-                    new Point(area.Box.x + area.Box.w, area.Box.y + area.Box.h),
-                    colorScalar, 2);
+                var left = area.Box.x;
+                var top = area.Box.y;
+                var right = area.Box.x + area.Box.w;
+                var bottom = area.Box.y + area.Box.h;
+
+                if (right > left && bottom > top)
+                {
+                    Cv2.Rectangle(result, new Point(left, top), new Point(right, bottom), colorScalar, 2);
+                }
             }
 
             return result;

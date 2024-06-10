@@ -5,17 +5,6 @@ using OpenCvSharp;
 
 namespace Analysis.AccessibilityProcessingStage
 {
-    public class AccessibilityModel
-    {
-        public ColorAccessibilityModel ColorAccessibilityModel { get; set; }
-        public TextAccessibilityModel TextAccessibilityModel { get; set; }
-    }
-
-    public class ColorAccessibilityModel
-    {
-        public AccessibilityIndicatorModel DominantColorsContrast { get; set; }
-    }
-
     public class AccessibilityProcessingStage
     {
         private readonly ColorPropertiesProcessor _colorPropertiesProcessor;
@@ -23,6 +12,7 @@ namespace Analysis.AccessibilityProcessingStage
         private readonly ColorAccessibilityProcessor _colorAccessibilityProcessor;
         private readonly AnalysisParametersSO _parameters;
         private readonly TextIndicatorsProcessor _textIndicatorsProcessor;
+        private readonly ColorIndicatorsProcessor _colorIndicatorsProcessor;
 
         public AccessibilityProcessingStage(AnalysisParametersSO parameters)
         {
@@ -31,14 +21,17 @@ namespace Analysis.AccessibilityProcessingStage
             _textAccessibilityProcessor = new TextAccessibilityProcessor(_colorPropertiesProcessor);
             _colorAccessibilityProcessor = new ColorAccessibilityProcessor();
             _textIndicatorsProcessor = new TextIndicatorsProcessor(_parameters, _textAccessibilityProcessor);
+            _colorIndicatorsProcessor = new ColorIndicatorsProcessor(_parameters, _colorAccessibilityProcessor);
         }
 
         public AccessibilityModel Run(PropertiesModel model, Mat originalMat)
         {
+            var textAccessibilityModel = _textIndicatorsProcessor.GenerateTextAccessibilityModel(model, originalMat);
+            var colorAccessibilityModel = _colorIndicatorsProcessor.GenerateColorAccessibilityModel(model, originalMat);
             return new AccessibilityModel
             {
-                // ColorAccessibilityModel = GenerateColorAccessibilityModel(model, originalMat),
-                TextAccessibilityModel = _textIndicatorsProcessor.GenerateTextAccessibilityModel(model, originalMat)
+                ColorAccessibilityModel = colorAccessibilityModel,
+                TextAccessibilityModel = textAccessibilityModel
             };
         }
     }

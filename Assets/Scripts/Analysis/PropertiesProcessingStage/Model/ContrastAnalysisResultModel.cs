@@ -13,10 +13,10 @@
         public float Contrast { get; private set; }
         public ContrastResultType ContrastResultType { get; private set; }
 
-        public ContrastAnalysisResultModel(SegmentModel segmentModel, ContrastResultType low, float overallContrast)
+        public ContrastAnalysisResultModel(SegmentModel segmentModel, ContrastResultType result, float overallContrast)
         {
             SegmentModel = segmentModel;
-            ContrastResultType = low;
+            ContrastResultType = result;
             Contrast = overallContrast;
         }
     }
