@@ -2,9 +2,9 @@
 using Analysis.AccessibilityProcessingStage;
 using Analysis.PropertiesProcessingStage;
 using Analysis.PropertiesProcessingStage.Model;
+using Analysis.ReportGenerationStage;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Manager
 {
@@ -20,6 +20,7 @@ namespace Manager
         private PreprocessingStage _preprocessingStage;
         private PropertiesProcessingStage _propertiesProcessingStage;
         private AccessibilityProcessingStage _accessibilityProcessingStage;
+        private ReportGenerationStage _reportGenerationStage;
 
 
         public async UniTask AnaliseRefactored(ScreenForAnalysisSo screen)
@@ -35,8 +36,21 @@ namespace Manager
 
             var propertiesModel = _propertiesProcessingStage.Run(preprocessedModel, texture);
             SavePropertiesProcessingResults(propertiesModel);
+
+            var accessibilityModel = _accessibilityProcessingStage.Run(propertiesModel, preprocessedModel.DefaultMat,
+                preprocessedModel.ColorSegmentedMat);
             
-            _accessibilityProcessingStage.Run(propertiesModel, preprocessedModel.DefaultMat, preprocessedModel.ColorSegmentedMat);
+            var analysisModel = new AnalysisModel()
+            {
+                ScreenData = _screenForAnalysisData,
+                AnalysisParameters = analysisParametersSo,
+                PreprocessedModel = preprocessedModel,
+                PropertiesModel = propertiesModel,
+                AccessibilityModel = accessibilityModel
+            };
+            
+            _reportGenerationStage.Run(analysisModel);
+            
         }
 
         private void InitStages()
@@ -44,6 +58,7 @@ namespace Manager
             _preprocessingStage = new PreprocessingStage(imageProcessingParametersSo);
             _propertiesProcessingStage = new PropertiesProcessingStage(imageProcessingParametersSo);
             _accessibilityProcessingStage = new AccessibilityProcessingStage(analysisParametersSo);
+            _reportGenerationStage = new ReportGenerationStage();
         }
 
         private void SavePreprocessingStageResults(PreprocessedModel preprocessedModel)

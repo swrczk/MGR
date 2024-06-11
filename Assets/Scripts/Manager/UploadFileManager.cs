@@ -1,8 +1,8 @@
+using System.IO;
 using Cysharp.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Networking;
-using Utils;
 
 namespace Manager
 {
@@ -10,14 +10,13 @@ namespace Manager
     {
         private string _finalPath;
 
-
-        public async UniTask<(bool, Texture)> SaveFile()
+        public async UniTask<(bool, Texture, string)> SaveFile()
         {
-            (bool, Texture ) savedFile = (false, null);
+            (bool, Texture, string) savedFile = (false, null, string.Empty);
             var allowedFileTypes = new[] { "Image files", "png,jpg,jpeg" };
             string path = EditorUtility.OpenFilePanelWithFilters("Select file", "", allowedFileTypes);
 
-            if (path == null)
+            if (string.IsNullOrEmpty(path))
             {
                 Debug.Log("Operation cancelled");
             }
@@ -27,6 +26,7 @@ namespace Manager
                 _finalPath = path;
                 savedFile.Item2 = await LoadImage();
                 savedFile.Item1 = true;
+                savedFile.Item3 = Path.GetFileNameWithoutExtension(path);
             }
 
             return savedFile;

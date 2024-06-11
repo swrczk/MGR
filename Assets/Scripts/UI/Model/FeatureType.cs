@@ -2,6 +2,7 @@
 {
     public enum FeatureType
     {
+        SkipTextAnalysis,
         HighContrastColors,
         BrightColors,
         LowTextBackgroundContrast,

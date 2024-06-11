@@ -106,8 +106,8 @@ namespace Analysis.AccessibilityProcessingStage.Processor
 
         private Mat CreateColorPairMat(Color color1, Color color2)
         {
-            var scalar1 = new Scalar(color1.r, color1.g, color1.b);
-            var scalar2 = new Scalar(color2.r, color2.g, color2.b);
+            var scalar1 = AnalysisUtils.ColorToScalar(color1);
+            var scalar2 = AnalysisUtils.ColorToScalar(color2);
             var mat = new Mat(100, 200, MatType.CV_8UC3, new Scalar(0, 0, 0));
             Cv2.Rectangle(mat, new Rect(0, 0, 100, 100), scalar1, -1);
             Cv2.Rectangle(mat, new Rect(100, 0, 100, 100), scalar2, -1);
@@ -117,7 +117,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
 
         private float CalculateColorPercentage(Mat mat, Color color)
         {
-            var colorScalar = new Scalar(color.r, color.g, color.b);
+            var colorScalar = AnalysisUtils.ColorToScalar(color);
 
             var mask = new Mat(); // Create a mask where the specified color is white (255) and others are black (0)
             Cv2.InRange(mat, colorScalar, colorScalar, mask);

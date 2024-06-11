@@ -1,9 +1,6 @@
 ﻿using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
-using Utils.Common;
 using Utils.MVC;
 
 namespace UI.ConfigScene
@@ -48,7 +45,8 @@ namespace UI.ConfigScene
             if (savedFile.Item1)
             {
                 var texture = (savedFile.Item2 as Texture2D);
-                var so = Context.ResultsManager.CreateScreenDto(texture);
+                var screenName = savedFile.Item3;
+                var so = Context.ResultsManager.CreateScreenDto(texture, screenName);
                 View.DisplayFile(so);
             }
         }

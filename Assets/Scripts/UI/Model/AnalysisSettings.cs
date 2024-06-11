@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using Analysis;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace UI
 {

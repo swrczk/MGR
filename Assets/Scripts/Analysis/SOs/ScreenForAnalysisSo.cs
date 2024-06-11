@@ -1,11 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Analysis.PropertiesProcessingStage.Model;
 using UnityEditor;
 using UnityEngine;
 using Object = UnityEngine.Object;
-using Rect = OpenCvSharp.Rect;
 
 namespace Analysis
 {
@@ -19,59 +17,15 @@ namespace Analysis
     {
         public string Name { get; set; }
         public ScreenForAnalysisSo ScreenForAnalysisSo { get; set; }
-        public PreprocessedTexture PreprocessedTexture { get; set; }
-        public TextureProperties TextureProperties { get; set; }
-        public AnalysisData AnalysisData { get; set; }
         public float OverallResult { get; set; }
     }
 
-    public class PreprocessedTexture
-    {
-        public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
-        public TextDocumentModel TextDocumentModel { get; set; }
-        public OcrResult OcrResult { get; set; }
-
-        private List<string> FilePaths { get; } = new List<string>(); // co z tym? czy jest wgl potrzebne?
-        public List<Rect> SegmentedByColorRects { get; set; }
-    }
-
-    //przeneisione do tesseraxra
-    // public class OcrResult
-    // {
-    //     public List<string> Text { get; set; }
-    //     public List<Box> Boxes { get; set; }
-    //     public Segment Segment { get; set; }//przenieść do result lub usunac
-    //     public Texture2D HighlightedDetectedWords { get; set; }
-    // }
-
-    public class TextureProperties
-    {
-        public List<Color> DominantColors { get; set; }
-        public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
-        public TextDocumentModel TextDocumentModel { get; set; }
-
-        private List<string> FilePaths { get; } = new List<string>(); // co z tym? czy jest wgl potrzebne?
-        public SegmentedTextureModel SegmentedTextureModel { get; set; }
-    }
-
-    public class TextAnalysisResult
-    {
-        public TextDocumentModel TextDocumentModel { get; set; }
-        //zastanowić się nad tym
-    }
-
-    public class AnalysisData
-    {
-        public List<Rect> SegmentedByColorRects { get; set; }
-        public Dictionary<ImageProcessingType, Texture2D> ProcessedImages { get; } = new();
-        public TextAnalysisResult TextAnalysisResult { get; set; }
-        public List<ContrastAnalysisResultModel> ContrastResults { get; } = new();
-    }
 
     [CreateAssetMenu(fileName = "SFA", menuName = "ScreenForAnalysisSO")]
     public class ScreenForAnalysisSo : ScriptableObject
     {
         public string fileName;
+        public string screenName;
         public string saveFilesPath;
         public Texture2D texture;
         public bool isSelected;
@@ -79,10 +33,7 @@ namespace Analysis
         //-----------------Analysis Data-----------------
         public List<Color> dominantColors;
         public Dictionary<ImageProcessingType, Texture2D> ProcessedImages = new();
-        public TextDocumentModel TextDocumentModel;
-
         private List<string> _filePaths = new List<string>();
-        public List<SegmentModel> SegmentedByColorRects { get; set; }
 
         public void Delete()
         {
@@ -97,15 +48,6 @@ namespace Analysis
         public void SaveDominantColors(List<Color> colors)
         {
             dominantColors = colors;
-        }
-
-        public Texture2D SaveProcessedImage(Texture2D texture2D, ImageProcessingType type)
-        {
-            var path = SaveAsAsset(texture2D, type.ToString());
-            texture2D.name = path.Split("/")[^1].Split(".asset")[0];
-            SaveAsPNG(texture2D, type.ToString());
-            ProcessedImages[type] = texture2D;
-            return texture2D;
         }
 
         public Texture2D SaveProcessedImage(Texture2D texture2D, string folder, ImageProcessingType type)
@@ -155,11 +97,6 @@ namespace Analysis
             var path = SaveAsAsset(texture2D, "texture");
             texture2D.name = path.Split("/")[^1].Split(".asset")[0];
             texture = texture2D;
-        }
-
-        public void SaveTextDocument(TextDocumentModel obj)
-        {
-            TextDocumentModel = obj;
         }
     }
 }

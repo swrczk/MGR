@@ -2,7 +2,6 @@
 using Analysis;
 using UnityEngine;
 using UnityEngine.UI;
-using Utils.Common;
 using Utils.MVC;
 
 namespace UI

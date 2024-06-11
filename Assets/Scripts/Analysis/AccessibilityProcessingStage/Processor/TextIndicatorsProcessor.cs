@@ -3,7 +3,6 @@ using Analysis.AccessibilityProcessingStage.Processor;
 using Analysis.PropertiesProcessingStage.Model;
 using OpenCvSharp;
 using UI;
-using UnityEditor;
 using UnityEngine;
 
 namespace Analysis.AccessibilityProcessingStage

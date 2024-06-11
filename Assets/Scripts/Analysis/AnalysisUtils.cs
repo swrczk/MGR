@@ -19,7 +19,7 @@ namespace Analysis
         
         public static Vec3b ToVec3B(this Color color)
         {
-            return AnalysisUtils.ColorToVec3b(color);
+            return AnalysisUtils.ColorToVec3B(color);
         }
     }
 
@@ -70,27 +70,6 @@ namespace Analysis
             return OpenCvSharp.Unity.TextureToMat(texture);
         }
 
-        public static Vec3d SubtractColors(Vec3d color1, Vec3d color2)
-        {
-            return new Vec3d(color1.Item0 - color2.Item0, color1.Item1 - color2.Item1, color1.Item2 - color2.Item2);
-        }
-
-        public static double CalculateNorm(Vec3d vec)
-        {
-            return Math.Sqrt(vec.Item0 * vec.Item0 + vec.Item1 * vec.Item1 + vec.Item2 * vec.Item2);
-        }
-
-        public static bool HasColorLowerValue(Color x, Color y)
-        {
-            return x.r < y.r && x.g < y.g && x.b < y.b;
-        }
-
-        public static bool HasColorBiggerValue(Color x, Color y)
-        {
-            return x.r > y.r && x.g > y.g && x.b > y.b;
-        }
-
-
         public static Mat MatToGrayScale(Mat mat)
         {
             var gray = new Mat();
@@ -121,23 +100,7 @@ namespace Analysis
 
         public static Color Vec3ToColor(Vec3b color)
         {
-            return new Color(color.Item0, color.Item1, color.Item2);
-        }
-
-        public static Color Vec3ToColor(Vec3d color)
-        {
-            return new Color((int)color.Item0, (int)color.Item1, (int)color.Item2);
-        }
-
-        // ReSharper disable once InconsistentNaming
-        public static Vec3b Vec3dToVec3b(Vec3d color)
-        {
-            return new Vec3b((byte)color.Item0, (byte)color.Item1, (byte)color.Item2);
-        }
-        
-        public static Vec3d ColorToVec3d(Color color)
-        {
-            return new Vec3d(color.r, color.g, color.b);
+            return new Color(color.Item2 / 255f, color.Item1 / 255f, color.Item0 / 255f);
         }
 
 
@@ -171,12 +134,12 @@ namespace Analysis
 
         public static Scalar ColorToScalar(Color color)
         {
-            return new Scalar(color.r, color.g, color.b);
+            return new Scalar(color.b * 255, color.g * 255, color.r * 255);
         }
 
-        public static Vec3b ColorToVec3b(Color color)
+        public static Vec3b ColorToVec3B(Color color)
         {
-            return new Vec3b((byte)color.r, (byte)color.g, (byte)color.b);
+            return new Vec3b((byte)color.b, (byte)color.g, (byte)color.r);
         }
     }
 }

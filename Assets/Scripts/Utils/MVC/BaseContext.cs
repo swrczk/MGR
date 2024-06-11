@@ -1,7 +1,6 @@
 ﻿using Manager;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using Utils.Common;
 
 namespace Utils.MVC
 {

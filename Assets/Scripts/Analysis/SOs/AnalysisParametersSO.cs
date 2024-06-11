@@ -20,12 +20,17 @@ namespace Analysis
             new AnalysisParameter(FeatureType.SegmentsWithHighContrast, 0.1f, true),
             new AnalysisParameter(FeatureType.SegmentsWithLowContrast, 0.1f, true),
             new AnalysisParameter(FeatureType.DominantColorsWithLowContrast, 0.1f, true),
-            new AnalysisParameter(FeatureType.DominantColorsWithHighContrast, 0.1f, true)
+            new AnalysisParameter(FeatureType.DominantColorsWithHighContrast, 0.1f, true),
+            new AnalysisParameter(FeatureType.SkipTextAnalysis, 1f, false),
         };
 
         public float GetWeight(FeatureType feature)
         {
-            return parameters.Find(p => p.feature == feature)?.weight ?? 0.1f;
+            return GetParameter(feature)?.weight ?? 0.1f;
+        }
+        public AnalysisParameter GetParameter(FeatureType feature)
+        {
+            return parameters.Find(p => p.feature == feature);
         }
     }
 }

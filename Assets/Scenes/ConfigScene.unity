@@ -1545,7 +1545,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1160130243}
   m_HandleRect: {fileID: 1160130242}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -2985,7 +2985,6 @@ MonoBehaviour:
   uploadButton: {fileID: 1809070910}
   analiseButton: {fileID: 313308219}
   loadingOverlay: {fileID: 1062639437}
-  gifAnimator: {fileID: 0}
 --- !u!1 &1784181933
 GameObject:
   m_ObjectHideFlags: 0

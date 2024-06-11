@@ -92,7 +92,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
         {
             var result = mat.Clone();
             var color = customColor == default ? _defaultColor : customColor;
-            var colorScalar = new Scalar(color.b * 255, color.g * 255, color.r * 255); // Convert Unity color to BGR
+            var colorScalar = AnalysisUtils.ColorToScalar(color);
 
             foreach (var area in areas)
             {

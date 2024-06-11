@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using Analysis.PropertiesProcessingStage.Model;
-using OpenCvSharp;
-using UnityEngine;
 
 namespace Analysis.AccessibilityProcessingStage.Processor
 {

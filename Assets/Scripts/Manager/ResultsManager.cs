@@ -5,7 +5,6 @@ using System.Linq;
 using Analysis;
 using UnityEditor;
 using UnityEngine;
-using Utils;
 
 namespace Manager
 {
@@ -23,7 +22,7 @@ namespace Manager
         }
 
 
-        public ScreenForAnalysisSo CreateScreenDto(Texture2D texture)
+        public ScreenForAnalysisSo CreateScreenDto(Texture2D texture, string screenName)
         {
             long time = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
             ScreenForAnalysisSo screenForAnalysisSo = ScriptableObject.CreateInstance<ScreenForAnalysisSo>();
@@ -31,6 +30,7 @@ namespace Manager
             screenForAnalysisSo.fileName = $"{time}";
             screenForAnalysisSo.SaveMainTexture(texture);
             screenForAnalysisSo.SaveAsAsset(screenForAnalysisSo, "DTO");
+            screenForAnalysisSo.screenName = screenName.Replace(" ", "_");
             ScreensDictionary.Add(screenForAnalysisSo.name, screenForAnalysisSo);
             //
             // AssetDatabase.CreateAsset(screenSo, screenSo.saveFilesPath);
