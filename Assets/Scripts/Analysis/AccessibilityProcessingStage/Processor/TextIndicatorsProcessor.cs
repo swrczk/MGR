@@ -96,7 +96,7 @@ namespace Analysis.AccessibilityProcessingStage
             {
                 BaseValue = areaPercentage,
                 Weight = _parameters.GetWeight(featureType),
-                Visualization = new List<Mat> { visualization }
+                Visualization = visualization
             };
         }
     }

@@ -2,6 +2,7 @@
 using Analysis.PropertiesProcessingStage.Model;
 using Analysis.PropertiesProcessingStage.Processor;
 using OpenCvSharp;
+using UnityEngine;
 
 namespace Analysis.AccessibilityProcessingStage
 {
@@ -14,6 +15,8 @@ namespace Analysis.AccessibilityProcessingStage
         private readonly TextIndicatorsProcessor _textIndicatorsProcessor;
         private readonly ColorIndicatorsProcessor _colorIndicatorsProcessor;
 
+        private readonly int _roundDigits = 3;
+
         public AccessibilityProcessingStage(AnalysisParametersSO parameters)
         {
             _parameters = parameters;
@@ -24,15 +27,63 @@ namespace Analysis.AccessibilityProcessingStage
             _colorIndicatorsProcessor = new ColorIndicatorsProcessor(_parameters, _colorAccessibilityProcessor);
         }
 
-        public AccessibilityModel Run(PropertiesModel model, Mat originalMat)
+        public AccessibilityModel Run(PropertiesModel model, Mat originalMat, Mat colorSegmentedMat)
         {
             var textAccessibilityModel = _textIndicatorsProcessor.GenerateTextAccessibilityModel(model, originalMat);
-            var colorAccessibilityModel = _colorIndicatorsProcessor.GenerateColorAccessibilityModel(model, originalMat);
+            var colorAccessibilityModel =
+                _colorIndicatorsProcessor.GenerateColorAccessibilityModel(model, colorSegmentedMat);
+
+            var colorScore = CalculateColorScore(colorAccessibilityModel);
+            var textScore = CalculateTextScore(textAccessibilityModel);
+            var overallScore = colorScore + textScore;
+
+            Debug.LogError($"Color score: {colorScore}, Text score: {textScore}, Overall score: {overallScore}");
+            
             return new AccessibilityModel
             {
                 ColorAccessibilityModel = colorAccessibilityModel,
-                TextAccessibilityModel = textAccessibilityModel
+                TextAccessibilityModel = textAccessibilityModel,
+                OverallScore = overallScore,
+                TextScore = textScore,
+                ColorScore = colorScore
             };
+        }
+
+        private float CalculateTextScore(TextAccessibilityModel model)
+        {
+            var score = 0f;
+            score += CalculateIndicatorScore(model.RightAlignedText);
+            score += CalculateIndicatorScore(model.HighContrastTextColors);
+            score += CalculateIndicatorScore(model.LowContrastTextColors);
+            score += CalculateIndicatorScore(model.ImageAsTextBackground);
+            score += CalculateIndicatorScore(model.TooSmallFontSize);
+            score += CalculateIndicatorScore(model.TooSmallInterlineInTextBlock);
+
+            return score;
+        }
+
+        private float CalculateColorScore(ColorAccessibilityModel model)
+        {
+            var score = 0f;
+            foreach (var indicatorModel in model.DominantColorsWithHighContrast)
+            {
+                score += CalculateIndicatorScore(indicatorModel);
+            }
+
+            foreach (var indicatorModel in model.DominantColorsWithLowContrast)
+            {
+                score += CalculateIndicatorScore(indicatorModel);
+            }
+
+            score += CalculateIndicatorScore(model.SegmentsWithHighContrast);
+            score += CalculateIndicatorScore(model.SegmentsWithLowContrast);
+            return score;
+        }
+
+        private float CalculateIndicatorScore(AccessibilityIndicatorModel model)
+        {
+            // return (float)System.Math.Round(model.BaseValue * model.Weight, _roundDigits);
+            return model.BaseValue * model.Weight;
         }
     }
 }

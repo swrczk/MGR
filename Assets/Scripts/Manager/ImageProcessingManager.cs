@@ -36,7 +36,7 @@ namespace Manager
             var propertiesModel = _propertiesProcessingStage.Run(preprocessedModel, texture);
             SavePropertiesProcessingResults(propertiesModel);
             
-            _accessibilityProcessingStage.Run(propertiesModel, preprocessedModel.DefaultMat);
+            _accessibilityProcessingStage.Run(propertiesModel, preprocessedModel.DefaultMat, preprocessedModel.ColorSegmentedMat);
         }
 
         private void InitStages()

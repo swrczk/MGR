@@ -10,6 +10,10 @@
         TooSmallFont,
         InsufficientSpacingBetweenTextBlocks,
         RightAlignedText,
-        TooSmallInterlineInTextBlock
+        TooSmallInterlineInTextBlock,
+        SegmentsWithHighContrast,
+        SegmentsWithLowContrast,
+        DominantColorsWithLowContrast,
+        DominantColorsWithHighContrast
     }
 }
