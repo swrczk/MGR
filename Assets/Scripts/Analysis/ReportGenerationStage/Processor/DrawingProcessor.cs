@@ -3,7 +3,7 @@ using OpenCvSharp;
 using UnityEngine;
 using Rect = OpenCvSharp.Rect;
 
-namespace Analysis.ReportGenerationStage
+namespace Analysis.ReportGenerationStage.Processor
 {
     public class DrawingProcessor
     {

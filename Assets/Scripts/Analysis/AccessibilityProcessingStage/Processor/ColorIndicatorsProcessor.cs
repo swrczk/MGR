@@ -26,11 +26,15 @@ namespace Analysis.AccessibilityProcessingStage.Processor
                 _colorAccessibilityProcessor.DominantColorsWithLowContrast(model.DominantColorsProperties);
             var dominantColorsLowContrastIndex = CalculateColorsPropertyIndex(model.DominantColorsProperties,
                 dominantColorsLowContrast, colorSegmentedMat, FeatureType.DominantColorsWithLowContrast);
+            var overallColorLowContrast =
+                OverallColorContrast(dominantColorsLowContrastIndex, FeatureType.DominantColorsWithLowContrast);
 
             var dominantColorsHighContrast =
                 _colorAccessibilityProcessor.DominantColorsWithHighContrast(model.DominantColorsProperties);
             var dominantColorsHighContrastIndex = CalculateColorsPropertyIndex(model.DominantColorsProperties,
                 dominantColorsHighContrast, colorSegmentedMat, FeatureType.DominantColorsWithHighContrast);
+            var overallColorContrastHigh = OverallColorContrast(dominantColorsHighContrastIndex,
+                FeatureType.DominantColorsWithHighContrast);
 
             var segmentsWithLowContrast =
                 _colorAccessibilityProcessor.SegmentsWithLowContrast(model.ContrastProperties);
@@ -45,9 +49,24 @@ namespace Analysis.AccessibilityProcessingStage.Processor
             return new ColorAccessibilityModel()
             {
                 DominantColorsWithLowContrast = dominantColorsLowContrastIndex,
+                OverallColorLowContrast = overallColorLowContrast,
                 DominantColorsWithHighContrast = dominantColorsHighContrastIndex,
+                OverallColorContrastHigh = overallColorContrastHigh,
                 SegmentsWithLowContrast = segmentsWithLowContrastIndex,
                 SegmentsWithHighContrast = segmentsWithHighContrastIndex
+            };
+        }
+
+        private AccessibilityIndicatorModel OverallColorContrast(List<DominantColorAccessibilityIndicatorModel> model,
+            FeatureType featureType)
+        {
+            var weight = _parameters.GetWeight(featureType);
+            var value = model.Sum(x => x.BaseValue * x.Weight);
+
+            return new AccessibilityIndicatorModel()
+            {
+                BaseValue = value,
+                Weight = weight
             };
         }
 
@@ -77,10 +96,11 @@ namespace Analysis.AccessibilityProcessingStage.Processor
             return area;
         }
 
-        private List<AccessibilityIndicatorModel> CalculateColorsPropertyIndex(DominantColorsPropertiesModel allColors,
+        private List<DominantColorAccessibilityIndicatorModel> CalculateColorsPropertyIndex(
+            DominantColorsPropertiesModel allColors,
             List<(int, int)> models, Mat mat, FeatureType featureType)
         {
-            var indicators = new List<AccessibilityIndicatorModel>();
+            var indicators = new List<DominantColorAccessibilityIndicatorModel>();
             foreach (var (index1, index2) in models)
             {
                 var color1 = allColors.DominantColors[index1];
@@ -89,14 +109,15 @@ namespace Analysis.AccessibilityProcessingStage.Processor
                 var colorPercentage2 = CalculateColorPercentage(mat, color2);
                 var colorPercentage = colorPercentage1 + colorPercentage2;
                 var visualization = CreateColorPairMat(color1, color2);
-
+                var contrast = allColors.ColorContrast[(index1, index2)];
                 Debug.LogError($"Color percentage: {colorPercentage} for {featureType} ");
 
-                indicators.Add(new AccessibilityIndicatorModel()
+                indicators.Add(new DominantColorAccessibilityIndicatorModel()
                 {
                     BaseValue = colorPercentage,
                     Weight = _parameters.GetWeight(featureType),
-                    Visualization = visualization
+                    Visualization = visualization,
+                    Contrast = contrast
                 });
             }
 
@@ -115,12 +136,22 @@ namespace Analysis.AccessibilityProcessingStage.Processor
             return mat;
         }
 
-        private float CalculateColorPercentage(Mat mat, Color color)
+        private float CalculateColorPercentage(Mat mat, Color color, int tolerance = 10)
         {
-            var colorScalar = AnalysisUtils.ColorToScalar(color);
+            var lowerBound = new Scalar(
+                Mathf.Clamp((float)(color.b * 255) - tolerance, 0, 255),
+                Mathf.Clamp((float)(color.g * 255) - tolerance, 0, 255),
+                Mathf.Clamp((float)(color.r * 255) - tolerance, 0, 255)
+            );
 
-            var mask = new Mat(); // Create a mask where the specified color is white (255) and others are black (0)
-            Cv2.InRange(mat, colorScalar, colorScalar, mask);
+            var upperBound = new Scalar(
+                Mathf.Clamp((float)(color.b * 255) + tolerance, 0, 255),
+                Mathf.Clamp((float)(color.g * 255) + tolerance, 0, 255),
+                Mathf.Clamp((float)(color.r * 255) + tolerance, 0, 255)
+            );
+
+            var mask = new Mat();
+            Cv2.InRange(mat, lowerBound, upperBound, mask);
 
             var whitePixels = Cv2.CountNonZero(mask); // Calculate the number of white pixels in the mask
             var totalPixels = mat.Rows * mat.Cols;

@@ -10,5 +10,6 @@ namespace Analysis.ReportGenerationStage
         public PreprocessedModel PreprocessedModel { get; set; }
         public PropertiesModel PropertiesModel { get; set; }
         public AccessibilityModel AccessibilityModel { get; set; }
+        public ImageProcessingParametersSo ImageProcessingParameters { get; set; }
     }
 }

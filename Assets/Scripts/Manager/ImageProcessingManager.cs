@@ -44,11 +44,12 @@ namespace Manager
             {
                 ScreenData = _screenForAnalysisData,
                 AnalysisParameters = analysisParametersSo,
+                ImageProcessingParameters = imageProcessingParametersSo,
                 PreprocessedModel = preprocessedModel,
                 PropertiesModel = propertiesModel,
                 AccessibilityModel = accessibilityModel
             };
-            
+            DataManager.AnalysisModel = analysisModel;
             _reportGenerationStage.Run(analysisModel);
             
         }

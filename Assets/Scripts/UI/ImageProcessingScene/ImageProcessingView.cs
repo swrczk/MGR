@@ -1,5 +1,7 @@
 ﻿using System;
 using Analysis;
+using Analysis.ReportGenerationStage;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils.MVC;
@@ -15,22 +17,24 @@ namespace UI
 
         [SerializeField]
         private RawImage originalImage;
-
+        
         [SerializeField]
-        private RawImage processedImage;
+        private TMP_Text textScore;
+        
+        [SerializeField]
+        private TMP_Text colorScore;
+        
+        [SerializeField]
+        private TMP_Text overallScore;
 
 
-        public void Setup(ScreenForAnalysisSo screenForAnalysisData)
+        public void Setup(AnalysisModel model)
         {
-            originalImage.texture = screenForAnalysisData.texture;
+            originalImage.texture = model.PreprocessedModel.DefaultMat.ToTexture();
+            textScore.text = $"{model.AccessibilityModel.TextScore}";
+            colorScore.text = $"{model.AccessibilityModel.ColorScore}";
+            overallScore.text = $"{model.AccessibilityModel.OverallScore}";
         }
-
-
-        public void ShowProcessedImage(Texture2D preview)
-        {
-            processedImage.texture = preview;
-        }
-
         protected override void RegisterEvents()
         {
             base.RegisterEvents();

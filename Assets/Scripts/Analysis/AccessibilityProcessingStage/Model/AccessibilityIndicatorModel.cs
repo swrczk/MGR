@@ -8,4 +8,9 @@ namespace Analysis.AccessibilityProcessingStage
         public float Weight { get; set; }
         public Mat Visualization { get; set; }
     }
+    
+    public class DominantColorAccessibilityIndicatorModel:AccessibilityIndicatorModel
+    {
+        public float Contrast { get; set; }
+    }
 }

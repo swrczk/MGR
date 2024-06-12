@@ -1,4 +1,5 @@
 ﻿using Analysis;
+using Manager;
 using UI.ImageProcessingScene;
 using Utils.MVC;
 
@@ -12,10 +13,8 @@ namespace UI
         {
             base.Setup();
             _screenForAnalysisData = Context.ResultsManager.GetFirstSelectedScreen();
-            View.Setup(_screenForAnalysisData);
-
-            var preview = _screenForAnalysisData.ProcessedImages[ImageProcessingType.SegmentedTexture];
-            View.ShowProcessedImage(preview);
+            var model = DataManager.AnalysisModel;
+            View.Setup(model);
         }
 
         protected override void CreateDispatcher()
