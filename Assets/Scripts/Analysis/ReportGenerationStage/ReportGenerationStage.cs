@@ -17,7 +17,7 @@ namespace Analysis.ReportGenerationStage
             _drawingProcessor = new DrawingProcessor();
         }
 
-        public void Run(AnalysisModel model)
+        public string Run(AnalysisModel model)
         {
             _generator.Create(model.ScreenData.screenName, model.ScreenData.fileName);
 
@@ -44,6 +44,7 @@ namespace Analysis.ReportGenerationStage
 
 
             _generator.SaveCurrentPdf();
+            return _generator.ReportPath;
         }
 
         private void FirstPageReportPart(AnalysisModel model)

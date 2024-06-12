@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Analysis
 {
@@ -16,11 +17,10 @@ namespace Analysis
         public List<Color> dominantColors;
         private readonly List<string> _filePaths = new();
         
-        // New fields
-        public float overalScore;
+        public float overallScore;
         public float textScore;
         public float colorScore;
-        public string pathToRaport;
+        public string pathToReport;
 
         public void Delete()
         {

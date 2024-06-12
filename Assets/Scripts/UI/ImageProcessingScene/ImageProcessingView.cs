@@ -11,22 +11,29 @@ namespace UI.ImageProcessingScene
     public class ImageProcessingView : BaseMainView
     {
         public event Action BackButtonClicked;
+        public event Action OpenReportClicked;
+        public event Action OpenReportLocationClicked;
 
         [SerializeField]
         private Button backButton;
 
         [SerializeField]
+        private Button openReportButton;
+
+        [SerializeField]
+        private Button openReportLocation;
+
+        [SerializeField]
         private RawImage originalImage;
-        
+
         [SerializeField]
         private TMP_Text textScore;
-        
+
         [SerializeField]
         private TMP_Text colorScore;
-        
+
         [SerializeField]
         private TMP_Text overallScore;
-
 
         public void Setup(AnalysisModel model)
         {
@@ -35,16 +42,21 @@ namespace UI.ImageProcessingScene
             colorScore.text = $"{model.AccessibilityModel.ColorScore}";
             overallScore.text = $"{model.AccessibilityModel.OverallScore}";
         }
+
         protected override void RegisterEvents()
         {
             base.RegisterEvents();
             backButton.onClick.AddListener(() => BackButtonClicked?.Invoke());
+            openReportButton.onClick.AddListener(() => OpenReportClicked?.Invoke());
+            openReportLocation.onClick.AddListener(() => OpenReportLocationClicked?.Invoke());
         }
 
         protected override void UnregisterEvents()
         {
             base.UnregisterEvents();
             backButton.onClick.RemoveAllListeners();
+            openReportButton.onClick.RemoveAllListeners();
+            openReportLocation.onClick.RemoveAllListeners();
         }
     }
 }

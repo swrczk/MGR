@@ -13,6 +13,7 @@ namespace Analysis.ReportGenerationStage.Processor
 {
     public class PdfGenerator
     {
+        public string ReportPath => path;
         private Document document;
         private string path;
         private float pageWidth;

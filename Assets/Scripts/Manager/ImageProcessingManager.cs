@@ -19,7 +19,7 @@ namespace Manager
         [SerializeField]
         private AnalysisParametersSO analysisParametersSo;
 
-        private ScreenModel _screenModelData;
+        private ScreenModel _screenModel;
         private PreprocessingStage _preprocessingStage;
         private PropertiesProcessingStage _propertiesProcessingStage;
         private AccessibilityProcessingStage _accessibilityProcessingStage;
@@ -31,29 +31,31 @@ namespace Manager
             InitStages();
             await UniTask.WaitForFixedUpdate();
 
-            _screenModelData = screen;
-            var texture = _screenModelData.texture;
+            _screenModel = screen;
 
-            var preprocessedModel = await _preprocessingStage.Run(texture);
-            _screenModelData.SaveDominantColors(preprocessedModel.DominantColors);
+            var preprocessedModel = await _preprocessingStage.Run(_screenModel.texture);
+            _screenModel.SaveDominantColors(preprocessedModel.DominantColors);
 
-            var propertiesModel = _propertiesProcessingStage.Run(preprocessedModel, texture);
-            
+            var propertiesModel = _propertiesProcessingStage.Run(preprocessedModel, _screenModel.texture);
+
             var accessibilityModel = _accessibilityProcessingStage.Run(propertiesModel, preprocessedModel.DefaultMat,
                 preprocessedModel.ColorSegmentedMat);
-            
+            _screenModel.overallScore = accessibilityModel.OverallScore;
+            _screenModel.textScore = accessibilityModel.TextScore;
+            _screenModel.colorScore = accessibilityModel.ColorScore;
+
             var analysisModel = new AnalysisModel()
             {
-                ScreenData = _screenModelData,
+                ScreenData = _screenModel,
                 AnalysisParametersSo = analysisParametersSo,
                 ImageProcessingParameters = imageProcessingParametersSo,
                 PreprocessedModel = preprocessedModel,
                 PropertiesModel = propertiesModel,
                 AccessibilityModel = accessibilityModel
             };
+            var reportPath = _reportGenerationStage.Run(analysisModel);
+            analysisModel.ScreenData.pathToReport = reportPath;
             DataManager.AnalysisModel = analysisModel;
-            _reportGenerationStage.Run(analysisModel);
-            
         }
 
         private void InitStages()
