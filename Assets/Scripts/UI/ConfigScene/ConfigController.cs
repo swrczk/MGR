@@ -13,6 +13,10 @@ namespace UI.ConfigScene
             View.UploadButtonClicked += SaveFile;
             View.RemoveElementClicked += RemoveElement;
             View.AnaliseButtonClicked += Analise;
+            View.ToggleElementClicked += ToggleElement;
+            View.SettingsButtonClicked += ShowSettings;
+            Context.ImageProcessingManager.OnStageCompleted += HandleStageCompleted;
+            View.AnalysisSettingsElement.SaveButtonClicked += SaveNewAnalysisSettings;
         }
 
         public override void Setup()
@@ -20,6 +24,25 @@ namespace UI.ConfigScene
             base.Setup();
             var screenDataArray = Context.ResultsManager.ScreensDictionary.Values.ToArray();
             View.DisplayFiles(screenDataArray);
+            SetupSettingsView();
+        }
+
+        private void SetupSettingsView()
+        {
+            var analysisParameters = Context.ImageProcessingManager.AnalysisParameters;
+            View.AnalysisSettingsElement.ApplyAnalysisParameters(analysisParameters);
+        }
+
+        private void ShowSettings()
+        {
+            View.AnalysisSettingsElement.gameObject.SetActive(true);
+        }
+
+        private void SaveNewAnalysisSettings()
+        {
+            var featureSettings = View.AnalysisSettingsElement.FeatureSettings;
+            Context.AnalysisSettingsManager.UpdateAndSaveParameters(featureSettings);
+            View.AnalysisSettingsElement.gameObject.SetActive(false);
         }
 
         private void Analise()
@@ -29,8 +52,8 @@ namespace UI.ConfigScene
 
         private async UniTaskVoid RunAnalysis()
         {
-            var screenData = Context.ResultsManager.GetFirstSelectedScreen();
-            await Context.ImageProcessingManager.AnaliseRefactored(screenData);
+            var model = Context.ResultsManager.GetSelectedScreens();
+            await Context.ImageProcessingManager.AnaliseScreens(model);
             Context.ChangeScene("Scenes/ImageProcessingScene");
         }
 
@@ -55,6 +78,21 @@ namespace UI.ConfigScene
         {
             Context.ResultsManager.DeleteScreenDto(key);
             Destroy(element.gameObject);
+        }
+
+        private void ToggleElement(string key, bool isSelected)
+        {
+            Context.ResultsManager.ToggleScreenSelection(key, isSelected);
+        }
+
+        private void HandleStageCompleted(string message)
+        {
+            View.LogMessage(message);
+        }
+
+        private void OnDestroy()
+        {
+            Context.ImageProcessingManager.OnStageCompleted -= HandleStageCompleted;
         }
     }
 }

@@ -8,6 +8,7 @@ namespace UI
     public class ScreenElement : MonoBehaviour
     {
         public event Action<string, ScreenElement> OnDelete;
+        public event Action<string, bool> OnToggle; 
 
         [SerializeField]
         private RawImage image;
@@ -23,12 +24,13 @@ namespace UI
         private void Start()
         {
             deleteButton.onClick.AddListener(Delete);
-            checkbox.OnToggle += OnToggle;
+            checkbox.OnToggle += OnToggleChanged;
         }
 
-        private void OnToggle(bool isEnabled)
+        private void OnToggleChanged(bool isEnabled)
         {
             _screenModelData.isSelected = isEnabled;
+            OnToggle?.Invoke(_screenModelData.fileName, isEnabled); // Invoke the toggle event
         }
 
         public void Setup(ScreenModel file)
@@ -41,7 +43,7 @@ namespace UI
         private void OnDestroy()
         {
             deleteButton.onClick.RemoveListener(Delete);
-            checkbox.OnToggle -= OnToggle;
+            checkbox.OnToggle -= OnToggleChanged;
         }
 
         private void Delete()

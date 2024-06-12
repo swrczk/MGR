@@ -3,7 +3,7 @@
 namespace UI
 {
     [System.Serializable]
-    public class AnalysisParameter
+    public class AnalysisParameterModel
     {
         public FeatureType feature;
 
@@ -12,7 +12,7 @@ namespace UI
 
         public bool isEnabled;
 
-        public AnalysisParameter(FeatureType feature, float weight, bool isEnabled)
+        public AnalysisParameterModel(FeatureType feature, float weight, bool isEnabled)
         {
             this.feature = feature;
             this.weight = weight;

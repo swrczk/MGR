@@ -26,11 +26,11 @@ namespace Manager
             var screenModel = new ScreenModel
             {
                 saveFilesPath = SaveFilesPath,
-                fileName = $"{time}"
+                fileName = $"{time}",
+                screenName = screenName.Replace(" ", "_"),
             };
             screenModel.SaveMainTexture(texture);
             SaveAsAsset(screenModel, "DTO");
-            screenModel.screenName = screenName.Replace(" ", "_");
 
             var uniqueKey = screenModel.fileName;
             while (ScreensDictionary.ContainsKey(uniqueKey))
@@ -49,6 +49,14 @@ namespace Manager
                 screenModel.Delete();
                 DeleteAssetFiles(screenModel);
                 ScreensDictionary.Remove(key);
+            }
+        }
+        public void ToggleScreenSelection(string key, bool isSelected)
+        {
+            if (ScreensDictionary.TryGetValue(key, out var screenModel))
+            {
+                screenModel.isSelected = isSelected;
+                SaveAsAsset(screenModel, "DTO"); // Save changes to disk
             }
         }
 
@@ -78,6 +86,20 @@ namespace Manager
             }
 
             return ScreensDictionary.Values.First();
+        }
+        
+        public List<ScreenModel> GetSelectedScreens()
+        {
+            var selectedScreens = new List<ScreenModel>();
+            foreach (var screen in ScreensDictionary.Values)
+            {
+                if (screen.isSelected)
+                {
+                    selectedScreens.Add(screen);
+                }
+            }
+
+            return selectedScreens;
         }
 
         private void SaveAsAsset(ScreenModel screenModel, string folder)

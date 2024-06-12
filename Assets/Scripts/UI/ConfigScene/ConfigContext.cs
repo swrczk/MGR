@@ -8,6 +8,7 @@ namespace UI.ConfigScene
         public ResultsManager ResultsManager { get; private set; }
         public UploadFileManager UploadFileManager { get; private set; }
         public ImageProcessingManager ImageProcessingManager { get; private set; }
+        public AnalysisSettingsManager AnalysisSettingsManager { get; private set; }
 
         public override void ResolveContext()
         {
@@ -15,6 +16,7 @@ namespace UI.ConfigScene
             UploadFileManager = Managers.Instance.GetManager<UploadFileManager>();
             ResultsManager = Managers.Instance.GetManager<ResultsManager>();
             ImageProcessingManager = Managers.Instance.GetManager<ImageProcessingManager>();
+            AnalysisSettingsManager = Managers.Instance.GetManager<AnalysisSettingsManager>();
         }
     }
 }

@@ -13,9 +13,17 @@ namespace UI.ImageProcessingScene
         public event Action BackButtonClicked;
         public event Action OpenReportClicked;
         public event Action OpenReportLocationClicked;
+        public event Action NextResultButtonClicked;
+        public event Action PreviousResultButtonClicked;
 
         [SerializeField]
         private Button backButton;
+
+        [SerializeField]
+        private Button nextResultButton;
+
+        [SerializeField]
+        private Button previousResultButton;
 
         [SerializeField]
         private Button openReportButton;
@@ -49,6 +57,8 @@ namespace UI.ImageProcessingScene
             backButton.onClick.AddListener(() => BackButtonClicked?.Invoke());
             openReportButton.onClick.AddListener(() => OpenReportClicked?.Invoke());
             openReportLocation.onClick.AddListener(() => OpenReportLocationClicked?.Invoke());
+            nextResultButton.onClick.AddListener(() => NextResultButtonClicked?.Invoke());
+            previousResultButton.onClick.AddListener(() => PreviousResultButtonClicked?.Invoke());
         }
 
         protected override void UnregisterEvents()
@@ -57,6 +67,8 @@ namespace UI.ImageProcessingScene
             backButton.onClick.RemoveAllListeners();
             openReportButton.onClick.RemoveAllListeners();
             openReportLocation.onClick.RemoveAllListeners();
+            nextResultButton.onClick.RemoveAllListeners();
+            previousResultButton.onClick.RemoveAllListeners();
         }
     }
 }

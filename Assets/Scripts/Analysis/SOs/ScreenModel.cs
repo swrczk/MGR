@@ -17,9 +17,6 @@ namespace Analysis
         public List<Color> dominantColors;
         private readonly List<string> _filePaths = new();
         
-        public float overallScore;
-        public float textScore;
-        public float colorScore;
         public string pathToReport;
 
         public void Delete()

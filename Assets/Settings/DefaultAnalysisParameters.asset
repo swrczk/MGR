@@ -14,14 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   parameters:
   - feature: 1
-    weight: 0.4
-    isEnabled: 0
+    weight: 0.5
+    isEnabled: 1
   - feature: 2
-    weight: 0.4
+    weight: 0.5
     isEnabled: 1
   - feature: 3
     weight: 0.4
-    isEnabled: 0
+    isEnabled: 1
   - feature: 4
     weight: 0.2
     isEnabled: 1
@@ -36,6 +36,9 @@ MonoBehaviour:
     isEnabled: 1
   - feature: 8
     weight: 0.3
+    isEnabled: 1
+  - feature: 10
+    weight: 0.1
     isEnabled: 1
   - feature: 9
     weight: 0.1

@@ -45,4 +45,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   imageProcessingParametersSo: {fileID: 11400000, guid: 36860010db61cc144ad33a6bb2407a7c, type: 2}
-  analysisParametersSo: {fileID: 11400000, guid: 75775d8c0ec416041a9b6c4a20ab9302, type: 2}
+  analysisParameters: {fileID: 11400000, guid: 75775d8c0ec416041a9b6c4a20ab9302, type: 2}

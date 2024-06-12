@@ -1,5 +1,6 @@
 ﻿using System;
 using Analysis;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils.MVC;
@@ -10,8 +11,11 @@ namespace UI.ConfigScene
     {
         public event Action UploadButtonClicked;
         public event Action AnaliseButtonClicked;
+        public event Action SettingsButtonClicked;
         public event Action<string, ScreenElement> RemoveElementClicked;
-        
+        public event Action<string, bool> ToggleElementClicked;
+        public AnalysisSettingsElement AnalysisSettingsElement => analysisSettingsElement;
+
         [SerializeField]
         private ScreenElement filePrefab;
 
@@ -23,15 +27,25 @@ namespace UI.ConfigScene
 
         [SerializeField]
         private Button analiseButton;
-        
+
+        [SerializeField]
+        private Button settingsButton;
+
         [SerializeField]
         private GameObject loadingOverlay;
+
+        [SerializeField]
+        private TMP_Text logText;
+
+        [SerializeField]
+        private AnalysisSettingsElement analysisSettingsElement;
 
         protected override void RegisterEvents()
         {
             base.RegisterEvents();
             uploadButton.onClick.AddListener(OnUploadButtonClick);
             analiseButton.onClick.AddListener(OnAnaliseButtonClicked);
+            settingsButton.onClick.AddListener(() => SettingsButtonClicked?.Invoke());
         }
 
         protected override void UnregisterEvents()
@@ -39,6 +53,7 @@ namespace UI.ConfigScene
             base.UnregisterEvents();
             uploadButton.onClick.RemoveListener(OnUploadButtonClick);
             analiseButton.onClick.RemoveListener(OnAnaliseButtonClicked);
+            settingsButton.onClick.RemoveAllListeners();
         }
 
         public void DisplayFiles(ScreenModel[] screenDataArray)
@@ -59,6 +74,7 @@ namespace UI.ConfigScene
             var fileObject = Instantiate(filePrefab, parentTransform);
             fileObject.Setup(screenModel);
             fileObject.OnDelete += (key, element) => RemoveElementClicked?.Invoke(key, element);
+            fileObject.OnToggle += (key, isEnabled) => ToggleElementClicked?.Invoke(key, isEnabled);
         }
 
         private void OnUploadButtonClick()
@@ -69,7 +85,13 @@ namespace UI.ConfigScene
         private void OnAnaliseButtonClicked()
         {
             loadingOverlay.SetActive(true);
+            logText.text = "";
             AnaliseButtonClicked?.Invoke();
+        }
+
+        public void LogMessage(string message)
+        {
+            logText.text = message + "\n" + logText.text;
         }
     }
 }

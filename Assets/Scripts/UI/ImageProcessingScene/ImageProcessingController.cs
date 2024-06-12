@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.IO;
 using Manager;
+using UnityEngine;
 using Utils.MVC;
 using Debug = UnityEngine.Debug;
 
@@ -9,11 +10,12 @@ namespace UI.ImageProcessingScene
 {
     public class ImageProcessingController : BaseController<ImageProcessingView, ImageProcessingContext>
     {
+        private int _currentScreenIndex = 0;
+
         public override void Setup()
         {
             base.Setup();
-            var model = DataManager.AnalysisModel;
-            View.Setup(model);
+            SetupView();
         }
 
         protected override void CreateDispatcher()
@@ -22,6 +24,20 @@ namespace UI.ImageProcessingScene
             View.BackButtonClicked += Back;
             View.OpenReportClicked += OpenReportFile;
             View.OpenReportLocationClicked += OpenReportLocation;
+            View.NextResultButtonClicked += NextResult;
+            View.PreviousResultButtonClicked += PreviousResult;
+        }
+
+        private void PreviousResult()
+        {
+            _currentScreenIndex = Mathf.Max(0, _currentScreenIndex - 1);
+            SetupView();
+        }
+
+        private void NextResult()
+        {
+            _currentScreenIndex = Mathf.Min(DataManager.AnalysisModel.Count - 1, _currentScreenIndex + 1);
+            SetupView();
         }
 
         private void Back()
@@ -29,6 +45,12 @@ namespace UI.ImageProcessingScene
             Context.ChangeScene("Scenes/ConfigScene");
         }
 
+
+        private void SetupView()
+        {
+            var model = DataManager.AnalysisModel[_currentScreenIndex];
+            View.Setup(model);
+        }
 
         private void OpenReportLocation()
         {
@@ -59,7 +81,7 @@ namespace UI.ImageProcessingScene
 
         private void OpenReportFile()
         {
-            var filePath = DataManager.AnalysisModel.ScreenData.pathToReport;
+            var filePath = DataManager.AnalysisModel[_currentScreenIndex].ScreenData.pathToReport;
             if (File.Exists(filePath))
             {
                 OpenFileInDefaultApplication(filePath);

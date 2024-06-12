@@ -1,9 +1,10 @@
-﻿using Analysis.ReportGenerationStage.Model;
+﻿using System.Collections.Generic;
+using Analysis.ReportGenerationStage.Model;
 
 namespace Manager
 {
     public static class DataManager
     {
-        public static AnalysisModel AnalysisModel { get; set; }
+        public static List<AnalysisModel> AnalysisModel { get;  } = new List<AnalysisModel>();
     }
 }
