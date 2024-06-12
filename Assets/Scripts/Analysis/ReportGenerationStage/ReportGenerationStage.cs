@@ -1,5 +1,6 @@
 ﻿using System.Text;
-using Analysis.AccessibilityProcessingStage;
+using Analysis.AccessibilityProcessingStage.Model;
+using Analysis.ReportGenerationStage.Model;
 using Analysis.ReportGenerationStage.Processor;
 using UI;
 
@@ -235,7 +236,7 @@ namespace Analysis.ReportGenerationStage
             _generator.AddText(
                 "Obraz został podzielony na segmenty według kolorów, tak, aby każdy segment zawerał w przybliżeniu 2 kolory lub miał conajmniej rozmiary 10x10 pikseli.");
 
-            var parameter = model.AnalysisParameters.GetParameter(FeatureType.SkipTextAnalysis);
+            var parameter = model.AnalysisParametersSo.GetParameter(FeatureType.SkipTextAnalysis);
             if (parameter is { isEnabled: false })
                 _generator.AddText(
                     "Segmentacja została przeprowadzona z wyłączeniem obszarów zawierających tekst. Ponieważ obszary dzielone są za pomocą prostokątów może to prowadzić do sytuacji, w której znacząca ilość segmentów zostanie wykluczona. W takim przypadku zaleca się ponowne przeprowadzenie analizy z wyłączoną opcją pomijania obszarów zawierających tekst.");

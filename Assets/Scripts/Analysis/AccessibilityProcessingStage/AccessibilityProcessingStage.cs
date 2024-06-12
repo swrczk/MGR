@@ -1,4 +1,5 @@
-﻿using Analysis.AccessibilityProcessingStage.Processor;
+﻿using Analysis.AccessibilityProcessingStage.Model;
+using Analysis.AccessibilityProcessingStage.Processor;
 using Analysis.PropertiesProcessingStage.Model;
 using Analysis.PropertiesProcessingStage.Processor;
 using OpenCvSharp;
@@ -11,20 +12,20 @@ namespace Analysis.AccessibilityProcessingStage
         private readonly ColorPropertiesProcessor _colorPropertiesProcessor;
         private readonly TextAccessibilityProcessor _textAccessibilityProcessor;
         private readonly ColorAccessibilityProcessor _colorAccessibilityProcessor;
-        private readonly AnalysisParametersSO _parameters;
+        private readonly AnalysisParametersSO _parametersSo;
         private readonly TextIndicatorsProcessor _textIndicatorsProcessor;
         private readonly ColorIndicatorsProcessor _colorIndicatorsProcessor;
 
         private readonly int _roundDigits = 3;
 
-        public AccessibilityProcessingStage(AnalysisParametersSO parameters)
+        public AccessibilityProcessingStage(AnalysisParametersSO parametersSo)
         {
-            _parameters = parameters;
+            _parametersSo = parametersSo;
             _colorPropertiesProcessor = new ColorPropertiesProcessor();
             _textAccessibilityProcessor = new TextAccessibilityProcessor(_colorPropertiesProcessor);
             _colorAccessibilityProcessor = new ColorAccessibilityProcessor();
-            _textIndicatorsProcessor = new TextIndicatorsProcessor(_parameters, _textAccessibilityProcessor);
-            _colorIndicatorsProcessor = new ColorIndicatorsProcessor(_parameters, _colorAccessibilityProcessor);
+            _textIndicatorsProcessor = new TextIndicatorsProcessor(_parametersSo, _textAccessibilityProcessor);
+            _colorIndicatorsProcessor = new ColorIndicatorsProcessor(_parametersSo, _colorAccessibilityProcessor);
         }
 
         public AccessibilityModel Run(PropertiesModel model, Mat originalMat, Mat colorSegmentedMat)

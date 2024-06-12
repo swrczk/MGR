@@ -3,7 +3,7 @@ using System.Runtime.InteropServices;
 using OpenCvSharp;
 using UnityEngine;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage.Processor
 {
     public class ColorProcessor
     {

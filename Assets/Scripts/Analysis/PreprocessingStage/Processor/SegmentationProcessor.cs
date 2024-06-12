@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using Analysis.PreprocessingStage.Model;
+using Analysis.PreprocessingStage.Model.TextModels;
 using OpenCvSharp;
 using Rect = OpenCvSharp.Rect;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage.Processor
 {
     public class SegmentationProcessor
     {

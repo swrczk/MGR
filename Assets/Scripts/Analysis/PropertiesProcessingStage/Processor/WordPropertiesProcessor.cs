@@ -1,4 +1,6 @@
-﻿namespace Analysis.PropertiesProcessingStage.Processor
+﻿using Analysis.PreprocessingStage.Model.TextModels;
+
+namespace Analysis.PropertiesProcessingStage.Processor
 {
     public class WordPropertiesProcessor
     {

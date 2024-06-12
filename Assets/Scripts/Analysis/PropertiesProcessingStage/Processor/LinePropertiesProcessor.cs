@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using Analysis.PreprocessingStage.Model.TextModels;
 
 namespace Analysis.PropertiesProcessingStage.Processor
 {

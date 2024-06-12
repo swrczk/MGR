@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Analysis.PreprocessingStage.Model;
 using Analysis.PropertiesProcessingStage.Model;
 using OpenCvSharp;
 using Rect = OpenCvSharp.Rect;

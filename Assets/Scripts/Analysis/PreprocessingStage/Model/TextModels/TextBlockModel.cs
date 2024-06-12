@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage.Model.TextModels
 {
     public class TextBlockModel:ITextModel
     {

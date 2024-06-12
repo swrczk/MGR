@@ -41,23 +41,23 @@ namespace UI.ConfigScene
             analiseButton.onClick.RemoveListener(OnAnaliseButtonClicked);
         }
 
-        public void DisplayFiles(ScreenForAnalysisSo[] screenDataArray)
+        public void DisplayFiles(ScreenModel[] screenDataArray)
         {
             foreach (Transform child in parentTransform)
             {
                 Destroy(child.gameObject);
             }
 
-            foreach (ScreenForAnalysisSo file in screenDataArray)
+            foreach (ScreenModel file in screenDataArray)
             {
                 DisplayFile(file);
             }
         }
 
-        public void DisplayFile(ScreenForAnalysisSo screenForAnalysisSo)
+        public void DisplayFile(ScreenModel screenModel)
         {
             var fileObject = Instantiate(filePrefab, parentTransform);
-            fileObject.Setup(screenForAnalysisSo);
+            fileObject.Setup(screenModel);
             fileObject.OnDelete += (key, element) => RemoveElementClicked?.Invoke(key, element);
         }
 

@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using Analysis.AccessibilityProcessingStage.Model;
+using Analysis.PreprocessingStage.Model;
 using Analysis.PropertiesProcessingStage.Model;
 using OpenCvSharp;
 using UI;
@@ -11,13 +13,13 @@ namespace Analysis.AccessibilityProcessingStage.Processor
     public class ColorIndicatorsProcessor
     {
         private readonly ColorAccessibilityProcessor _colorAccessibilityProcessor;
-        private readonly AnalysisParametersSO _parameters;
+        private readonly AnalysisParametersSO _parametersSo;
 
-        public ColorIndicatorsProcessor(AnalysisParametersSO parameters,
+        public ColorIndicatorsProcessor(AnalysisParametersSO parametersSo,
             ColorAccessibilityProcessor colorAccessibilityProcessor)
         {
             _colorAccessibilityProcessor = colorAccessibilityProcessor;
-            _parameters = parameters;
+            _parametersSo = parametersSo;
         }
 
         public ColorAccessibilityModel GenerateColorAccessibilityModel(PropertiesModel model, Mat colorSegmentedMat)
@@ -60,7 +62,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
         private AccessibilityIndicatorModel OverallColorContrast(List<DominantColorAccessibilityIndicatorModel> model,
             FeatureType featureType)
         {
-            var weight = _parameters.GetWeight(featureType);
+            var weight = _parametersSo.GetWeight(featureType);
             var value = model.Sum(x => x.BaseValue * x.Weight);
 
             return new AccessibilityIndicatorModel()
@@ -81,7 +83,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
             return new AccessibilityIndicatorModel()
             {
                 BaseValue = areaPercentage,
-                Weight = _parameters.GetWeight(featureType),
+                Weight = _parametersSo.GetWeight(featureType),
             };
         }
 
@@ -115,7 +117,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
                 indicators.Add(new DominantColorAccessibilityIndicatorModel()
                 {
                     BaseValue = colorPercentage,
-                    Weight = _parameters.GetWeight(featureType),
+                    Weight = _parametersSo.GetWeight(featureType),
                     Visualization = visualization,
                     Contrast = contrast
                 });

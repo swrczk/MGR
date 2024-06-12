@@ -1,8 +1,9 @@
 ﻿using System;
+using Analysis.PreprocessingStage.Model.TextModels;
 using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage.Processor
 {
     public class OcrProcessor
     {

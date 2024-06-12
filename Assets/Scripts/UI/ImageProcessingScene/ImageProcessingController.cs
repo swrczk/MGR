@@ -1,18 +1,17 @@
 ﻿using Analysis;
 using Manager;
-using UI.ImageProcessingScene;
 using Utils.MVC;
 
-namespace UI
+namespace UI.ImageProcessingScene
 {
     public class ImageProcessingController : BaseController<ImageProcessingView, ImageProcessingContext>
     {
-        private ScreenForAnalysisSo _screenForAnalysisData;
+        private ScreenModel _screenModelData;
 
         public override void Setup()
         {
             base.Setup();
-            _screenForAnalysisData = Context.ResultsManager.GetFirstSelectedScreen();
+            _screenModelData = Context.ResultsManager.GetFirstSelectedScreen();
             var model = DataManager.AnalysisModel;
             View.Setup(model);
         }

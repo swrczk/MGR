@@ -1,8 +1,9 @@
 ﻿using System.Collections.Generic;
+using Analysis.PreprocessingStage.Model.TextModels;
 using OpenCvSharp;
 using UnityEngine;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage.Model
 {
     public class PreprocessedModel
     {

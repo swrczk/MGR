@@ -1,4 +1,4 @@
-﻿using Analysis.ReportGenerationStage;
+﻿using Analysis.ReportGenerationStage.Model;
 
 namespace Manager
 {

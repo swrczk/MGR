@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using OpenCvSharp;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage.Model
 {
     public class SegmentedTextureModel
     {

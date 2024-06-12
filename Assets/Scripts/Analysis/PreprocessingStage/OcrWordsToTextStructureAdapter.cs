@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
+using Analysis.PreprocessingStage.Model.TextModels;
 using UnityEngine;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage
 {
     public class OcrWordsToTextStructureAdapter
     {

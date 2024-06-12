@@ -1,6 +1,6 @@
 ﻿using OpenCvSharp;
 
-namespace Analysis.AccessibilityProcessingStage
+namespace Analysis.AccessibilityProcessingStage.Model
 {
     public class AccessibilityIndicatorModel
     {

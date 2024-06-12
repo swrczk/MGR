@@ -1,4 +1,4 @@
-﻿namespace Analysis.AccessibilityProcessingStage
+﻿namespace Analysis.AccessibilityProcessingStage.Model
 {
     public class AccessibilityModel
     {

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Analysis.PreprocessingStage.Model.TextModels;
 using Analysis.PropertiesProcessingStage.Processor;
 using OpenCvSharp;
 using UnityEngine;

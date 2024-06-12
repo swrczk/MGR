@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Analysis.PreprocessingStage.Model.TextModels;
 using OpenCvSharp;
 
 namespace Analysis.PropertiesProcessingStage.Model

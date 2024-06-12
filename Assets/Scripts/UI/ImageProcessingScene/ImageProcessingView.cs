@@ -1,12 +1,12 @@
 ﻿using System;
 using Analysis;
-using Analysis.ReportGenerationStage;
+using Analysis.ReportGenerationStage.Model;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using Utils.MVC;
 
-namespace UI
+namespace UI.ImageProcessingScene
 {
     public class ImageProcessingView : BaseMainView
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Analysis.AccessibilityProcessingStage;
+using Analysis.AccessibilityProcessingStage.Model;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.draw;

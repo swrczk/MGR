@@ -1,7 +1,9 @@
-﻿using Cysharp.Threading.Tasks;
+﻿using Analysis.PreprocessingStage.Model;
+using Analysis.PreprocessingStage.Processor;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage
 {
     public class PreprocessingStage
     {

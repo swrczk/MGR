@@ -1,4 +1,4 @@
-﻿namespace Analysis
+﻿namespace Analysis.PreprocessingStage.Model.TextModels
 {
     public interface ITextModel
     {

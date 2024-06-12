@@ -18,7 +18,7 @@ namespace UI
         [SerializeField]
         private CheckboxElement checkbox;
 
-        private ScreenForAnalysisSo _screenForAnalysisData;
+        private ScreenModel _screenModelData;
 
         private void Start()
         {
@@ -28,14 +28,14 @@ namespace UI
 
         private void OnToggle(bool isEnabled)
         {
-            _screenForAnalysisData.isSelected = isEnabled;
+            _screenModelData.isSelected = isEnabled;
         }
 
-        public void Setup(ScreenForAnalysisSo file)
+        public void Setup(ScreenModel file)
         {
             image.texture = file.texture;
-            _screenForAnalysisData = file;
-            checkbox.Setup(_screenForAnalysisData.isSelected);
+            _screenModelData = file;
+            checkbox.Setup(_screenModelData.isSelected);
         }
 
         private void OnDestroy()
@@ -46,7 +46,7 @@ namespace UI
 
         private void Delete()
         {
-            OnDelete?.Invoke(_screenForAnalysisData.name, this);
+            OnDelete?.Invoke(_screenModelData.fileName, this);
         }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage.Model.TextModels
 {
     public class LineModel:ITextModel
     {

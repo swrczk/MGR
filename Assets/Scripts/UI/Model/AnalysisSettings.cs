@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Analysis;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace UI
 {
@@ -23,6 +24,7 @@ namespace UI
         [SerializeField]
         private List<Setting> parameters;
         
+        [FormerlySerializedAs("analysisParameters")]
         [SerializeField]
         private AnalysisParametersSO analysisParametersSo;
 

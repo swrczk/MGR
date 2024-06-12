@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage.Model.TextModels
 {
     public class WordModel : ITextModel
     {

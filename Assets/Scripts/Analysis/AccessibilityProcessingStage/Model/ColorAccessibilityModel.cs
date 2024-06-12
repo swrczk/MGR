@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Analysis.AccessibilityProcessingStage
+namespace Analysis.AccessibilityProcessingStage.Model
 {
     public class ColorAccessibilityModel
     {

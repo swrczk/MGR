@@ -1,6 +1,6 @@
 ﻿using OpenCvSharp;
 
-namespace Analysis
+namespace Analysis.PreprocessingStage.Model
 {
     public class SegmentModel
     {

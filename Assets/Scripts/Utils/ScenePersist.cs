@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Utils.Common
+namespace Utils
 {
     public class ScenePersist: MonoBehaviour 
     {

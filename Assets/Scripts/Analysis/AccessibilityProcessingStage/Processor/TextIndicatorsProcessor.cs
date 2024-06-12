@@ -1,23 +1,24 @@
 ﻿using System.Collections.Generic;
-using Analysis.AccessibilityProcessingStage.Processor;
+using Analysis.AccessibilityProcessingStage.Model;
+using Analysis.PreprocessingStage.Model.TextModels;
 using Analysis.PropertiesProcessingStage.Model;
 using OpenCvSharp;
 using UI;
 using UnityEngine;
 
-namespace Analysis.AccessibilityProcessingStage
+namespace Analysis.AccessibilityProcessingStage.Processor
 {
     public class TextIndicatorsProcessor
     {
         private readonly TextAccessibilityProcessor _textAccessibilityProcessor;
-        private readonly AnalysisParametersSO _parameters;
+        private readonly AnalysisParametersSO _parametersSo;
 
 
         public TextIndicatorsProcessor(AnalysisParametersSO analysisParametersSo,
             TextAccessibilityProcessor textAccessibilityProcessor)
         {
             _textAccessibilityProcessor = textAccessibilityProcessor;
-            _parameters = analysisParametersSo;
+            _parametersSo = analysisParametersSo;
         }
 
         public TextAccessibilityModel GenerateTextAccessibilityModel(PropertiesModel model, Mat originalMat)
@@ -90,11 +91,11 @@ namespace Analysis.AccessibilityProcessingStage
             var areaPercentage = _textAccessibilityProcessor.AreaPercentage(models, imageArea);
             var visualization = _textAccessibilityProcessor.DrawAreas(models, mat, color);
             Debug.Log(
-                $"Area percentage: {areaPercentage}, weight: {_parameters.GetWeight(featureType)}, type: {featureType}");
+                $"Area percentage: {areaPercentage}, weight: {_parametersSo.GetWeight(featureType)}, type: {featureType}");
             return new AccessibilityIndicatorModel()
             {
                 BaseValue = areaPercentage,
-                Weight = _parameters.GetWeight(featureType),
+                Weight = _parametersSo.GetWeight(featureType),
                 Visualization = visualization
             };
         }
