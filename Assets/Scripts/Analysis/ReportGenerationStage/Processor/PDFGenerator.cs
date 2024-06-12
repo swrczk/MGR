@@ -47,7 +47,7 @@ namespace Analysis.ReportGenerationStage.Processor
         public void SaveCurrentPdf()
         {
             document.Close();
-            Debug.LogError("PDF  w: " + path);
+            Debug.Log("PDF  w: " + path);
         }
 
         public void AddTitle(string title)
@@ -78,6 +78,39 @@ namespace Analysis.ReportGenerationStage.Processor
                 SpacingAfter = 5f,
             };
             document.Add(paragraph);
+        }
+
+        public void AddTextWithImageBelow(string text, Texture2D texture)
+        {
+            var paragraph = new Paragraph(text, font)
+            {
+                SpacingAfter = 10f
+            };
+            document.Add(paragraph);
+
+            var imageBytes = texture.EncodeToPNG();
+            var image = iTextSharp.text.Image.GetInstance(imageBytes);
+            if (image.Height > document.PageSize.Height - document.TopMargin - document.BottomMargin)
+            {
+                image.ScaleToFit(document.PageSize.Width - document.LeftMargin - document.RightMargin,
+                    document.PageSize.Height - document.TopMargin - document.BottomMargin);
+            }
+
+            var table = new PdfPTable(1)
+            {
+                WidthPercentage = 100
+            };
+            var cell = new PdfPCell(image)
+            {
+                Border = Rectangle.NO_BORDER,
+                PaddingTop = 0,
+                PaddingBottom = 10f
+            };
+            table.AddCell(cell);
+
+            // Ensure the text and image stay together on the same page
+            table.KeepTogether = true;
+            document.Add(table);
         }
 
         public void AddLineSeparator()
@@ -128,7 +161,7 @@ namespace Analysis.ReportGenerationStage.Processor
 
         public void AddAccessibilityIndicatorsResultTable(AccessibilityModel model)
         {
-            PdfPTable table = new PdfPTable(3);
+            var table = new PdfPTable(3);
             table.WidthPercentage = 100;
 
             // Dodawanie nagłówków tabeli

@@ -89,7 +89,7 @@ namespace Analysis.AccessibilityProcessingStage
             var imageArea = mat.Width * mat.Height;
             var areaPercentage = _textAccessibilityProcessor.AreaPercentage(models, imageArea);
             var visualization = _textAccessibilityProcessor.DrawAreas(models, mat, color);
-            Debug.LogError(
+            Debug.Log(
                 $"Area percentage: {areaPercentage}, weight: {_parameters.GetWeight(featureType)}, type: {featureType}");
             return new AccessibilityIndicatorModel()
             {

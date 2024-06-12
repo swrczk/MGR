@@ -76,7 +76,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
             var segments = models.Select(x => x.SegmentModel).ToList();
             var areaPercentage = AreaPercentage(segments);
 
-            Debug.LogError($"Segment area percentage: {areaPercentage} for {featureType} ");
+            Debug.Log($"Segment area percentage: {areaPercentage} for {featureType} ");
 
             return new AccessibilityIndicatorModel()
             {
@@ -110,7 +110,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
                 var colorPercentage = colorPercentage1 + colorPercentage2;
                 var visualization = CreateColorPairMat(color1, color2);
                 var contrast = allColors.ColorContrast[(index1, index2)];
-                Debug.LogError($"Color percentage: {colorPercentage} for {featureType} ");
+                Debug.Log($"Color percentage: {colorPercentage} for {featureType} ");
 
                 indicators.Add(new DominantColorAccessibilityIndicatorModel()
                 {

@@ -37,7 +37,7 @@ namespace Analysis.AccessibilityProcessingStage
             var textScore = CalculateTextScore(textAccessibilityModel);
             var overallScore = colorScore + textScore;
 
-            Debug.LogError($"Color score: {colorScore}, Text score: {textScore}, Overall score: {overallScore}");
+            Debug.Log($"Color score: {colorScore}, Text score: {textScore}, Overall score: {overallScore}");
             
             return new AccessibilityModel
             {

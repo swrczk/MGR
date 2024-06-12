@@ -21,7 +21,7 @@ namespace Analysis.PropertiesProcessingStage.Processor
             //for single letter text color is dominant color, for longer text background color is dominant
             Color textColor;
             Color backgroundColor;
-            if (isSingleLetter)
+            if (isSingleLetter || colors.Count == 1)
             {
                 textColor = AnalysisUtils.Vec3ToColor(colors[0]);
                 backgroundColor = colors.Count < 2 //ex.: letter "I" takes whole box
