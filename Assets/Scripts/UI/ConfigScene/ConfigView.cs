@@ -63,7 +63,7 @@ namespace UI.ConfigScene
                 Destroy(child.gameObject);
             }
 
-            foreach (ScreenModel file in screenDataArray)
+            foreach (var file in screenDataArray)
             {
                 DisplayFile(file);
             }

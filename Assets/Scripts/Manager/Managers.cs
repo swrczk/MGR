@@ -20,7 +20,7 @@ namespace Manager
 
         public T GetManager<T>() where T : class, IManager
         {
-            _managers.TryGetValue(typeof(T), out IManager manager);
+            _managers.TryGetValue(typeof(T), out var manager);
             return manager as T;
         }
 

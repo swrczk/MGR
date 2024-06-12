@@ -24,7 +24,7 @@ namespace Analysis.PreprocessingStage.Model
             foreach (var segment in Segments)
             {
                 float rectArea = segment.Rect.Width * segment.Rect.Height;
-                float volumePercentage = (rectArea / imageArea) * 100;
+                var volumePercentage = (rectArea / imageArea) * 100;
                 segment.VolumePercentage = volumePercentage;
             }
         }

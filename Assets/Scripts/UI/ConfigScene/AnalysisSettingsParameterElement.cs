@@ -23,7 +23,7 @@ namespace UI
         {
             get
             {
-                if (float.TryParse(weightInputField.text, out float result))
+                if (float.TryParse(weightInputField.text, out var result))
                 {
                     return result;
                 }

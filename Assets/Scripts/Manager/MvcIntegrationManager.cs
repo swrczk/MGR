@@ -28,10 +28,10 @@ namespace Manager
 
         public BaseController CreateAndAssignViewController(Type viewType, Transform root)
         {
-            if (_viewToControllerMap.TryGetValue(viewType, out Type controllerType))
+            if (_viewToControllerMap.TryGetValue(viewType, out var controllerType))
             {
-                GameObject viewObject = new GameObject(viewType.Name);
-                GameObject controllerObject = new GameObject(controllerType.Name);
+                var viewObject = new GameObject(viewType.Name);
+                var controllerObject = new GameObject(controllerType.Name);
 
                 var view = (BaseView)viewObject.AddComponent(viewType);
                 var controller = (BaseController)controllerObject.AddComponent(controllerType);
@@ -74,7 +74,7 @@ namespace Manager
             foreach (var view in views)
             {
                 var viewType = view.GetType();
-                if (view is IMainView && _viewToControllerMap.TryGetValue(viewType, out Type controllerType))
+                if (view is IMainView && _viewToControllerMap.TryGetValue(viewType, out var controllerType))
                 {
                     var controllerObject = new GameObject(controllerType.Name);
                     var controller = (BaseController)controllerObject.AddComponent(controllerType);

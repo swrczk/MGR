@@ -1,8 +1,12 @@
 using System.IO;
 using Cysharp.Threading.Tasks;
-using UnityEditor;
+using SFB;
 using UnityEngine;
 using UnityEngine.Networking;
+
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
 namespace Manager
 {
@@ -13,8 +17,23 @@ namespace Manager
         public async UniTask<(bool, Texture, string)> SaveFile()
         {
             (bool, Texture, string) savedFile = (false, null, string.Empty);
+            string path = null;
+
+#if UNITY_EDITOR
             var allowedFileTypes = new[] { "Image files", "png,jpg,jpeg" };
-            string path = EditorUtility.OpenFilePanelWithFilters("Select file", "", allowedFileTypes);
+            path = EditorUtility.OpenFilePanelWithFilters("Select file", "", allowedFileTypes);
+#else
+            var extensions = new[] {
+                new ExtensionFilter("Image Files", "png", "jpg", "jpeg"),
+                new ExtensionFilter("All Files", "*"),
+            };
+            var paths = StandaloneFileBrowser.OpenFilePanel("Open File", "", extensions, false);
+
+            if (paths.Length > 0)
+            {
+                path = paths[0];
+            }
+#endif
 
             if (string.IsNullOrEmpty(path))
             {
@@ -44,7 +63,10 @@ namespace Manager
             else
             {
                 texture = ((DownloadHandlerTexture)www.downloadHandler).texture;
+
+#if UNITY_EDITOR
                 EditorUtility.FocusProjectWindow();
+#endif
             }
 
             return texture;

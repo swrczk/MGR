@@ -14,7 +14,7 @@ public class TesseractDemoScript : MonoBehaviour
 
     private void Start()
     {
-        Texture2D texture = new Texture2D(imageToRecognize.width, imageToRecognize.height, TextureFormat.ARGB32, false);
+        var texture = new Texture2D(imageToRecognize.width, imageToRecognize.height, TextureFormat.ARGB32, false);
         texture.SetPixels32(imageToRecognize.GetPixels32());
         texture.Apply();
 
@@ -63,7 +63,7 @@ public class TesseractDemoScript : MonoBehaviour
 
     private void SetImageDisplay()
     {
-        RectTransform rectTransform = outputImage.GetComponent<RectTransform>();
+        var rectTransform = outputImage.GetComponent<RectTransform>();
         var highlightedTexture = ocrResult.HighlightedTexture;
         rectTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical,
             rectTransform.rect.width * highlightedTexture.height / highlightedTexture.width);

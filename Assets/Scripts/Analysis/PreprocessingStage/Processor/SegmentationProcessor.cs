@@ -78,7 +78,7 @@ namespace Analysis.PreprocessingStage.Processor
             foreach (var rect in rects)
             {
                 float rectArea = rect.Width * rect.Height;
-                float volumePercentage = (rectArea / imageArea) * 100;
+                var volumePercentage = (rectArea / imageArea) * 100;
                 segments.Add(new SegmentModel { Rect = rect, VolumePercentage = volumePercentage });
             }
 

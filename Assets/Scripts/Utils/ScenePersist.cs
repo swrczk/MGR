@@ -6,7 +6,7 @@ namespace Utils
     {
         void Awake()
         {
-            int numScenePersists = FindObjectsOfType<ScenePersist>().Length;
+            var numScenePersists = FindObjectsOfType<ScenePersist>().Length;
             if (numScenePersists > 1)
             {
                 ResetScenePersist();

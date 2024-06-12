@@ -40,7 +40,7 @@ namespace Analysis
 
         public void Save()
         {
-            string json = JsonUtility.ToJson(this, true);
+            var json = JsonUtility.ToJson(this, true);
             File.WriteAllText(SavePath, json);
         }
 
@@ -48,7 +48,7 @@ namespace Analysis
         {
             if (File.Exists(SavePath))
             {
-                string json = File.ReadAllText(SavePath);
+                var json = File.ReadAllText(SavePath);
                 JsonUtility.FromJsonOverwrite(json, this);
             }
         }

@@ -80,8 +80,8 @@ public class TesseractWrapper
 
     public string Version()
     {
-        IntPtr strPtr = TessVersion();
-        string tessVersion = Marshal.PtrToStringAnsi(strPtr);
+        var strPtr = TessVersion();
+        var tessVersion = Marshal.PtrToStringAnsi(strPtr);
         return tessVersion;
     }
 
@@ -110,7 +110,7 @@ public class TesseractWrapper
                 return false;
             }
 
-            int init = TessBaseAPIInit3(_tessHandle, dataPath, lang);
+            var init = TessBaseAPIInit3(_tessHandle, dataPath, lang);
             if (init != 0)
             {
                 Close();
@@ -134,19 +134,19 @@ public class TesseractWrapper
 
         _highlightedTexture = texture;
 
-        int width = _highlightedTexture.width;
-        int height = _highlightedTexture.height;
-        Color32[] colors = _highlightedTexture.GetPixels32();
-        int count = width * height;
-        int bytesPerPixel = 4;
-        byte[] dataBytes = new byte[count * bytesPerPixel];
-        int bytePtr = 0;
+        var width = _highlightedTexture.width;
+        var height = _highlightedTexture.height;
+        var colors = _highlightedTexture.GetPixels32();
+        var count = width * height;
+        var bytesPerPixel = 4;
+        var dataBytes = new byte[count * bytesPerPixel];
+        var bytePtr = 0;
 
-        for (int y = height - 1; y >= 0; y--)
+        for (var y = height - 1; y >= 0; y--)
         {
-            for (int x = 0; x < width; x++)
+            for (var x = 0; x < width; x++)
             {
-                int colorIdx = y * width + x;
+                var colorIdx = y * width + x;
                 dataBytes[bytePtr++] = colors[colorIdx].r;
                 dataBytes[bytePtr++] = colors[colorIdx].g;
                 dataBytes[bytePtr++] = colors[colorIdx].b;
@@ -154,7 +154,7 @@ public class TesseractWrapper
             }
         }
 
-        IntPtr imagePtr = Marshal.AllocHGlobal(count * bytesPerPixel);
+        var imagePtr = Marshal.AllocHGlobal(count * bytesPerPixel);
         Marshal.Copy(dataBytes, 0, imagePtr, count * bytesPerPixel);
 
         TessBaseAPISetImage(_tessHandle, imagePtr, width, height, bytesPerPixel, width * bytesPerPixel);
@@ -165,13 +165,13 @@ public class TesseractWrapper
             return null;
         }
 
-        IntPtr confidencesPointer = TessBaseAPIAllWordConfidences(_tessHandle);
-        int i = 0;
-        List<int> confidence = new List<int>();
+        var confidencesPointer = TessBaseAPIAllWordConfidences(_tessHandle);
+        var i = 0;
+        var confidence = new List<int>();
 
         while (true)
         {
-            int tempConfidence = Marshal.ReadInt32(confidencesPointer, i * 4);
+            var tempConfidence = Marshal.ReadInt32(confidencesPointer, i * 4);
 
             if (tempConfidence == -1) break;
 
@@ -179,31 +179,31 @@ public class TesseractWrapper
             confidence.Add(tempConfidence);
         }
 
-        int pointerSize = Marshal.SizeOf(typeof(IntPtr));
-        IntPtr intPtr = TessBaseAPIGetWords(_tessHandle, IntPtr.Zero);
-        Boxa boxa = Marshal.PtrToStructure<Boxa>(intPtr);
+        var pointerSize = Marshal.SizeOf(typeof(IntPtr));
+        var intPtr = TessBaseAPIGetWords(_tessHandle, IntPtr.Zero);
+        var boxa = Marshal.PtrToStructure<Boxa>(intPtr);
         var boxes = new Box[boxa.n];
 
-        for (int index = 0; index < boxes.Length; index++)
+        for (var index = 0; index < boxes.Length; index++)
         {
             if (confidence[index] >= MinimumConfidence)
             {
-                IntPtr boxPtr = Marshal.ReadIntPtr(boxa.box, index * pointerSize);
+                var boxPtr = Marshal.ReadIntPtr(boxa.box, index * pointerSize);
                 boxes[index] = Marshal.PtrToStructure<Box>(boxPtr);
-                Box box = boxes[index];
+                var box = boxes[index];
                 DrawLines(_highlightedTexture,
                     new Rect(box.x, _highlightedTexture.height - box.y - box.h, box.w, box.h),
                     Color.green);
             }
         }
 
-        IntPtr stringPtr = TessBaseAPIGetUTF8Text(_tessHandle);
+        var stringPtr = TessBaseAPIGetUTF8Text(_tessHandle);
         Marshal.FreeHGlobal(imagePtr);
         if (stringPtr.Equals(IntPtr.Zero))
             return null;
 
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN
-        string recognizedText = Marshal.PtrToStringAnsi(stringPtr);
+        var recognizedText = Marshal.PtrToStringAnsi(stringPtr);
 #else
         string recognizedText = Marshal.PtrToStringAuto(stringPtr);
 #endif
@@ -212,7 +212,7 @@ public class TesseractWrapper
         TessDeleteText(stringPtr);
 
         var words = recognizedText.Split(new[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-        StringBuilder result = new StringBuilder();
+        var result = new StringBuilder();
 
         for (i = 0; i < boxes.Length; i++)
         {
@@ -236,23 +236,23 @@ public class TesseractWrapper
 
     private void DrawLines(Texture2D texture, Rect boundingRect, Color color, int thickness = 3)
     {
-        int x1 = (int)boundingRect.x;
-        int x2 = (int)(boundingRect.x + boundingRect.width);
-        int y1 = (int)boundingRect.y;
-        int y2 = (int)(boundingRect.y + boundingRect.height);
+        var x1 = (int)boundingRect.x;
+        var x2 = (int)(boundingRect.x + boundingRect.width);
+        var y1 = (int)boundingRect.y;
+        var y2 = (int)(boundingRect.y + boundingRect.height);
 
-        for (int x = x1; x <= x2; x++)
+        for (var x = x1; x <= x2; x++)
         {
-            for (int i = 0; i < thickness; i++)
+            for (var i = 0; i < thickness; i++)
             {
                 texture.SetPixel(x, y1 + i, color);
                 texture.SetPixel(x, y2 - i, color);
             }
         }
 
-        for (int y = y1; y <= y2; y++)
+        for (var y = y1; y <= y2; y++)
         {
-            for (int i = 0; i < thickness; i++)
+            for (var i = 0; i < thickness; i++)
             {
                 texture.SetPixel(x1 + i, y, color);
                 texture.SetPixel(x2 - i, y, color);

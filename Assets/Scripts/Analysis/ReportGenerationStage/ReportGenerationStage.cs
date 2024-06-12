@@ -157,7 +157,7 @@ namespace Analysis.ReportGenerationStage
         {
             _generator.AddSubTitle("Analiza właściwości wykrytego tekstu");
             
-            string[] textLines = new string[]
+            var textLines = new string[]
             {
                 "Analizowane Elementy:",
                 "1. Dominant Colors With Low Contrast (Dominujące kolory o niskim kontraście)",

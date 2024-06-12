@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Text;
 using Analysis.AccessibilityProcessingStage.Model;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.draw;
+using TMPro;
 using UnityEngine;
 using Color = iTextSharp.text.Color;
 using Font = iTextSharp.text.Font;
@@ -24,25 +27,52 @@ namespace Analysis.ReportGenerationStage.Processor
 
         public void Create(string screenName, string fileName)
         {
-            var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            var directoryPath = Path.Combine(documentsPath, "AccessibilityAnalysisRaports");
-            path = Path.Combine(directoryPath, $"AccessibilityAnalysisRaport_{screenName}_{fileName}.pdf");
-
-            if (!Directory.Exists(directoryPath))
+            try
             {
-                Directory.CreateDirectory(directoryPath);
+                RegisterCodePagesEncodingProvider();
+                var timeStampNow = DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+                var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                var directoryPath = Path.Combine(documentsPath, "AccessibilityAnalysisRaports");
+                path = Path.Combine(directoryPath,
+                    $"AccessibilityAnalysisRaport_{screenName}_{fileName}_{timeStampNow}.pdf");
+
+                if (!Directory.Exists(directoryPath))
+                {
+                    Directory.CreateDirectory(directoryPath);
+                }
+
+                document = new Document();
+                PdfWriter.GetInstance(document, new FileStream(path, FileMode.Create));
+                document.Open();
+                pageWidth = document.PageSize.Width - document.LeftMargin - document.RightMargin;
+
+                // Load the font asset
+
+                // Load the font asset from StreamingAssets
+                var fontPath = Path.Combine(Application.streamingAssetsPath, "Fonts/Roboto/Roboto-Regular.ttf");
+                if (!File.Exists(fontPath))
+                {
+                    Debug.LogError("Font file not found in StreamingAssets.");
+                    return;
+                }
+
+                // Create the base font
+                baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+                if (baseFont == null)
+                {
+                    Debug.LogError("Failed to create BaseFont.");
+                    return;
+                }
+
+                font = new Font(baseFont, 12, Font.NORMAL);
+                titleFont = new Font(baseFont, 18, Font.BOLD);
+                subtitleFont = new Font(baseFont, 16, Font.BOLDITALIC);
             }
-
-            document = new Document();
-            PdfWriter.GetInstance(document, new FileStream(path, FileMode.Create));
-            document.Open();
-            pageWidth = document.PageSize.Width - document.LeftMargin - document.RightMargin;
-
-            var fontPath = Path.Combine(Application.dataPath, "Fonts", "Roboto", "Roboto-Thin.ttf");
-            baseFont = BaseFont.CreateFont(fontPath, BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            font = new Font(baseFont, 12, Font.NORMAL);
-            titleFont = new Font(baseFont, 18, Font.BOLD);
-            subtitleFont = new Font(baseFont, 16, Font.BOLDITALIC);
+            catch (Exception ex)
+            {
+                Debug.LogError($"Error in PdfGenerator.Create: {ex.Message}");
+                Debug.LogError(ex.StackTrace);
+            }
         }
 
         public void SaveCurrentPdf()
@@ -91,11 +121,7 @@ namespace Analysis.ReportGenerationStage.Processor
 
             var imageBytes = texture.EncodeToPNG();
             var image = iTextSharp.text.Image.GetInstance(imageBytes);
-            if (image.Height > document.PageSize.Height - document.TopMargin - document.BottomMargin)
-            {
-                image.ScaleToFit(document.PageSize.Width - document.LeftMargin - document.RightMargin,
-                    document.PageSize.Height - document.TopMargin - document.BottomMargin);
-            }
+            image.ScaleToFit(pageWidth, image.Height);
 
             var table = new PdfPTable(1)
             {
@@ -108,8 +134,6 @@ namespace Analysis.ReportGenerationStage.Processor
                 PaddingBottom = 10f
             };
             table.AddCell(cell);
-
-            // Ensure the text and image stay together on the same page
             table.KeepTogether = true;
             document.Add(table);
         }
@@ -203,6 +227,26 @@ namespace Analysis.ReportGenerationStage.Processor
             {
                 AddTextureWithDescription(model.Visualization.ToTexture(),
                     new Paragraph($"Procent zajmowanej przestrzeni: {model.BaseValue}% \n Kontrast: {model.Contrast}"));
+            }
+        }
+
+        private void RegisterCodePagesEncodingProvider()
+        {
+            // Register the CodePagesEncodingProvider using reflection if necessary
+            var providerType = Type.GetType("System.Text.CodePagesEncodingProvider, System.Text.Encoding.CodePages");
+            if (providerType != null)
+            {
+                var instanceProp = providerType.GetProperty("Instance");
+                if (instanceProp != null)
+                {
+                    var instance = instanceProp.GetValue(null);
+                    var registerMethod =
+                        typeof(Encoding).GetMethod("RegisterProvider", BindingFlags.Public | BindingFlags.Static);
+                    if (registerMethod != null)
+                    {
+                        registerMethod.Invoke(null, new object[] { instance });
+                    }
+                }
             }
         }
     }

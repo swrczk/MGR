@@ -10,7 +10,7 @@ public class UnZipUtil
     {
         Stream outStream = File.Create(tgzFilename);
         Stream gzoStream = new GZipOutputStream(outStream);
-        TarArchive tarArchive = TarArchive.CreateOutputTarArchive(gzoStream);
+        var tarArchive = TarArchive.CreateOutputTarArchive(gzoStream);
 
         // Note that the RootPath is currently case sensitive and must be forward slashes e.g. "c:/temp"
         // and must not end with a slash, otherwise cuts off first char of filename
@@ -29,13 +29,13 @@ public class UnZipUtil
         // Optionally, write an entry for the directory itself.
         // Specify false for recursion here if we will add the directory's files individually.
         //
-        TarEntry tarEntry = TarEntry.CreateEntryFromFile(sourceDirectory);
+        var tarEntry = TarEntry.CreateEntryFromFile(sourceDirectory);
         tarArchive.WriteEntry(tarEntry, false);
 
         // Write each file to the tar.
         //
-        string[] filenames = Directory.GetFiles(sourceDirectory);
-        foreach (string filename in filenames)
+        var filenames = Directory.GetFiles(sourceDirectory);
+        foreach (var filename in filenames)
         {
             tarEntry = TarEntry.CreateEntryFromFile(filename);
             tarArchive.WriteEntry(tarEntry, true);
@@ -43,8 +43,8 @@ public class UnZipUtil
 
         if (recurse)
         {
-            string[] directories = Directory.GetDirectories(sourceDirectory);
-            foreach (string directory in directories)
+            var directories = Directory.GetDirectories(sourceDirectory);
+            foreach (var directory in directories)
                 AddDirectoryFilesToTar(tarArchive, directory, recurse);
         }
     }
@@ -54,7 +54,7 @@ public class UnZipUtil
         Stream inStream = File.OpenRead(gzArchiveName);
         Stream gzipStream = new GZipInputStream(inStream);
 
-        TarArchive tarArchive = TarArchive.CreateInputTarArchive(gzipStream);
+        var tarArchive = TarArchive.CreateInputTarArchive(gzipStream);
         tarArchive.ExtractContents(destFolder);
         tarArchive.Close();
 

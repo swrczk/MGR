@@ -94,7 +94,7 @@ namespace Analysis.PreprocessingStage
         private List<WordModel> ConvertToWords(List<Box> detectedBoxes, List<string> detectedWords)
         {
             var words = new List<WordModel>();
-            for (int i = 0; i < detectedBoxes.Count; i++)
+            for (var i = 0; i < detectedBoxes.Count; i++)
             {
                 var box = detectedBoxes[i];
                 var word = detectedWords[i];

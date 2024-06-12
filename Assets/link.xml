@@ -1,0 +1,4 @@
+<linker>
+  <assembly fullname="System.Text.Encoding" preserve="all" />
+  <assembly fullname="System.Text.Encoding.Extensions" preserve="all" />
+</linker>
