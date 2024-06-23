@@ -226,7 +226,7 @@ namespace Analysis.ReportGenerationStage.Processor
             foreach (var model in values)
             {
                 AddTextureWithDescription(model.Visualization.ToTexture(),
-                    new Paragraph($"Procent zajmowanej przestrzeni: {model.BaseValue}% \n Kontrast: {model.Contrast}"));
+                    new Paragraph($"Procent zajmowanej przestrzeni: {model.BaseValue:F}% \n Kontrast: {model.Contrast:F}"));
             }
         }
 

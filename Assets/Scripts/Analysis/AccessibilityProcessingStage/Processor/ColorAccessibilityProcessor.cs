@@ -7,7 +7,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
     { 
 
         private readonly float _contrastLowerThreshold = 4.5f;
-        private readonly float _contrastUpperThreshold = 15.5f; 
+        private readonly float _contrastUpperThreshold = 15.0f; 
 
  
 
@@ -24,10 +24,10 @@ namespace Analysis.AccessibilityProcessingStage.Processor
         public List<(int, int)> DominantColorsWithLowContrast(DominantColorsPropertiesModel model)
         {
             var pairs = new List<(int, int)>();
-            foreach (var (key, value) in model.ColorContrast)
+            foreach (var (pair, contrastRatio) in model.ColorContrast)
             {
-                if (value < _contrastLowerThreshold)
-                    pairs.Add(key);
+                if (contrastRatio < _contrastLowerThreshold)
+                    pairs.Add(pair);
             }
 
             return pairs;
@@ -36,10 +36,10 @@ namespace Analysis.AccessibilityProcessingStage.Processor
         public List<(int, int)> DominantColorsWithHighContrast(DominantColorsPropertiesModel model)
         {
             var pairs = new List<(int, int)>();
-            foreach (var (key, value) in model.ColorContrast)
+            foreach (var (pair, contrastRatio) in model.ColorContrast)
             {
-                if (value > _contrastUpperThreshold)
-                    pairs.Add(key);
+                if (contrastRatio > _contrastUpperThreshold)
+                    pairs.Add(pair);
             }
 
             return pairs;

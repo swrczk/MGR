@@ -15,7 +15,7 @@ namespace Analysis.PropertiesProcessingStage.Processor
         public Dictionary<(int, int), float> Process(List<Color> dominantColors)
         {
             var result = new Dictionary<(int, int), float>();
-            for (var i = 0; i < dominantColors.Count; i++)
+            for (var i = 0; i < dominantColors.Count-1; i++)
             {
                 for (var j = i + 1; j < dominantColors.Count; j++)
                 {

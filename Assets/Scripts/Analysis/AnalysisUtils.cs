@@ -139,7 +139,7 @@ namespace Analysis
 
         public static Vec3b ColorToVec3B(Color color)
         {
-            return new Vec3b((byte)color.b, (byte)color.g, (byte)color.r);
+            return new Vec3b((byte)(color.b * 255), (byte)(color.g * 255), (byte)(color.r * 255));
         }
     }
 }

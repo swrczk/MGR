@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Analysis.AccessibilityProcessingStage.Model;
 using Analysis.PreprocessingStage.Model.TextModels;
 using Analysis.PropertiesProcessingStage.Model;
@@ -23,6 +24,21 @@ namespace Analysis.AccessibilityProcessingStage.Processor
 
         public TextAccessibilityModel GenerateTextAccessibilityModel(PropertiesModel model, Mat originalMat)
         {
+            var sumOfLetters = model.DocumentModelProperties.GetWords().Sum(w=>w.Text.Length+1);
+            if (sumOfLetters < 20)
+            {
+                Debug.Log("Text is too small to analyze. Skipping text analysis.");
+                return new TextAccessibilityModel()
+                {
+                    HighContrastTextColors = new AccessibilityIndicatorModel(),
+                    LowContrastTextColors = new AccessibilityIndicatorModel(),
+                    TooSmallFontSize =  new AccessibilityIndicatorModel(),
+                    ImageAsTextBackground = new AccessibilityIndicatorModel(),
+                    RightAlignedText =  new AccessibilityIndicatorModel(),
+                    TooSmallInterlineInTextBlock = new AccessibilityIndicatorModel(),
+                };
+            }
+            
             var words = model.DocumentModelProperties
                 .GetWords();
             var textBlocks = model.DocumentModelProperties.TextBlocks;

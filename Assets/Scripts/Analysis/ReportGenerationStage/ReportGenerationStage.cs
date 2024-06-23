@@ -39,8 +39,18 @@ namespace Analysis.ReportGenerationStage
 
             OcrReportPart(model);
             _generator.BreakPage();
-            TextPropertiesReportPart(model);
-            _generator.BreakPage();
+            if (model.PreprocessedModel.OcrResult.Text.Count > 20)
+            {
+                
+                TextPropertiesReportPart(model);
+                _generator.BreakPage();
+            }
+            else
+            {
+                
+                _generator.AddSubTitle("Analiza właściwości wykrytego tekstu");
+                _generator.AddSubTitle("Ilość wykrytych znaków jest niewystarczajaca, aby przeprowadzić analizę właściwości tekstu.");
+            }
 
 
             _generator.SaveCurrentPdf();
@@ -203,9 +213,9 @@ namespace Analysis.ReportGenerationStage
 
             _generator.AddText(stringBuilder.ToString());
 
-            AddTextAccessibilityIndicator("Dominujące Kolory o Niskim Kontraście",
+            AddTextAccessibilityIndicator("Wysoki kontrast między kolorem tła a tekstem",
                 model.AccessibilityModel.TextAccessibilityModel.HighContrastTextColors);
-            AddTextAccessibilityIndicator("Dominujące Kolory o Wysokim Kontraście",
+            AddTextAccessibilityIndicator("Niski kontrast między kolorem tła a tekstem",
                 model.AccessibilityModel.TextAccessibilityModel.LowContrastTextColors);
             AddTextAccessibilityIndicator("Użycie obrazu jako tła tekstu",
                 model.AccessibilityModel.TextAccessibilityModel.ImageAsTextBackground);
