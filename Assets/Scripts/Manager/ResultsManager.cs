@@ -26,16 +26,16 @@ namespace Manager
             var screenModel = new ScreenModel
             {
                 saveFilesPath = SaveFilesPath,
-                fileName = $"{time}",
-                screenName = screenName.Replace(" ", "_"),
+                uploadTimeStamp = $"{time}",
+                name = screenName.Replace(" ", "_"),
             };
             screenModel.SaveMainTexture(texture);
             SaveAsAsset(screenModel, "DTO");
 
-            var uniqueKey = screenModel.fileName;
+            var uniqueKey = screenModel.uploadTimeStamp;
             while (ScreensDictionary.ContainsKey(uniqueKey))
             {
-                uniqueKey = $"{screenModel.fileName}_{Guid.NewGuid()}";
+                uniqueKey = $"{screenModel.uploadTimeStamp}_{Guid.NewGuid()}";
             }
 
             ScreensDictionary.Add(uniqueKey, screenModel);
@@ -65,10 +65,10 @@ namespace Manager
             var screenDataArray = LoadAllScreens();
             foreach (var data in screenDataArray)
             {
-                var uniqueKey = data.fileName;
+                var uniqueKey = data.uploadTimeStamp;
                 while (ScreensDictionary.ContainsKey(uniqueKey))
                 {
-                    uniqueKey = $"{data.fileName}_{Guid.NewGuid()}";
+                    uniqueKey = $"{data.uploadTimeStamp}_{Guid.NewGuid()}";
                 }
 
                 ScreensDictionary.Add(uniqueKey, data);
@@ -104,14 +104,14 @@ namespace Manager
 
         private void SaveAsAsset(ScreenModel screenModel, string folder)
         {
-            var path = Path.Combine(SaveFilesPath, folder, $"{screenModel.fileName}.json");
+            var path = Path.Combine(SaveFilesPath, folder, $"{screenModel.uploadTimeStamp}.json");
             var json = JsonUtility.ToJson(screenModel);
             Directory.CreateDirectory(Path.GetDirectoryName(path)); // Ensure directory exists
             File.WriteAllText(path, json);
 
             if (screenModel.texture != null)
             {
-                SaveTextureAsPNG(screenModel.texture, Path.Combine(SaveFilesPath, folder, $"{screenModel.fileName}.png"));
+                SaveTextureAsPNG(screenModel.texture, Path.Combine(SaveFilesPath, folder, $"{screenModel.uploadTimeStamp}.png"));
             }
         }
 
@@ -163,13 +163,13 @@ namespace Manager
 
         private void DeleteAssetFiles(ScreenModel screenModel)
         {
-            var jsonPath = Path.Combine(screenModel.saveFilesPath, "DTO", $"{screenModel.fileName}.json");
+            var jsonPath = Path.Combine(screenModel.saveFilesPath, "DTO", $"{screenModel.uploadTimeStamp}.json");
             if (File.Exists(jsonPath))
             {
                 File.Delete(jsonPath);
             }
 
-            var pngPath = Path.Combine(screenModel.saveFilesPath, "DTO", $"{screenModel.fileName}.png");
+            var pngPath = Path.Combine(screenModel.saveFilesPath, "DTO", $"{screenModel.uploadTimeStamp}.png");
             if (File.Exists(pngPath))
             {
                 File.Delete(pngPath);

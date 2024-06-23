@@ -35,6 +35,8 @@ namespace UI.ImageProcessingScene
         private RawImage originalImage;
 
         [SerializeField]
+        private TMP_Text fileName;
+        [SerializeField]
         private TMP_Text textScore;
 
         [SerializeField]
@@ -46,6 +48,7 @@ namespace UI.ImageProcessingScene
         public void Setup(AnalysisModel model)
         {
             originalImage.texture = model.PreprocessedModel.DefaultMat.ToTexture();
+            fileName.text = $"file name: {model.ScreenData.name}";
             textScore.text = $"{model.AccessibilityModel.TextScore}";
             colorScore.text = $"{model.AccessibilityModel.ColorScore}";
             overallScore.text = $"{model.AccessibilityModel.OverallScore}";

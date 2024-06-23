@@ -19,7 +19,7 @@ namespace Analysis.ReportGenerationStage
 
         public string Run(AnalysisModel model)
         {
-            _generator.Create(model.ScreenData.screenName, model.ScreenData.fileName);
+            _generator.Create(model.ScreenData.name, model.ScreenData.uploadTimeStamp);
 
             FirstPageReportPart(model);
             _generator.BreakPage();
@@ -60,7 +60,7 @@ namespace Analysis.ReportGenerationStage
         private void FirstPageReportPart(AnalysisModel model)
         {
             _generator.AddTitle("Raport Analizy Dostępności Interfejsu");
-            _generator.AddSubTitle($"Dla zrzutu ekranu: {model.ScreenData.screenName}");
+            _generator.AddSubTitle($"Dla zrzutu ekranu: {model.ScreenData.name}");
             _generator.AddText("Analiza została przeprowadzona na podstawie pliku: ");
             _generator.AddImage(model.ScreenData.texture);
         }

@@ -30,7 +30,7 @@ namespace UI
         private void OnToggleChanged(bool isEnabled)
         {
             _screenModelData.isSelected = isEnabled;
-            OnToggle?.Invoke(_screenModelData.fileName, isEnabled); // Invoke the toggle event
+            OnToggle?.Invoke(_screenModelData.uploadTimeStamp, isEnabled); // Invoke the toggle event
         }
 
         public void Setup(ScreenModel file)
@@ -48,7 +48,7 @@ namespace UI
 
         private void Delete()
         {
-            OnDelete?.Invoke(_screenModelData.fileName, this);
+            OnDelete?.Invoke(_screenModelData.uploadTimeStamp, this);
         }
     }
 }

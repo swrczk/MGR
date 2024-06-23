@@ -44,7 +44,7 @@ namespace Manager
         private async UniTask AnaliseScreen(ScreenModel screen)
         {
             _screenModel = screen;
-            OnStageCompleted?.Invoke($"\nStarting analysis process for screen: {screen.screenName} ... \n");
+            OnStageCompleted?.Invoke($"\nStarting analysis process for screen: {screen.name} ... \n");
             OnStageCompleted?.Invoke("Starting preprocessing stage ...");
             await AllowUiToUpdate();
 
@@ -79,7 +79,7 @@ namespace Manager
             DataManager.AnalysisModel.Add(analysisModel);
 
             OnStageCompleted?.Invoke("Report generation stage completed.");
-            OnStageCompleted?.Invoke($"Analysis completed for screen: {screen.screenName}\n");
+            OnStageCompleted?.Invoke($"Analysis completed for screen: {screen.name}\n");
         }
 
         private static async UniTask AllowUiToUpdate()

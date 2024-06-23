@@ -9,8 +9,8 @@ namespace Analysis
     [Serializable]
     public class ScreenModel
     {
-        public string fileName;
-        public string screenName;
+        public string uploadTimeStamp;
+        public string name;
         public string saveFilesPath;
         public Texture2D texture;
         public bool isSelected;
@@ -40,7 +40,7 @@ namespace Analysis
         public string SaveAsPNG(Texture2D texture2D, string folder, string suffix)
         {
             var time = new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds();
-            var path = Path.Combine(saveFilesPath, folder, $"{fileName}_{suffix}_{time}.png");
+            var path = Path.Combine(saveFilesPath, folder, $"{uploadTimeStamp}_{suffix}_{time}.png");
             var pngBytes = texture2D.EncodeToPNG();
             Directory.CreateDirectory(Path.GetDirectoryName(path)); // Ensure directory exists
             File.WriteAllBytes(path, pngBytes);
