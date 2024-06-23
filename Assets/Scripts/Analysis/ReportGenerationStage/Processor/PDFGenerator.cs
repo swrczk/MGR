@@ -190,26 +190,26 @@ namespace Analysis.ReportGenerationStage.Processor
             table.WidthPercentage = 100;
 
             // Dodawanie nagłówków tabeli
-            table.AddCell(new PdfPCell(new Phrase("Name", subtitleFont)));
-            table.AddCell(new PdfPCell(new Phrase("Base Value", subtitleFont)));
-            table.AddCell(new PdfPCell(new Phrase("Weight", subtitleFont)));
+            table.AddCell(new PdfPCell(new Phrase("Nazwa", subtitleFont)));
+            table.AddCell(new PdfPCell(new Phrase("Wartość", subtitleFont)));
+            table.AddCell(new PdfPCell(new Phrase("Waga", subtitleFont)));
 
-            AddIndicatorToTable(table, "Dominant Colors With Low Contrast",
+            AddIndicatorToTable(table, "Dominujące Kolory o Niskim Kontraście",
                 model.ColorAccessibilityModel.OverallColorLowContrast);
-            AddIndicatorToTable(table, "Dominant Colors With High Contrast",
+            AddIndicatorToTable(table, "Dominujące Kolory o Wysokim Kontraście",
                 model.ColorAccessibilityModel.OverallColorContrastHigh);
-            AddIndicatorToTable(table, "Segments With Low Contrast",
+            AddIndicatorToTable(table, "Segmenty o Niskim Kontraście",
                 model.ColorAccessibilityModel.SegmentsWithLowContrast);
-            AddIndicatorToTable(table, "Segments With High Contrast",
+            AddIndicatorToTable(table, "Segmenty o Wysokim Kontraście",
                 model.ColorAccessibilityModel.SegmentsWithHighContrast);
-            AddIndicatorToTable(table, "High Contrast Text Colors",
+            AddIndicatorToTable(table, "Wysoki kontrast między kolorem tła a tekstem",
                 model.TextAccessibilityModel.HighContrastTextColors);
-            AddIndicatorToTable(table, "Low Contrast Text Colors", model.TextAccessibilityModel.LowContrastTextColors);
-            AddIndicatorToTable(table, "Image As Text Background", model.TextAccessibilityModel.ImageAsTextBackground);
-            AddIndicatorToTable(table, "Too Small Font Size", model.TextAccessibilityModel.TooSmallFontSize);
-            AddIndicatorToTable(table, "Too Small Interline In Text Block",
+            AddIndicatorToTable(table, "Niski kontrast między kolorem tła a tekstem", model.TextAccessibilityModel.LowContrastTextColors);
+            AddIndicatorToTable(table, "Użycie obrazu jako tła tekstu", model.TextAccessibilityModel.ImageAsTextBackground);
+            AddIndicatorToTable(table, "Wielkość czcionki mniejsza niż 14px", model.TextAccessibilityModel.TooSmallFontSize);
+            AddIndicatorToTable(table, "Interlinia mniejsza niż 1,5x wysokość czcionki",
                 model.TextAccessibilityModel.TooSmallInterlineInTextBlock);
-            AddIndicatorToTable(table, "Right Aligned Text", model.TextAccessibilityModel.RightAlignedText);
+            AddIndicatorToTable(table, "Tekst wyrównany do prawej krawędzi", model.TextAccessibilityModel.RightAlignedText);
 
             document.Add(table);
         }
