@@ -104,7 +104,7 @@ namespace Analysis.AccessibilityProcessingStage.Processor
             Color color, FeatureType featureType)
         {
             var imageArea = mat.Width * mat.Height;
-            var areaPercentage = _textAccessibilityProcessor.AreaPercentage(models, imageArea);
+            var areaPercentage = Mathf.Max(_textAccessibilityProcessor.AreaPercentage(models, imageArea), 0);
             var visualization = _textAccessibilityProcessor.DrawAreas(models, mat, color);
             Debug.Log(
                 $"Area percentage: {areaPercentage}, weight: {_parametersSo.GetWeight(featureType)}, type: {featureType}");
