@@ -19,29 +19,24 @@ namespace Manager
         [SerializeField]
         private ImageProcessingParametersSo imageProcessingParametersSo;
         
-        [SerializeField]
-        private AnalysisParametersSO analysisParameters;
-
         private ScreenModel _screenModel;
         private PreprocessingStage _preprocessingStage;
         private PropertiesProcessingStage _propertiesProcessingStage;
         private AccessibilityProcessingStage _accessibilityProcessingStage;
         private ReportGenerationStage _reportGenerationStage;
 
-        public AnalysisParametersSO AnalysisParameters => analysisParameters;
-
-        public async UniTask AnaliseScreens(List<ScreenModel> screens)
+        public async UniTask AnaliseScreens(List<ScreenModel> screens, AnalysisParametersSO analysisParameters)
         {
-            InitStages();
+            InitStages(analysisParameters);
 
             foreach (var screen in screens)
             {
                 await UniTask.WaitForFixedUpdate();
-                await AnaliseScreen(screen);
+                await AnaliseScreen(screen, analysisParameters);
             }
         }
 
-        private async UniTask AnaliseScreen(ScreenModel screen)
+        private async UniTask AnaliseScreen(ScreenModel screen, AnalysisParametersSO analysisParameters)
         {
             _screenModel = screen;
             OnStageCompleted?.Invoke($"\nStarting analysis process for screen: {screen.name} ... \n");
@@ -89,7 +84,7 @@ namespace Manager
             await UniTask.SwitchToMainThread();
         }
 
-        private void InitStages()
+        private void InitStages(AnalysisParametersSO analysisParameters)
         {
             _preprocessingStage = new PreprocessingStage(imageProcessingParametersSo);
             _propertiesProcessingStage = new PropertiesProcessingStage(imageProcessingParametersSo);

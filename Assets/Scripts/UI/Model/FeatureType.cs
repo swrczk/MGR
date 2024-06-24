@@ -2,19 +2,15 @@
 {
     public enum FeatureType
     {
-        SkipTextAnalysis,
-        // HighContrastColors,
-        // BrightColors,
+        DominantColorsWithLowContrast,
+        DominantColorsWithHighContrast,
+        SegmentsWithLowContrast,
+        SegmentsWithHighContrast,
         LowTextBackgroundContrast,
         HighTextBackgroundContrast,
         ImageAsTextBackground,
         TooSmallFont,
-        // InsufficientSpacingBetweenTextBlocks,
-        RightAlignedText,
         TooSmallInterlineInTextBlock,
-        SegmentsWithHighContrast,
-        SegmentsWithLowContrast,
-        DominantColorsWithLowContrast,
-        DominantColorsWithHighContrast
+        RightAlignedText,
     }
 }

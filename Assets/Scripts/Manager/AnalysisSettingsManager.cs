@@ -8,12 +8,13 @@ namespace Manager
     public class AnalysisSettingsManager : BaseManager
     {
         
+        public AnalysisParametersSO AnalysisParameters => analysisParameters;
         [SerializeField]
         private AnalysisParametersSO analysisParameters;
 
         private void Awake()
         {
-            analysisParameters.Load();
+            analysisParameters.LoadFromJson();
         }
         public void UpdateAndSaveParameters(List<SingleFeatureSettingModel> featureSettings)
         {
@@ -30,12 +31,12 @@ namespace Manager
                     analysisParameters.parameters.Add(new AnalysisParameterModel(setting.FeatureType, setting.Settings.Weight, setting.Settings.isEnabled));
                 }
             }
-            analysisParameters.Save();
+            analysisParameters.SaveToJson();
         }
 
         private void OnApplicationQuit()
         {
-            analysisParameters.Save();
+            analysisParameters.SaveToJson();
         }
     }
 }

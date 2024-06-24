@@ -29,7 +29,7 @@ namespace UI.ConfigScene
 
         private void SetupSettingsView()
         {
-            var analysisParameters = Context.ImageProcessingManager.AnalysisParameters;
+            var analysisParameters = Context.AnalysisSettingsManager.AnalysisParameters;
             View.AnalysisSettingsElement.ApplyAnalysisParameters(analysisParameters);
         }
 
@@ -52,8 +52,9 @@ namespace UI.ConfigScene
 
         private async UniTaskVoid RunAnalysis()
         {
+            var analysisParameters = Context.AnalysisSettingsManager.AnalysisParameters;
             var model = Context.ResultsManager.GetSelectedScreens();
-            await Context.ImageProcessingManager.AnaliseScreens(model);
+            await Context.ImageProcessingManager.AnaliseScreens(model, analysisParameters);
             Context.ChangeScene("Scenes/ImageProcessingScene");
         }
 

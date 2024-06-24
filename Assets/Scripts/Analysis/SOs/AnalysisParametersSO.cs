@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using UI;
@@ -8,25 +9,25 @@ namespace Analysis
     [CreateAssetMenu(fileName = "AnalysisParameters", menuName = "AnalysisParametersSO")]
     public class AnalysisParametersSO : ScriptableObject
     {
-        public List<AnalysisParameterModel> parameters = new List<AnalysisParameterModel>()
+        public List<AnalysisParameterModel> parameters = new()
         {
-            // new AnalysisParameter(FeatureType.HighContrastColors, 0.1f, true),
-            // new AnalysisParameter(FeatureType.BrightColors, 0.1f, true),
-            // new AnalysisParameter(FeatureType.InsufficientSpacingBetweenTextBlocks, 0.1f, true),
-            new AnalysisParameterModel(FeatureType.HighTextBackgroundContrast, 0.1f, true),
-            new AnalysisParameterModel(FeatureType.LowTextBackgroundContrast, 0.1f, true),
-            new AnalysisParameterModel(FeatureType.TooSmallFont, 0.1f, true),
-            new AnalysisParameterModel(FeatureType.RightAlignedText, 0.1f, true),
-            new AnalysisParameterModel(FeatureType.TooSmallInterlineInTextBlock, 0.1f, true),
-            new AnalysisParameterModel(FeatureType.SegmentsWithHighContrast, 0.1f, true),
-            new AnalysisParameterModel(FeatureType.SegmentsWithLowContrast, 0.1f, true),
             new AnalysisParameterModel(FeatureType.DominantColorsWithLowContrast, 0.1f, true),
             new AnalysisParameterModel(FeatureType.DominantColorsWithHighContrast, 0.1f, true),
-            
-            new AnalysisParameterModel(FeatureType.SkipTextAnalysis, 1f, false),
+            new AnalysisParameterModel(FeatureType.SegmentsWithLowContrast, 0.1f, true),
+            new AnalysisParameterModel(FeatureType.SegmentsWithHighContrast, 0.1f, true),
+            new AnalysisParameterModel(FeatureType.LowTextBackgroundContrast, 0.1f, true),
+            new AnalysisParameterModel(FeatureType.HighTextBackgroundContrast, 0.1f, true),
+            new AnalysisParameterModel(FeatureType.TooSmallFont, 0.1f, true),
+            new AnalysisParameterModel(FeatureType.TooSmallInterlineInTextBlock, 0.1f, true),
+            new AnalysisParameterModel(FeatureType.RightAlignedText, 0.1f, true),
         };
 
         private static string SavePath => Path.Combine(Application.persistentDataPath, "analysis_parameters.json");
+
+        private void OnEnable()
+        {
+            LoadFromJson();
+        }
 
         public float GetWeight(FeatureType feature)
         {
@@ -38,19 +39,21 @@ namespace Analysis
             return parameters.Find(p => p.feature == feature);
         }
 
-        public void Save()
+        public void SaveToJson()
         {
             var json = JsonUtility.ToJson(this, true);
             File.WriteAllText(SavePath, json);
         }
 
-        public void Load()
+        public void LoadFromJson()
         {
-            if (File.Exists(SavePath))
+            if (!File.Exists(SavePath))
             {
-                var json = File.ReadAllText(SavePath);
-                JsonUtility.FromJsonOverwrite(json, this);
+                SaveToJson();
             }
+
+            var json = File.ReadAllText(SavePath);
+            JsonUtility.FromJsonOverwrite(json, this);
         }
     }
 }

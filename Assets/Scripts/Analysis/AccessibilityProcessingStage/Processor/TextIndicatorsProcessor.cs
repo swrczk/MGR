@@ -108,12 +108,13 @@ namespace Analysis.AccessibilityProcessingStage.Processor
             var visualization = _textAccessibilityProcessor.DrawAreas(models, mat, color);
             Debug.Log(
                 $"Area percentage: {areaPercentage}, weight: {_parametersSo.GetWeight(featureType)}, type: {featureType}");
-            return new AccessibilityIndicatorModel()
+            var model = new AccessibilityIndicatorModel()
             {
                 BaseValue = areaPercentage,
                 Weight = _parametersSo.GetWeight(featureType),
                 Visualization = visualization
             };
+            return model;
         }
     }
 }
